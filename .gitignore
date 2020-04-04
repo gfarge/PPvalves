@@ -1,0 +1,13 @@
+# -- Temporary and binary files
+*~
+*.py[cod]
+*.log
+.*.swp
+*/.ipynb_checkpoints/*
+*/__pycache__/*
+
+# -- Doc build files
+docs/build
+
+# -- Mac DS_Store
+*.DS_Store
