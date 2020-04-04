@@ -6,6 +6,10 @@
 */.ipynb_checkpoints/*
 */__pycache__/*
 
+# -- Development
+.to_do
+
+
 # -- Doc build files
 docs/build
 
