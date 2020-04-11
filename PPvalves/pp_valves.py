@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import scipy.special as ssp
 import copy
 
-import PPvalves.matmath as mat
+import PPvalves.mat_math as mat
 
 
 
@@ -649,6 +649,331 @@ def k_init(barriers,PARAM,state_override=None):
 # ////////////////////////////////////////////////////////////////////////////////
 # 	PHYSICS
 # ////////////////////////////////////////////////////////////////////////////////
+
+def mass_balance_inout(P,PARAM,int_t=True):
+	r"""
+	Computes the time derivative of the total mass (per unit area) along the
+	domain, at time $t$.
+	\[
+	\frac{dM}{dt}(t) = q_{in}(t) - q_{out}(t).
+	\]
+
+	Parameters
+	----------
+	P : ndarray
+		Pore-pressure history, dimensions 2D : Nt,Nx.
+	PARAM : dict
+		Parameters dictionnary. 
+	int_t : bool, default = False
+		Set to True fo option to compute $\delta M(t)$ instead of
+		$\frac{dM}{dt}(t)$.
+
+	Returns
+	-------
+	deltaM : ndarray (default, for int_t=True)
+		Accumulation in time of total mass per unit area in domain,
+		dimensions: Nt
+	dMdt : ndarray (for int_t=False)
+		Time derivative of total mass accumulation in the system in
+		time, dimension : Nt
+	
+	Note
+	----
+		Check how we deal with boundaries here.
+
+	"""
+	# --> Unpack
+	# -->> Boundary conditions
+	qin_ = PARAM['qin_']
+	qout_ = PARAM['qout_']
+	p0_ = PARAM['p0_']
+	pL_ = PARAM['pL_']
+	hb_ = PARAM['hb_']
+	dt_ = PARAM['dt_']
+	# -->> Physical parameters
+	rho = PARAM['rho']
+	mu = PARAM['mu']
+	k_bg = PARAM['k_bg']
+	# -->> Scales
+	X_scale = PARAM['X_scale']
+	P_scale = PARAM['P_scale']
+	q_scale = PARAM['q_scale']
+	T_scale = PARAM['T_scale']
+	M_scale = q_scale*T_scale
+
+	# --> According to boundary, compute in/out flux
+	if np.isnan(qin_) and (not np.isnan(p0_)):
+		# --> Fixed pressure in 0
+		qin_ = rho*k_bg/mu * (p0_ - P[:,0])/hb_ * P_scale/X_scale / q_scale
+	elif (not np.isnan(qin_)) and np.isnan(p0_):
+		# --> Fixed flux in 0
+		pass
+	if np.isnan(qout_) and (not np.isnan(pL_)):
+		# --> Fixed pressure in L
+		qout_ = rho*k_bg/mu * (P[:,-1] - pL_)/hb_ * P_scale/X_scale / q_scale
+	elif (not np.isnan(qout_)) and np.isnan(pL_):
+		# --> Fixed flux in L
+		pass
+
+	# --> dMdt
+	dMdt = (qin_ - qout_) * q_scale*T_scale/M_scale
+
+	if int_t:
+		# --> Compute mass evolution history
+		deltaM = np.cumsum(dMdt*dt_,axis=0)
+
+		return deltaM
+	else:
+		# --> Simply output mass derivative in time
+		return dMdt
+
+#---------------------------------------------------------------------------------
+
+def mass_balance_inpores(P,PARAM,int_x=True,int_t=True):
+	r"""
+	Computes the time derivative of volumic mass over the space domain, at
+	time $t$, using:
+	\[
+	\frac{\partial m}{\partial t}(x,t) = \rho\beta\phi \frac{\partial p}{\partial t}(x,t).
+	\]
+
+	Parameters
+	----------
+	P : ndarray
+		Pore-pressure history, dimensions 2D : Nt,Nx.
+	PARAM : dict
+		Parameters dictionnary. 
+	int_x : bool (default=True)
+		Option to integrate over the space domain, to obtain
+		$\frac{dM}{dt}(t)$, the total mass derivative over the domain.
+		True activates it, False (default) deactivates it.
+	int_t : bool (default=True)
+		Option to integrate over the time domain, to obtain
+		$\delta m(x,t)$ (or $\delta M(t)$ if int_x is True),
+		the total mass accumulated from the initial time.
+		True activates it, False (default) deactivates it.
+
+	Returns
+	-------
+	deltaM : ndarray (default, for int_x=True,int_t=True)
+		Accumulation in time of total mass per unit area in domain,
+		dimensions: Nt
+	dMdt : ndarray (for int_x=True,int_t=False)
+		Variation in time of total mass per unit area in domain,
+		dimensions: Nt
+	deltam : ndarray (for int_x=False,int_t=True)
+		Accumulation of mass per unit area per unit length of space
+		domain, at each point of space domain, dimensions: Nt,Nx
+	dmdt : ndarray (for int_x=False,int_t=True)
+		Variation in time mass per unit area per unit length of space
+		domain, at each point of space domain, dimensions: Nt,Nx
+	
+	"""
+	# --> Unpack parameters
+	# -->> Physical parameters
+	phi = PARAM['phi']
+	rho = PARAM['rho']
+	beta = PARAM['beta']
+	# -->> Physical scales
+	P_scale = PARAM['P_scale']
+	X_scale = PARAM['X_scale']
+	T_scale = PARAM['T_scale']
+	q_scale = PARAM['q_scale']
+	M_scale = q_scale * T_scale
+	# -->> Numerical parameters
+	h_ = PARAM['h_']
+	dt_ = PARAM['dt_']
+
+	# --> Compute time derivative of pressure
+	dPdt = (P[1:,:] - P[:-1,:])/dt_
+
+	# --> Compute mass
+	dmdt = rho * beta * phi * dPdt * P_scale/M_scale
+	
+	if int_x:
+	# --> Total over x-domain
+		dMdt = np.sum(dmdt*h_,axis=1) * X_scale
+		if int_t:
+		# -->> Total mass accumulation over domain
+			deltaM = np.cumsum(dMdt*dt_)
+			return deltaM
+		else:
+		# -->> Variation of total mass over the domain
+			return dMdt
+	else:
+	# --> Mass x-profile
+		if int_t:
+		# -->> Mass accumulation per unit length for each x, at each t(.
+			deltam = np.cumsum(dmdt*dt_,axis=1)
+			return deltam
+
+		else:
+		# -->> Variation of mass per unit length for each x, at each t.
+			return dmdt
+#---------------------------------------------------------------------------------
+
+def mass_balance_dflux(P,barriers,states,PARAM,int_x=True,int_t=True):
+	"""
+	Computes the surfacic mass history, using mass balance at each point of
+	the domain.
+
+	Parameters
+	----------
+	P : ndarray
+		Pore-pressure history, dimensions 2D : Nt,Nx.
+	barriers : dict
+		Barriers dictionnary.
+	states : ndarray
+		Valves state in time, array with boolean-like values: True is
+		open False is closed, dimensions : Nt, Nbarriers.
+	PARAM : dict
+		Parameters dictionnary. 
+	int_x : bool (default=False)
+		Option to integrate over the space domain, to obtain
+		$\frac{dM}{dt}(t)$, the total mass derivative over the domain.
+		True activates it, False (default) deactivates it.
+	int_t : bool (default=False)
+		Option to integrate over the time domain, to obtain
+		$\delta m(x,t)$ (or $\delta M(t)$ if int_x is True),
+		the total mass accumulated from the initial time.
+		True activates it, False (default) deactivates it.
+
+	Returns
+	-------
+	deltaM : ndarray (default, for int_x=True, int_t=True)
+		Mass accumulation in time over the whole space domain, 
+		dimensions 1D : Nt
+	dMdt : ndarray (default, for int_x=True, int_t=False)
+		Time derivative of total mass accumulation over the space
+		domain, in time, dimensions 1D : Nt
+	deltam : ndarray (for int_x=False, int_t=True)
+		Accumulation of mass per unit length in time at each point of the
+		domain, dimensions 2D : Nt,Nx
+	dmdt : ndarray (for int_x=False, int_t=False)
+		Time derivative of accumulation of mass per unit length in time
+		at each point of the domain, dimensions 2D : Nt,Nx
+
+	Note:
+	-----
+		Computation of M at boundarie is not implemented yet.
+	"""
+	# --> Unpack
+	dt_ = PARAM['dt_']
+	h_ = PARAM['h_']
+	X_scale = PARAM['X_scale']
+
+	# --> Initialize
+	Nt = np.shape(P)[0]
+
+	# --> Through time, compute mass increment
+	dmdt = np.zeros((Nt,np.shape(P)[1]-2))
+	for tt in range(Nt):
+		# -->> Compute permeability profile as a function of valves
+		#      state
+		k = k_init(barriers,PARAM,state_override=states[tt,:])
+
+		# -->> Compute mass increment
+		dmdt[tt,:] = calc_dmdt_dflux(P[tt],k,PARAM)
+
+	if int_x:
+	# --> Total over x-domain
+		dMdt = np.sum(dmdt*h_,axis=1) * X_scale
+		if int_t:
+		# -->> Total mass accumulation over domain
+			deltaM = np.cumsum(dMdt*dt_)
+			return deltaM
+		else:
+		# -->> Variation of total mass over the domain
+			return dMdt
+	else:
+	# --> Mass x-profile
+		if int_t:
+		# -->> Mass accumulation per unit length for each x, at each t(.
+			deltam = np.cumsum(dmdt*dt_,axis=1)
+			return deltam
+
+		else:
+		# -->> Variation of mass per unit length for each x, at each t.
+			return dmdt
+
+
+#---------------------------------------------------------------------------------
+
+
+def calc_dmdt_dflux(P,k,PARAM):
+	r"""
+	Computes the time derivative of volumic mass over the space domain, at
+	time $t$, using:
+	\[
+	\frac{\partial m}{\partial t}(x,t) = \frac{\partial q}{\partial x}(x,t).
+	\]
+
+	Parameters
+	----------
+	P : ndarray
+		Pore-pressure history, dimensions 2D : Nt,Nx.
+	k : ndarray
+		Permeability profile, dimension : Nx+1.
+	PARAM : dict
+		Parameters dictionnary. 
+
+	Returns
+	-------
+	dmdt : ndarray
+		Time derivative of mass at time t, over the whole space domain,
+		dimension : Nx
+	
+	Note
+	----
+		Boundaries are not implemented yet, dmdt is actually Nx-2	
+
+	"""
+	# --> Unpack parameters
+	# -->> Physical parameters
+	mu = PARAM['mu']
+	rho = PARAM['rho']
+	# -->> Boundary conditions
+	p0_ = PARAM['p0_']
+	pL_ = PARAM['pL_']
+	qin_ = PARAM['qin_']
+	qout_ = PARAM['qout_']
+	# -->> Physical scales
+	P_scale = PARAM['P_scale']
+	X_scale = PARAM['X_scale']
+	T_scale = PARAM['T_scale']
+	q_scale = PARAM['q_scale']
+	M_scale = q_scale * T_scale
+	# -->> Numerical parameters
+	h_ = PARAM['h_']
+
+	# --> Compute first derivative of pressure
+	# -->> Within the domain
+	dPdx = np.zeros(len(k))
+	dPdx[1:-1] = (P[1:] - P[:-1])/h_
+
+#	# -->> At boundaries (pbs with variable space step)
+#	if np.isnan(p0_) and (not np.isnan(qin_)):
+#		# -->> Fixed flux in 0
+#		dPdx[0] = -1. * qin_ * mu / rho / k[0] * h_/hb_
+#	elif (not np.isnan(p0_)) and (np.isnan(qin_)):
+#		# -->> Fixed pressure in 0
+#		dPdx[0] = (P[0] - p0_) / hb_
+#
+#	if np.isnan(pL_) and (not np.isnan(qout_)):
+#		# -->> Fixed flux in L
+#		dPdx[-1] = -1. * qout_ * mu / rho / k[-1] 
+#	elif (not np.isnan(pL_)) and (np.isnan(qout_)):
+#		# -->> Fixed pressure in L
+#		dPdx[-1] = (pL_ - P[-1]) / h_
+
+	# --> Compute dM
+	kdPdx = k * dPdx
+	dmdt = rho/mu * (kdPdx[2:-1] - kdPdx[1:-2])/h_ * P_scale/X_scale**2/(M_scale/T_scale)
+
+	return dmdt
+
+# ---------------------------------------------------------------------
+	
 
 def calcQ(P,k,PARAM):
 	"""

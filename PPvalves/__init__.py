@@ -8,7 +8,7 @@
 ## Imports 
 
 import PPvalves.pp_valves
-import PPvalves.matmath
+import PPvalves.mat_math
 import PPvalves.cat_anal
 
 
