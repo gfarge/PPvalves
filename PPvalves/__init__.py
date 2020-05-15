@@ -2,13 +2,15 @@
 # -*- coding: utf-8 -*-
 
 
-""" PPvalves packs up functions to set up and solve for a diffusion problem """
+""" PPvalves packs up functions to set up and solve for a diffusion problem
+with valves """
 
 
-## Imports 
+## Imports
 
-import PPvalves.pp_valves
+import PPvalves.utility
 import PPvalves.mat_math
-import PPvalves.cat_anal
-
+import PPvalves.valves
+import PPvalves.simulation
+import PPvalves.catalog
 
