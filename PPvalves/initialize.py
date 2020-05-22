@@ -8,6 +8,74 @@ import numpy as np
 # Core
 # ====
 
+def default_parameters(Nx, Ttot_):
+    """
+    Creates a default parameters dictionnary
+
+    Parameters
+    ----------
+    Nx : int
+        Number of space steps in the domain.
+    Ttot_ : float
+        Adimensionalized duration of the simulation.
+
+    Returns
+    -------
+    params : dictionnary
+        Parameters dictionnary.
+    """
+    params = {}
+
+    # Densities and gravity
+    # ---------------------
+    params['g'] = 9.81      # gravity acceleration, in m.s-2
+    params['rho'] = 1000.   # fluid density, in kg.m-3 (2850 kg.m-3)
+    params['rho_r'] = 2850. # rock density, in kg.m-3 (2850 kg.m-3)
+
+    # Fault geometry
+    # --------------
+    params['alpha'] = 10 / 180 * np.pi  # fault dip anglue
+
+    X0 = 0.         # in m, Deep origin of flow (x grows updip)
+    Xtop = 20000.   # in m, shallow end of domain
+
+    Z0 = 40.        # in km, Deep origin of flow
+    Z0 = Z0 * 1000. # convert to m
+    Ztop = Z0 - (Xtop - X0)*np.sin(params['alpha'])
+
+    # Fluid physical description and transport properties
+    # ---------------------------------------------------
+    params['mu'] = 1.e-3     # fluid viscosity, Pa.s (1e-3)
+    params['phi'] = 0.05     # rock porosity, between 0 and 1 (0.05, max 0.1)
+    params['k_bg'] = 6.e-12  # rock permeability, m2 (3e-12 m2)
+    params['beta'] = 2.2e-8  # pore/fluid compressibility, /!\ in Pa-1 (2.2 GPa-1)
+    params['A'] = 1.e3       # in m2, fault section area (1e3 m2)
+
+    D = params['k_bg'] / params['phi']/params['mu']/params['beta']
+
+    # Dimensions of physical variables
+    # --------------------------------
+    params['X_scale'] = Xtop - X0
+    params['Z_scale'] = params['X_scale']*np.sin(params['alpha'])
+    params['T_scale'] = params['X_scale'] **2 / D
+    params['P_scale'] = (params['rho_r']-params['rho'])*params['g'] *\
+            params['X_scale']*np.sin(params['alpha'])
+    params['q_scale'] = params['k_bg']*params['rho']/params['mu'] *\
+            params['P_scale']/params['X_scale']
+    params['M_scale'] = params['q_scale'] * params['T_scale']
+
+    params['Z0_'] = Z0/params['X_scale']
+
+    # Discretization
+    # --------------
+    params['Nx'] = Nx
+    params['h_'] = 1 / Nx
+    params['hb_'] = 1 / 100
+    params['dt_'] = 0.5 * params['h_']**2
+    params['Nt'] = int(np.ceil(Ttot_/params['dt_']))
+
+    return params
+
 # ----------------------------------------------------------------------------
 
 def init_cond(Z, PARAM, option):
