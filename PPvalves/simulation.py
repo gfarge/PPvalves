@@ -291,7 +291,7 @@ def run_time(PARAM):
 
 # -----------------------------------------------------------------------------
 
-def save(filename, P_, BA, barriers, PARAM, full=False):
+def save(filename, P_, v_activity, VALVES, PARAM, full=False):
     """
     Save the results and parameters of a simulation. Options to save only valve
     activity or add in full pore pressure history. The results are saved as a
@@ -305,9 +305,9 @@ def save(filename, P_, BA, barriers, PARAM, full=False):
         Pressure history, dimensions: Nt * Nx. Only saved if full = `True`.
     PARAM : dict
         Parameters dictionnary.
-    barriers : dict
+    VALVES : dict
         Valves parameters dictionnary.
-    BA : 3d array
+    v_activity : 3d array
         Valve activity array, dimensions: Nt * 2 * Nvalves. On the second
         dimension, stores *(a)* the valve state (1 is open, 0 is closed),
         *(b)* the pressure differential across the valve.
@@ -319,12 +319,13 @@ def save(filename, P_, BA, barriers, PARAM, full=False):
     # ------------------------
     out = {}
     out['PARAM'] = PARAM
-    out['barriers'] = barriers
-    out['BA'] = BA
+    out['VALVES'] = VALVES
+    out['v_activity'] = v_activity
     if full:
         # --> option to save full pressure history
         out['P_'] = P_
         filename += '.full'
+        print('ppv.save -- saving pore pressure history too')
 
     filename += '.pkl'
     # Actually saving

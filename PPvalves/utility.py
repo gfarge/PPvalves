@@ -32,7 +32,8 @@ def calc_k(barriers, PARAM, state_override=None):
 
     #--> Loop
     for bb in range(len(b_idx)):
-        if b_open[bb]: continue
+        if b_open[bb]:
+            pass
         else:
     	    k[ b_idx[bb]+1 : int(b_idx[bb] + b_wid[bb]/h + 1) ] = b_k[bb]
 
@@ -66,7 +67,6 @@ def calc_Q(P, k, PARAM):
     P_scale = PARAM['P_scale']
 
     # Calculate Q
-    Q = np.zeros(len(k-2))
     dpdx = (P[1:] - P[:-1])/h
     # Q_ = -1*rho*k[1:-1]/mu / q_scale * (dpdx_ * P_scale/X_scale + rho*g*np.sin(alpha))
     Q = -1*rho*k[1:-1]/mu / q_scale * (dpdx * P_scale/X_scale) # Pression réduite
