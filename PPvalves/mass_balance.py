@@ -1,5 +1,9 @@
 """ Compute mass balance in the system, different ways."""
 
+# - TODO -----------------------------------------------------------------
+# - Archive function dflux, simply use in for dm(x), dmdt(x)
+# ------------------------------------------------------------------------
+
 # Imports
 # =======
 
@@ -231,7 +235,8 @@ def dflux(P, barriers, states, PARAM, int_x=True, int_t=True, verbose=False):
 
     Note:
     -----
-    	Computation of M at boundarie is not correctly implemented yet...
+        This function gives a wrong result: there is a problem with how the
+        mass balance is actually calculated in our
     """
     # --> Unpack
     dt_ = PARAM['dt_']
@@ -243,14 +248,14 @@ def dflux(P, barriers, states, PARAM, int_x=True, int_t=True, verbose=False):
     Nt = np.shape(P)[0]
 
     # --> Through time, compute mass increment
-    dmdt = np.zeros((Nt, np.shape(P)[1]))
-    for tt in range(Nt):
+    dmdt = np.zeros((Nt-1, np.shape(P)[1]))
+    for tt in range(Nt-1):
         # -->> Compute permeability profile as a function of valves
         #      state
         k = calc_k(barriers, PARAM, state_override=states[tt, :])
 
         # -->> Compute mass increment
-        dmdt[tt,:] = calc_dmdt_dflux(P[tt], k, PARAM)
+        dmdt[tt,:] = calc_dmdt_dflux(P[tt], P[tt+1], k, PARAM)
 
     if int_x:
     # --> Total over x-domain
@@ -261,34 +266,34 @@ def dflux(P, barriers, states, PARAM, int_x=True, int_t=True, verbose=False):
         if int_t:
         # -->> Total mass accumulation over domain
             if verbose:
-                print('mb.in_pores -- computing total mass accumulation in time, deltaM')
+                print('mb.dflux -- computing total mass accumulation in time, deltaM')
             deltaM = np.cumsum(dMdt*dt_)
             return deltaM
         else:
         # -->> Variation of total mass over the domain
             if verbose:
-                print('mb.in_pores -- computing total mass accumulation rate in time, dMdt')
+                print('mb.dflux -- computing total mass accumulation rate in time, dMdt')
             return dMdt
     else:
     # --> Mass x-profile
         if int_t:
     	# -->> Mass accumulation per unit length for each x, at each t.
             if verbose:
-                print('mb.in_pores -- computing mass accumulation in time, at each point of domain, deltam')
+                print('mb.dflux -- computing mass accumulation in time, at each point of domain, deltam')
             deltam = np.cumsum(dmdt*dt_, axis=0)
             return deltam
 
         else:
     	# -->> Variation of mass per unit length for each x, at each t.
             if verbose:
-                print('mb.in_pores -- computing mass accumulation rate in time, at each point of domain, dmdt')
+                print('mb.dflux -- computing mass accumulation rate in time, at each point of domain, dmdt')
             return dmdt
 
 
 #---------------------------------------------------------------------------------
 
 
-def calc_dmdt_dflux(P, k, PARAM):
+def calc_dmdt_dflux(Pprev, Pnext, k, PARAM):
     r"""
     Computes the time derivative of volumic mass over the space domain, at
     time $t$, using:
@@ -338,37 +343,39 @@ def calc_dmdt_dflux(P, k, PARAM):
 
     # Compute dmdt over the domain
     # ----------------------------
-    dmdt = np.zeros(len(P))
+    dmdt = np.zeros(len(Pnext))
     # --> Within the domain
-    Q = calc_Q(P, k, PARAM)
+    Qprev = calc_Q(Pprev, k, PARAM)
+    Qnext = calc_Q(Pnext, k, PARAM)
+    Q = (Qnext + Qprev)/2
     dmdt[1:-1] = (Q[:-1] - Q[1:])/h_ * q_scale/X_scale * T_scale/M_scale
 
     # --> At boundaries (pbs with variable space step)
     # -->> Fixed flux in 0
     if np.isnan(p0_) and (not np.isnan(qin_)):
-        p0_ = P[0] + qin_ * hb_ * mu / rho / k[0] * q_scale*X_scale / P_scale
-        d2pdx2_0 = (h_*p0_ - (h_+hb_)*P[0] + hb_*P[1])\
+        p0_ = Pnext[0] + qin_ * hb_ * mu / rho / k[0] * q_scale*X_scale / P_scale
+        d2pdx2_0 = (h_*p0_ - (h_+hb_)*Pnext[0] + hb_*Pnext[1])\
                 / (h_*hb_ * (h_+hb_)/2)
         dmdt[0] = d2pdx2_0 * k[0] * rho / mu\
                   * P_scale/X_scale**2 * T_scale/M_scale
 
     # -->> Fixed pressure in 0
     elif (not np.isnan(p0_)) and (np.isnan(qin_)):
-        d2pdx2_0 = (h_*p0_ - (h_+hb_)*P[0] + hb_*P[1])\
+        d2pdx2_0 = (h_*p0_ - (h_+hb_)*Pnext[0] + hb_*Pnext[1])\
                 / (h_*hb_ * (h_+hb_)/2)
         dmdt[0] = d2pdx2_0 * k[0] * rho / mu\
                   *P_scale/X_scale**2 * T_scale/M_scale
 
     # -->> Fixed flux in L
     if np.isnan(pL_) and (not np.isnan(qout_)):
-        pL_ = P[-1] - qout_ * hb_ * mu / rho / k[-1] * q_scale*X_scale / P_scale
-        d2pdx2_L = (hb_*P[-2] - (h_+hb_)*P[-1] + h_*pL_)\
+        pL_ = Pnext[-1] - qout_ * hb_ * mu / rho / k[-1] * q_scale*X_scale / P_scale
+        d2pdx2_L = (hb_*Pnext[-2] - (h_+hb_)*Pnext[-1] + h_*pL_)\
                 / (h_*hb_ * (h_+hb_)/2)
         dmdt[-1] = d2pdx2_L * k[-1] * rho / mu\
                   * P_scale/X_scale**2 * T_scale/M_scale
     # -->> Fixed pressure in L
     elif (not np.isnan(pL_)) and (np.isnan(qout_)):
-        d2pdx2_L = (hb_*P[-2] - (h_+hb_)*P[-1] + h_*pL_)\
+        d2pdx2_L = (hb_*Pnext[-2] - (h_+hb_)*Pnext[-1] + h_*pL_)\
                 / (h_*hb_ * (h_+hb_)/2)
         dmdt[-1] = d2pdx2_L * k[-1] * rho / mu\
                   * P_scale/X_scale**2 * T_scale/M_scale
