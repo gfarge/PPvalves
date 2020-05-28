@@ -78,7 +78,7 @@ def default_parameters(Nx, Ttot_):
 
 # ----------------------------------------------------------------------------
 
-def boundary(bound, PARAM, verbose=False):
+def boundary(bound, bound_value, PARAM, verbose=False):
     """
     Set up the boundary condition parameters depending on the option you
     choose.
@@ -91,6 +91,9 @@ def boundary(bound, PARAM, verbose=False):
         fixed pore pressure (lithostatic value at corresponding depth), 'Q' is
         for fixed flux (flux maintaining lithostatic gradient without
         valves).
+    bound_value : float
+        Boundary condition value. Value of imposed dP if bound is 'PP', q if
+        bound is 'QP'.
     PARAM : dictionnary
         Dictionnary of the system parameters
     verbose : boolean (default verbose=False)
@@ -110,8 +113,10 @@ def boundary(bound, PARAM, verbose=False):
     # Fix boundary condition
     # ----------------------
     if bound == 'PP':
-        p0_ = 1 + PARAM['hb_']
-        pL_ = 0 - PARAM['hb_']
+        # p0_ = 1 + PARAM['hb_']
+        # pL_ = 0 - PARAM['hb_']
+        p0_ = bound_value
+        pL_ = 0
         qin_ = np.nan
         qout_ = np.nan
         if verbose:
@@ -128,7 +133,7 @@ def boundary(bound, PARAM, verbose=False):
     elif bound == 'QP':
         p0_ = np.nan
         pL_ = 0 - PARAM['hb_']
-        qin_ = 1.
+        qin_ = bound_value
         qout_ = np.nan
         if verbose:
             print('init.boundary -- Border conditions : qin = {0:.4f}, qout = {1:.4f}'.format(qin_, pL_))
