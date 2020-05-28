@@ -145,7 +145,7 @@ def run(P, PARAM, VALVES, cheap=False, verbose=False):
     if verbose: print('run_ppv -- Done!')
 
     if cheap:
-        return Pprev,Pnext,v_activity,trun
+        return Pnext, v_activity, trun
     else:
         return P, v_activity, trun
 
