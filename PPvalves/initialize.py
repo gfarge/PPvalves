@@ -21,74 +21,142 @@ def default_parameters(Nx, Ttot_):
 
     Returns
     -------
-    params : dictionnary
+    PARAM : dictionnary
         Parameters dictionnary.
     """
-    params = {}
+    PARAM = {}
 
     # Densities and gravity
     # ---------------------
-    params['g'] = 9.81      # gravity acceleration, in m.s-2
-    params['rho'] = 1000.   # fluid density, in kg.m-3 (2850 kg.m-3)
-    params['rho_r'] = 2850. # rock density, in kg.m-3 (2850 kg.m-3)
+    PARAM['g'] = 9.81      # gravity acceleration, in m.s-2
+    PARAM['rho'] = 1000.   # fluid density, in kg.m-3 (2850 kg.m-3)
+    PARAM['rho_r'] = 2850. # rock density, in kg.m-3 (2850 kg.m-3)
 
     # Fault geometry
     # --------------
-    params['alpha'] = 10 / 180 * np.pi  # fault dip anglue
+    PARAM['alpha'] = 10 / 180 * np.pi  # fault dip anglue
 
     X0 = 0.         # in m, Deep origin of flow (x grows updip)
     Xtop = 20000.   # in m, shallow end of domain
 
     Z0 = 40.        # in km, Deep origin of flow
     Z0 = Z0 * 1000. # convert to m
-    Ztop = Z0 - (Xtop - X0)*np.sin(params['alpha'])
+    Ztop = Z0 - (Xtop - X0)*np.sin(PARAM['alpha'])
 
     # Fluid physical description and transport properties
     # ---------------------------------------------------
-    params['mu'] = 1.e-3     # fluid viscosity, Pa.s (1e-3)
-    params['phi'] = 0.05     # rock porosity, between 0 and 1 (0.05, max 0.1)
-    params['k_bg'] = 6.e-12  # rock permeability, m2 (3e-12 m2)
-    params['beta'] = 2.2e-8  # pore/fluid compressibility, /!\ in Pa-1 (2.2 GPa-1)
-    params['A'] = 1.e3       # in m2, fault section area (1e3 m2)
+    PARAM['mu'] = 1.e-3     # fluid viscosity, Pa.s (1e-3)
+    PARAM['phi'] = 0.05     # rock porosity, between 0 and 1 (0.05, max 0.1)
+    PARAM['k_bg'] = 6.e-12  # rock permeability, m2 (3e-12 m2)
+    PARAM['beta'] = 2.2e-8  # pore/fluid compressibility, /!\ in Pa-1 (2.2 GPa-1)
+    PARAM['A'] = 1.e3       # in m2, fault section area (1e3 m2)
 
-    D = params['k_bg'] / params['phi']/params['mu']/params['beta']
+    D = PARAM['k_bg'] / PARAM['phi']/PARAM['mu']/PARAM['beta']
 
     # Dimensions of physical variables
     # --------------------------------
-    params['X_scale'] = Xtop - X0
-    params['Z_scale'] = params['X_scale']*np.sin(params['alpha'])
-    params['T_scale'] = params['X_scale'] **2 / D
-    params['P_scale'] = (params['rho_r']-params['rho'])*params['g'] *\
-            params['X_scale']*np.sin(params['alpha'])
-    params['q_scale'] = params['k_bg']*params['rho']/params['mu'] *\
-            params['P_scale']/params['X_scale']
-    params['M_scale'] = params['q_scale'] * params['T_scale']
+    PARAM['X_scale'] = Xtop - X0
+    PARAM['Z_scale'] = PARAM['X_scale']*np.sin(PARAM['alpha'])
+    PARAM['T_scale'] = PARAM['X_scale'] **2 / D
+    PARAM['P_scale'] = (PARAM['rho_r']-PARAM['rho'])*PARAM['g'] *\
+            PARAM['X_scale']*np.sin(PARAM['alpha'])
+    PARAM['q_scale'] = PARAM['k_bg']*PARAM['rho']/PARAM['mu'] *\
+            PARAM['P_scale']/PARAM['X_scale']
+    PARAM['M_scale'] = PARAM['q_scale'] * PARAM['T_scale']
 
-    params['Z0_'] = Z0/params['X_scale']
+    PARAM['Z0_'] = Z0/PARAM['X_scale']
 
     # Discretization
     # --------------
-    params['Nx'] = Nx
-    params['h_'] = 1 / Nx
-    params['hb_'] = 1 / 100
-    params['dt_'] = 0.5 * params['h_']**2
-    params['Nt'] = int(np.ceil(Ttot_/params['dt_']))
+    PARAM['Nx'] = Nx
+    PARAM['h_'] = 1 / Nx
+    PARAM['hb_'] = 1 / 100
+    PARAM['dt_'] = 0.5 * PARAM['h_']**2
+    PARAM['Nt'] = int(np.ceil(Ttot_/PARAM['dt_']))
 
-    return params
+    return PARAM
 
 # ----------------------------------------------------------------------------
 
-def init_cond(Z, PARAM, option):
+def boundary(bound, PARAM, verbose=False):
+    """
+    Set up the boundary condition parameters depending on the option you
+    choose.
+
+    Parameters
+    ----------
+    bound : str
+        Boundary option: 'PP', 'QP', 'QQ' implemented for now. First letter
+        represent downdip boundary, second letter updip boundary. 'P' is for
+        fixed pore pressure (lithostatic value at corresponding depth), 'Q' is
+        for fixed flux (flux maintaining lithostatic gradient without
+        valves).
+    PARAM : dictionnary
+        Dictionnary of the system parameters
+    verbose : boolean (default verbose=False)
+        Make the function talk.
+
+    Returns
+    -------
+    PARAM : dictionnary
+        Updated dictionnary of the system parameters
+
+    Note:
+    -----
+    For now, only implemented to manage adimensionnalized variables.
+
+    """
+
+    # Fix boundary condition
+    # ----------------------
+    if bound == 'PP':
+        p0_ = 1 + PARAM['hb_']
+        pL_ = 0 - PARAM['hb_']
+        qin_ = np.nan
+        qout_ = np.nan
+        if verbose:
+            print('init.boundary -- Border conditions : p0_ = {0:.4f}, pL_ = {1:.4f}'.format(p0_, pL_))
+
+    elif bound == 'QQ':
+        p0_ = np.nan
+        pL_ = np.nan
+        qin_ = 1.
+        qout_ = 1.
+        if verbose:
+            print('init.boundary -- Border conditions : qin = {0:.4f}, qout = {1:.4f}'.format(qin_, qout_))
+
+    elif bound == 'QP':
+        p0_ = np.nan
+        pL_ = 0 - PARAM['hb_']
+        qin_ = 1.
+        qout_ = np.nan
+        if verbose:
+            print('init.boundary -- Border conditions : qin = {0:.4f}, qout = {1:.4f}'.format(qin_, pL_))
+
+    else:
+        raise ValueError("bound can only be 'PP', 'QP', 'QQ'.")
+
+    # Package it
+    # ----------
+    PARAM['p0_'] = p0_
+    PARAM['pL_'] = pL_
+    PARAM['qin_'] = qin_
+    PARAM['qout_'] = qout_
+
+    return PARAM
+
+# ----------------------------------------------------------------------------
+
+def init_cond(option, PARAM):
     """
     Set up initial conditions of reduced pore pressure.
 
-    - Parameters
-    	+ :param Z: vector of depths, as a numpy array.
-    	+ :param PARAM: dictionnary of the physical and numerical
-    	parameters describing the system.
-    	+ :param option: initial conditions option:
+    Parameters
+    ----------
+    option : float
+        Initial condition option
     		- option=0 : Pr is set to hydrostatic gradient (0) and
-    		  shallowest point at lithostatic pressure
+    		shallowest point at lithostatic pressure
     		- option=1 : Pr is set to lithostatic gradient and shallowest
     		point at lithostatic pressure
     		- option=2 : Pr is set to a step function, with step
@@ -96,12 +164,18 @@ def init_cond(Z, PARAM, option):
     		step index).
     		- option=3 : Pr is set to a cosine function, with characteristics
     		taken in PARAM['cos_P'] (number of wavelength and amplitude).
-    - Outputs
-    	+ :return: Pr:  initialized vector of reduced pore-pressure, as a
-    	numpy array.
+    PARAM: dictionnary
+        Dictionnary of the physical and numerical parameters describing the
+        system.
+
+    Returns
+    -------
+    Pr : ndarray
+        Initialized vector of reduced pore-pressures.
 
     """
     # Unpack
+    Z = PARAM['Z0_'] - np.linspace(0, 1, num=PARAM['Nx']+1)
     ## Physical and numerical parameters
     rho = PARAM['rho']
     rho_r = PARAM['rho_r']
@@ -155,6 +229,7 @@ def init_cond(Z, PARAM, option):
 
     return Pr
 
+# ----------------------------------------------------------------------------
 
 def build_sys(PARAM):
     """
@@ -209,13 +284,13 @@ def build_sys(PARAM):
     B = [ba, bb, bc]
 
     # Apply boundary conditions to A and B and create b
-    A, B, b = boundary(A, B, PARAM)
+    A, B, b = sys_boundary(A, B, PARAM)
 
     return A, B, b
 
 #-----------------------------------------------------------------------------
 
-def boundary(A, B, PARAM):
+def sys_boundary(A, B, PARAM):
     """
     Apply limit conditions to the system equations, but you can determine
     the depth of the boundary hb_, that is, the distance between first/last
@@ -340,6 +415,6 @@ def boundary(A, B, PARAM):
     	## constant terms (b_n = b_n+1, hence the 2): None
 
     else:
-    	raise ValueError("boundary -- /!\\ x = L boundary conditions wrongly set")
+    	raise ValueError("sys_boundary -- /!\\ x = L boundary conditions wrongly set")
 
     return A, B, b

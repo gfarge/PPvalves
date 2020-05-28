@@ -7,9 +7,9 @@ import numpy as np
 # Core
 # ====
 
-def calc_k(barriers, PARAM, state_override=None):
+def calc_k(VALVES, PARAM, states_override=None):
     """
-    Computes k, according to bg k and barrier distribution and state.
+    Computes k, according to bg k and valve distribution and state.
     """
 
     # Unpack
@@ -17,25 +17,25 @@ def calc_k(barriers, PARAM, state_override=None):
     Nx = PARAM['Nx']
     k_bg = PARAM['k_bg']
 
-    b_idx = barriers['idx']
-    b_wid = barriers['width']
-    b_k = barriers['klo']
+    v_idx = VALVES['idx']
+    v_wid = VALVES['width']
+    v_k = VALVES['klo']
 
-    if type(state_override) == type(None):
-        b_open = barriers['open']
+    if type(states_override) == type(None):
+        v_open = VALVES['open']
     else:
-        b_open = state_override.astype(bool)
+        v_open = states_override.astype(bool)
 
-    # Visit barriers and compute k
+    # Visit valves and compute k
     #--> Init
     k = np.ones(Nx+2)*k_bg
 
     #--> Loop
-    for bb in range(len(b_idx)):
-        if b_open[bb]:
+    for iv in range(len(v_idx)):
+        if v_open[iv]:
             pass
         else:
-    	    k[ b_idx[bb]+1 : int(b_idx[bb] + b_wid[bb]/h + 1) ] = b_k[bb]
+    	    k[ v_idx[iv]+1 : int(v_idx[iv] + v_wid[iv]/h + 1) ] = v_k[iv]
 
     return k
 

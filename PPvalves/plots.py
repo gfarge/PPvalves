@@ -252,6 +252,8 @@ def q_profile(X, Q, fig=None, ax=None, plot_params={}):
     ax.set_ylabel('Massic flux', color=lc)
     ax.set_xlabel('<-- Downdip X Updip -->')
 
+    ax.set_ylim((0-0.1*np.max(Q), np.max(Q)*1.01))
+
 
     return q_line
 

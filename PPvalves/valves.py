@@ -9,20 +9,20 @@ import numpy as np
 # Core
 # ====
 
-def scatter(scale, b_wid, PARAM):
+def scatter(scale, v_wid, PARAM):
     """
-    Scatters barriers on the domain, according to an exponential law for their
-    distance. End and beginning of barriers (in terms of k) have to be at
+    Scatters valves on the domain, according to an exponential law for their
+    distance. End and beginning of valves (in terms of k) have to be at
     least h apart, they cannot be on the first or last 2 pts of
     domain.
-    Barriers all have a fixed width.
+    valves all have a fixed width.
 
     - Parameters:
-    	+ :param b_wid: width of the barrier as a fraction of the total
-    	+ :param scale: mean distance between barriers
+    	+ :param v_wid: width of the valve as a fraction of the total
+    	+ :param scale: mean distance between valves
     	+ :param PARAM: parameters dictionnary
     - Outputs:
-    	+ :return b_idx: width of the barrier as a fraction of the total
+    	+ :return v_idx: width of the valve as a fraction of the total
     """
     # Unpack
     Nx = PARAM['Nx']
@@ -30,43 +30,43 @@ def scatter(scale, b_wid, PARAM):
 
     # Initialization
     prev_end = 0 # last
-    b_id = prev_end # b_id+1 is first index of low k
-    b_idx = []
+    v_id = prev_end # v_id+1 is first index of low k
+    v_idx = []
 
-    # Draw interbarrier distances while they do not cross domain end
-    while b_id + b_wid/h_ < Nx:
+    # Draw intervalve distances while they do not cross domain end
+    while v_id + v_wid/h_ < Nx:
         dist = np.random.exponential(scale)
 
-        b_id = np.floor(dist/h_) + prev_end
+        v_id = np.floor(dist/h_) + prev_end
 
-        b_idx.append(b_id)
-        prev_end = b_id + b_wid/h_
+        v_idx.append(v_id)
+        prev_end = v_id + v_wid/h_
 
-    b_idx = np.array(b_idx[:-1]).astype(int)
+    v_idx = np.array(v_idx[:-1]).astype(int)
 
-    return b_idx
+    return v_idx
 
 # ----------------------------------------------------------------------------
 
 def make(idx, dPhi, dPlo, width, klo, PARAM, verbose=True):
     """
-    Makes barriers dictionnary, describing the state of all barriers at one
+    Makes VALVES dictionnary, describing the state of all valves at one
     moment in time. Used in propagation.
 
     - Parameters:
-    	+ :param idx: 1D array, index of P(x) just before barrier.
-    	 A barrier has to start at 1 at least, and it has to end before
+    	+ :param idx: 1D array, index of P(x) just before valve.
+    	 A valve has to start at 1 at least, and it has to end before
     	 the end of the domain: idx < Nx+2
     	+ :param dPhi, dPlo: 1D array, same length as idx, value of dP
     	 for opening/closing the corresponding valve.
-    	+ :param width: width of each barrier, in unit or non dim.
+    	+ :param width: width of each valve, in unit or non dim.
     	 Corresponds to width between P(x) point just before and just after
-    	 low k barrier
+    	 low k valve
     	+ :param klo: 1D np.array, same length as idx, values are each
-    	 barrier's permeability when closed.
+    	 valve's permeability when closed.
 
     - Outputs:
-    	+ :return: barriers: barriers dictionnary description. Fields as
+    	+ :return: VALVES: valves dictionnary description. Fields as
     	 input,
     	 all closed initially.
     """
@@ -74,56 +74,56 @@ def make(idx, dPhi, dPlo, width, klo, PARAM, verbose=True):
     h = PARAM['h_']
     Nx = PARAM['Nx']
 
-    # Check for invalid barriers:
-    #--> Barriers out of domain (low perm starting at 0 or ending at/after Nx)
+    # Check for invalid valves:
+    #--> valves out of domain (low perm starting at 0 or ending at/after Nx)
     if np.any(idx+1<=1) | np.any((idx + width/h) >= Nx):
-        raise ValueError('A barrier\'s boundaries exceed allowed domain')
-    #--> Barriers one above another
+        raise ValueError('A valve\'s boundaries exceed allowed domain')
+    #--> valves one above another
     i_sort = np.argsort(idx)
     idx = idx[i_sort]
     width = width[i_sort]
     if np.any(idx[:-1] + width[:-1]/h >= idx[1:]+1):
-        raise ValueError('Some barriers are ontop of one another')
+        raise ValueError('Some valves are ontop of one another')
 
-    #--> Barriers too thin (less than 2*h_ wide)
+    #--> valves too thin (less than 2*h_ wide)
     if np.any((width - 2*h) < 0):
-        raise ValueError('Some barriers are thinner than 2*h, minimum width recquired.')
+        raise ValueError('Some valves are thinner than 2*h, minimum width recquired.')
 
     # Build dictionnary
-    barriers = {}
+    VALVES = {}
 
-    Nb = len(idx) # number of barriers
+    Nv = len(idx) # number of valves
 
-    #--> Order barriers in increasing X
+    #--> Order valves in increasing X
     i_sort = np.argsort(idx)
 
-    barriers['idx'] = idx
-    barriers['dP'] = np.zeros(Nb) # delta pore p seen by one barrier
-    barriers['open'] = np.zeros(len(idx)).astype(bool) # open=True when open
-    barriers['dPhi'] = dPhi[i_sort]
-    barriers['dPlo'] = dPlo[i_sort]
-    barriers['width'] = width
-    barriers['klo'] = klo[i_sort]
+    VALVES['idx'] = idx
+    VALVES['dP'] = np.zeros(Nv) # delta pore p seen by one valve
+    VALVES['open'] = np.zeros(len(idx)).astype(bool) # open=True when open
+    VALVES['dPhi'] = dPhi[i_sort]
+    VALVES['dPlo'] = dPlo[i_sort]
+    VALVES['width'] = width
+    VALVES['klo'] = klo[i_sort]
 
     if verbose:
-        print('Barriers idxs: \n {:}'.format(barriers['idx']))
-        print('Opening dP (nd): \n {:}'.format(barriers['dPhi']))
-        print('Closing dP (nd): \n {:}'.format(barriers['dPlo']))
-        print('Barriers state (True=open): \n {:}'.format(barriers['open']))
+        print('valves idxs: \n {:}'.format(VALVES['idx']))
+        print('Opening dP (nd): \n {:}'.format(VALVES['dPhi']))
+        print('Closing dP (nd): \n {:}'.format(VALVES['dPlo']))
+        print('valves state (True=open): \n {:}'.format(VALVES['open']))
 
-    return barriers
+    return VALVES
 
 # ----------------------------------------------------------------------------
 
 def X2idx(X, d):
     """
-    A function to calculate the barrier index in X
+    A function to calculate the valve index in X
     for a given x coordinate, d.
 
     - Parameters
             + :param X: 1D array of regularly spaced space coordinates.
             + :type X: ndarray of floats
-            + :param d: x coordinate of the barrier, preferably closest to a multiple
+            + :param d: x coordinate of the valve, preferably closest to a multiple
             of the spacing of X
             + :type d: float
 
@@ -142,17 +142,17 @@ def X2idx(X, d):
 
 def dist2idx(X, d, w):
     """
-    A function to calculate the barrier indices on each side of the mid point of X
+    A function to calculate the valve indices on each side of the mid point of X
     for a given distance. In this second version, d is the distance between last point
-	of low_k of previous barrier and first point of low_k of next.
+	of low_k of previous valve and first point of low_k of next.
 
     - Parameters
             + :param X: 1D array of regularly spaced space coordinates.
             + :type X: ndarray of floats
-            + :param d: distance between the barriers, preferably as a multiple of
+            + :param d: distance between the valves, preferably as a multiple of
             the spacing of X
             + :type d: float
-            + :param w: width of barriers
+            + :param w: width of valves
             + :type w: float
 
     - Outputs
@@ -178,67 +178,67 @@ def dist2idx(X, d, w):
 
 # -----------------------------------------------------------------------------
 
-def evolve(P, h, barriers):
+def evolve(P, h, VALVES):
     """
-    Checks the new pore pressure state at barriers. Open/Close them accordingly.
+    Checks the new pore pressure state at valves. Open/Close them accordingly.
     Computes the new permeability profile associated.
 
     - Parameters:
     	+ :param P: pore pressure profile at time t as a 1D np array.
-    	+ :param barriers: barriers dict. description at t-dt (before
+    	+ :param VALVES: VALVES dict. description at t-dt (before
     	update)
 
     - Output:
-    	+ :return: barriers, as input, but open and dP evolved to be
+    	+ :return: VALVES, as input, but open and dP evolved to be
     	consistent with input P at time t.
-    	+ :return: b_activity: boolean, True if OPEN or CLOSE activity.
+    	+ :return: active_v: boolean, True if OPEN or CLOSE activity.
     	Used to check if we have to modify the permeability profile.
 
     """
-    # Visit every barrier
-    #--> Initialize barrier activity: no activity a priori
-    b_activity = np.zeros(len(barriers['idx'])).astype(bool)
+    # Visit every valve
+    #--> Initialize valve activity: no activity a priori
+    active_v = np.zeros(len(VALVES['idx'])).astype(bool)
 
-    for ib, (idx, wb) in enumerate(zip(barriers['idx'], barriers['width'])):
+    for iv, (idx, wv) in enumerate(zip(VALVES['idx'], VALVES['width'])):
         #--> Upddate pressure diff
-        barriers['dP'][ib] = P[idx] - P[int(idx+wb/h)]
+        VALVES['dP'][iv] = P[idx] - P[int(idx+wv/h)]
 
         #--> Open or Close?
-        if (barriers['dP'][ib] > barriers['dPhi'][ib]) & \
-         (not barriers['open'][ib]):
-        #-->> if barrier is closed, and dP above thr: OPEN
-            barriers['open'][ib] = True
-            b_activity[ib] = True
+        if (VALVES['dP'][iv] > VALVES['dPhi'][iv]) & \
+         (not VALVES['open'][iv]):
+        #-->> if valve is closed, and dP above thr: OPEN
+            VALVES['open'][iv] = True
+            active_v[iv] = True
 
-        elif (barriers['dP'][ib] < barriers['dPlo'][ib]) &\
-         (barriers['open'][ib]):
-        #-->> if barrier is open, and dP below thr: CLOSE
-            barriers['open'][ib] = False
-            b_activity[ib] = True
+        elif (VALVES['dP'][iv] < VALVES['dPlo'][iv]) &\
+         (VALVES['open'][iv]):
+        #-->> if valve is open, and dP below thr: CLOSE
+            VALVES['open'][iv] = False
+            active_v[iv] = True
 
-    return barriers, b_activity
+    return VALVES, active_v
 
 #---------------------------------------------------------------------------------
 
-def update_k(barriers, b_act, PARAM):
-    """ Computes permeability profile according to barrier distribution and
-    choice of background/barrier permeability."""
+def update_k(VALVES, active_v, PARAM):
+    """ Computes permeability profile according to valve distribution and
+    choice of background/valve permeability."""
 
     # Unpack
     h = PARAM['h_']
     k = PARAM['k']
     k_bg = k[0] # ensure that your k is always k_bg at the 2 1st and 2 last pts
 
-    # Visit every barrier that was active and change its permeability to its
+    # Visit every valve that was active and change its permeability to its
     #  updated value
-    b_iterable = zip(barriers['open'][b_act], barriers['idx'][b_act],\
-     barriers['width'][b_act], barriers['klo'][b_act])
+    v_iterable = zip(VALVES['open'][active_v], VALVES['idx'][active_v],\
+     VALVES['width'][active_v], VALVES['klo'][active_v])
 
-    for b_is_open, idx, w, klo in b_iterable:
-        if b_is_open:
-        #--> if barrier is open: background permeability
+    for v_is_open, idx, w, klo in v_iterable:
+        if v_is_open:
+        #--> if valve is open: background permeability
             k[idx+1 : int(idx+w/h+1)] = k_bg
         else:
-        #--> if barrier is closed: lower permeability
+        #--> if valve is closed: lower permeability
             k[idx+1 : int(idx+w/h+1)] = klo
     return k

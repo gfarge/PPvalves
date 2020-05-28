@@ -190,7 +190,7 @@ def in_pores(P, PARAM, int_x=True, int_t=True, verbose=False):
 
 #---------------------------------------------------------------------------------
 
-def dflux(P, barriers, states, PARAM, int_x=True, int_t=True, verbose=False):
+def dflux(P, VALVES, states, PARAM, int_x=True, int_t=True, verbose=False):
     r"""
     Computes the surfacic mass history, using mass balance at each point of
     the domain.
@@ -199,11 +199,11 @@ def dflux(P, barriers, states, PARAM, int_x=True, int_t=True, verbose=False):
     ----------
     P : ndarray
     	Pore-pressure history, dimensions 2D : Nt,Nx.
-    barriers : dict
-    	Barriers dictionnary.
+    VALVES : dict
+    	Valves dictionnary.
     states : ndarray
     	Valves state in time, array with boolean-like values: True is
-    	open False is closed, dimensions : Nt, Nbarriers.
+    	open False is closed, dimensions : Nt, Nvalves.
     PARAM : dict
     	Parameters dictionnary.
     int_x : bool (default=False)
@@ -252,7 +252,7 @@ def dflux(P, barriers, states, PARAM, int_x=True, int_t=True, verbose=False):
     for tt in range(Nt-1):
         # -->> Compute permeability profile as a function of valves
         #      state
-        k = calc_k(barriers, PARAM, state_override=states[tt, :])
+        k = calc_k(VALVES, PARAM, state_override=states[tt, :])
 
         # -->> Compute mass increment
         dmdt[tt,:] = calc_dmdt_dflux(P[tt], P[tt+1], k, PARAM)
@@ -316,9 +316,15 @@ def calc_dmdt_dflux(Pprev, Pnext, k, PARAM):
     	Time derivative of mass at time t, over the whole space domain,
     	dimension : Nx
 
-    Note
-    ----
-    	Boundaries are not correctly implemented yet...
+    Notes
+    -----
+    	This method of computing the mass_balance is much more expensive than
+        the previous ones. It is more or less equivalent to re-run the
+        simulation, and should exactly be equal to the previous functions. Use
+        only for comparison purposes.
+        Implementation of boundary is approximative: only FCTS, not
+        Crank-Nicholson. Difference is marginal as there are no sudden
+        variations in time near boundaries.
 
     """
     # Unpack parameters

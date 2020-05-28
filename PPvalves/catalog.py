@@ -9,7 +9,7 @@ import numpy as np
 
 #---------------------------------------------------------------------------------
 
-def event_count(ev_type,states,time,catalog=False,b_x=None):
+def event_count(ev_type, states, time, catalog=False, v_x=None):
     """
     Gives the time at which an event occurs, that is,
     the index when the just calculated dP crosses the threshold
@@ -20,15 +20,15 @@ def event_count(ev_type,states,time,catalog=False,b_x=None):
     	"open"
             + :param states: is a nd array of states history: Nt * Nbarr.
             False is closed, True is
-            open. Output of run_ppv, BA[times,0,barrier_idx],
-            where barrier_idx is the idxs of the barriers you want the
+            open. Output of run_ppv, v_activity[times,0,valve_idx],
+            where valve_idx is the idxs of the valves you want the
             event count for.
             + :param time: is the time vector, np array, same shape as first
     	+ :param catalog: boolean, if turned True, the catalog option
     	allows close_count to return x_events in addition to t_event.
-    	When turned on, this option recquires that b_x is specified.
-    	+ :param b_x: np array, 1D, same size as 2nd dimension of
-    	states, location of each barrier.
+    	When turned on, this option recquires that v_x is specified.
+    	+ :param v_x: np array, 1D, same size as 2nd dimension of
+    	states, location of each valve.
 
     - Outputs:
             + :return: events_t, np array of event times.
@@ -36,22 +36,22 @@ def event_count(ev_type,states,time,catalog=False,b_x=None):
 
     """
 
-    # Check if b_x is present if catalog optin is True
-    if catalog & isinstance(b_x, type(None)):
-        raise ValueError("When catalog option is turned on, the barriers'" + \
-         'location needs to be specified with the b_x argument.')
+    # Check if v_x is present if catalog optin is True
+    if catalog & isinstance(v_x, type(None)):
+        raise ValueError("When catalog option is turned on, the valves'" + \
+         'location needs to be specified with the v_x argument.')
 
-    # Get opening time idx for each barrier in one array
+    # Get opening time idx for each valve in one array
 
-    # Test if we have 1 or several barriers here
+    # Test if we have 1 or several valves here
     if len(states.shape) > 1:
-        n_barriers = states.shape[1] # barrier dimension
+        n_valves = states.shape[1] # valve dimension
 
         all_events_i = []  # time indices of events
         if catalog:
             all_events_x = []
 
-        for ibarr in range(n_barriers):
+        for ibarr in range(n_valves):
             # --> First get the time indices of events
             # for each history, get the time when states switches from 0 (closed)
             # to 1 (open)
@@ -70,7 +70,7 @@ def event_count(ev_type,states,time,catalog=False,b_x=None):
 
             # --> Then build location vector
             if catalog:
-                b_events_x = [b_x[ibarr] for ii in\
+                b_events_x = [v_x[ibarr] for ii in\
             	 range(len(b_events_i))]
                 all_events_x.extend(b_events_x)
 
@@ -103,24 +103,24 @@ def event_count(ev_type,states,time,catalog=False,b_x=None):
 
 #---------------------------------------------------------------------------------
 
-def open_count(states, time, catalog=False, b_x=None):
+def open_count(states, time, catalog=False, v_x=None):
     """
-    Gives the time at which the barriers open, that is,
+    Gives the time at which the valves open, that is,
     the index when the just calculated dP is higher than dPhi for
-    the barrier. Calls event_count, same parameters.
+    the valve. Calls event_count, same parameters.
 
     - Parameters:
             + :param states: is a nd array of states history: Nt * Nbarr.
             False is closed, True is
-            open. Output of run_ppv, BA[times,0,barrier_idx],
-            where barrier_idx is the idxs of the barriers you want the
+            open. Output of run_ppv, v_activity[times,0,valve_idx],
+            where valve_idx is the idxs of the valves you want the
             event count for.
             + :param time: is the time vector, np array, same shape as first
     	+ :param catalog: boolean, if turned True, the catalog option
     	allows close_count to return x_events in addition to t_event.
-    	When turned on, this option recquires that b_x is specified.
-    	+ :param b_x: np array, 1D, same size as 2nd dimension of
-    	states, location of each barrier.
+    	When turned on, this option recquires that v_x is specified.
+    	+ :param v_x: np array, 1D, same size as 2nd dimension of
+    	states, location of each valve.
 
     - Outputs:
             + :return: events_t, np array of event times.
@@ -129,30 +129,30 @@ def open_count(states, time, catalog=False, b_x=None):
     """
 
     # Call event count
-    out = event_count('open', states, time, catalog,b_x)
+    out = event_count('open', states, time, catalog,v_x)
 
     return out
 
 #---------------------------------------------------------------------------------
 
-def close_count(states, time, catalog=False, b_x=None):
+def close_count(states, time, catalog=False, v_x=None):
     """
-    Gives the time at which the barriers open, that is,
+    Gives the time at which the valves open, that is,
     the index when the just calculated dP is higher than dPhi for
-    the barrier. Calls event_count, same parameters.
+    the valve. Calls event_count, same parameters.
 
     - Parameters:
             + :param states: is a nd array of states history: Nt * Nbarr.
             False is closed, True is
-            open. Output of run_ppv, BA[times,0,barrier_idx],
-            where barrier_idx is the idxs of the barriers you want the
+            open. Output of run_ppv, v_activity[times,0,valve_idx],
+            where valve_idx is the idxs of the valves you want the
             event count for.
             + :param time: is the time vector, np array, same shape as first
     	+ :param catalog: boolean, if turned True, the catalog option
     	allows close_count to return x_events in addition to t_event.
-    	When turned on, this option recquires that b_x is specified.
-    	+ :param b_x: np array, 1D, same size as 2nd dimension of
-    	states, location of each barrier.
+    	When turned on, this option recquires that v_x is specified.
+    	+ :param v_x: np array, 1D, same size as 2nd dimension of
+    	states, location of each valve.
 
     - Outputs:
             + :return: events_t, np array of event times.
@@ -161,7 +161,7 @@ def close_count(states, time, catalog=False, b_x=None):
     """
 
     # Call event count
-    out = event_count('close', states, time, catalog,b_x)
+    out = event_count('close', states, time, catalog,v_x)
 
     return out
 
