@@ -395,8 +395,21 @@ def calc_dP_crit(idx_v0, VALVES, PARAM, event='open', states_override=None):
 
     # Unpack valves parameters
     # ------------------------
+    if states_override is None:
+        closed_valves = np.bitwise_not(VALVES['open'])
+    else:
+        closed_valves = np.bitwise_not(states_override)
+
     wid_v = VALVES['width']
-    R_v = wid_v/VALVES['klo']
+
+    k_v = np.zeros(len(wid_v))
+    for iv in range(len(wid_v)):
+        if closed_valves[iv]:
+            k_v[iv] = VALVES['klo'][iv]
+        else:
+            k_v[iv] = k_bg
+
+    R_v = wid_v/k_v
 
     # --> For the given valve v0
     R_v0 = R_v[idx_v0]
