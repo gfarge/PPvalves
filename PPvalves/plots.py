@@ -252,32 +252,30 @@ def q_profile(X, Q, fig=None, ax=None, plot_params={}):
     ax.set_ylabel('Massic flux', color=lc)
     ax.set_xlabel('<-- Downdip X Updip -->')
 
-    ax.set_ylim((0-0.1*np.max(Q), np.max(Q)*1.01))
+    ax.set_ylim((0-0.1*np.max(Q), np.max(Q)*1.1))
 
 
     return q_line
 
 # ----------------------------------------------------------------------------
-def x_profile(t_plot, X, P, PARAM, VALVES, valve_states, fig=None, ax=None, plot_params={}):
+def x_profile(X, P, PARAM, VALVES, valve_states, fig=None, ax=None, plot_params={}):
     """
     Plot profile of pore pressure, flux and valve states and positions at a
     given time on an existing figure and axes.
 
     Parameters
     ----------
-    t_plot : float
-        Time for which to plot the profile.
     X : 1D array
         Space position array.
     P : 1D array
-        Pore pressure in space array, same dimension as X.
+        Pore pressure in space array, at plot time, same dimension as X.
     PARAM : dictionnary
         Dictionnary of physical parameters set for the system.
     VALVES : dictionnary
         Valve parameters dictionnary.
-    valve_states : 2D array
-        Array of valve states in time, True (or 1) for open and False (or 0)
-        for closed. Dimension N time steps * N valves.
+    valve_states : 1D array
+        Array of valve states at plot time, True (or 1) for open and False (or 0)
+        for closed. Dimension N valves.
     fig : matplotlib figure object (default to None)
         Figure where to plot the valves. If not specified, takes output of
         plt.gcf(): current active figure.
@@ -295,10 +293,6 @@ def x_profile(t_plot, X, P, PARAM, VALVES, valve_states, fig=None, ax=None, plot
         List of matplotlib objects corresponding to pore pressure profile line,
         flux profile line and valves patch collection.
     """
-    tt = int(t_plot / PARAM['dt_'])
-    if tt >= np.shape(P)[0]:
-        raise ValueError('t_plot has to be within simulation time bounds')
-
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
@@ -306,7 +300,8 @@ def x_profile(t_plot, X, P, PARAM, VALVES, valve_states, fig=None, ax=None, plot
 
     if ax is None:
         ax_q = plt.gca()
-    ax_q=ax
+    else:
+        ax_q=ax
 
     # --> Add another axis for p, and switch location of labels
     ax_p = ax_q.twinx()
@@ -318,23 +313,23 @@ def x_profile(t_plot, X, P, PARAM, VALVES, valve_states, fig=None, ax=None, plot
 
     # Plot pore pressure profile
     # --------------------------
-    pp_line = pp_profile(X, P[tt, :], fig=fig, ax=ax_p,
+    pp_line = pp_profile(X, P, fig=fig, ax=ax_p,
                          plot_params=plot_params)
 
     # Compute and plot flux profile
     # -----------------------------
-    k = calc_k(VALVES, PARAM, states_override=valve_states[tt, :])
-    Q = calc_Q(P[tt, :], k, PARAM)
+    k = calc_k(VALVES, PARAM, states_override=valve_states)
+    Q = calc_Q(P, k, PARAM)
     q_line = q_profile(X, Q, fig=fig, ax=ax_q,
                        plot_params=plot_params)
     ax_q.yaxis.set_label_position("right")
 
     # Plot valves
     # -----------
-    valves_pc = valves(X, VALVES, states_override=valve_states[tt], fig=fig,
+    valves_pc = valves(X, VALVES, states_override=valve_states, fig=fig,
                        ax=ax_q, plot_params=plot_params)
 
-    ax_p.set_title('State of the system at t={:.2f}'.format(t_plot))
+    #    ax_p.set_title('State of the system at t={:.2f}'.format(t_plot))
 
     axes = [ax_p, ax_q]
     g_objs = [pp_line, q_line, valves_pc]
