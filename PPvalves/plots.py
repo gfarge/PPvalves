@@ -77,9 +77,9 @@ def valves(X, VALVES, states_override=None, fig=None, ax=None, X_axis='x', plot_
         zlim = ax.get_xlim()
 
     if states_override is None:
-        valve_states = VALVES['open'].astype(bool)
+        open_valves = VALVES['open'].astype(bool)
     else:
-        valve_states = states_override.astype(bool)
+        open_valves = states_override.astype(bool)
 
     # Check which parameters are default and which are defined by user
     # ----------------------------------------------------------------
@@ -106,14 +106,14 @@ def valves(X, VALVES, states_override=None, fig=None, ax=None, X_axis='x', plot_
     elif X_axis == 'y':
         valve_patches = [Rectangle((zlim[0], x_v), zlim[1]-zlim[0], w_v)
                          for x_v, w_v in zip(X[VALVES['idx']], VALVES['width'])]
-    def v_fc(state):
-        if state:
+    def set_valve_fc(v_open):
+        if v_open:
             color = v_op_fc
         else:
             color = v_cl_fc
         return color
 
-    valve_facecolors = [v_fc(state) for state in valve_states]
+    valve_facecolors = [set_valve_fc(op) for op in open_valves]
 
     # Wrap patches in collection and plot it
     # --------------------------------------
@@ -258,7 +258,7 @@ def q_profile(X, Q, fig=None, ax=None, plot_params={}):
     return q_line
 
 # ----------------------------------------------------------------------------
-def x_profile(X, P, PARAM, VALVES, valve_states, fig=None, ax=None, plot_params={}):
+def x_profile(X, P, PARAM, VALVES, states_override=None, fig=None, ax=None, plot_params={}):
     """
     Plot profile of pore pressure, flux and valve states and positions at a
     given time on an existing figure and axes.
@@ -272,10 +272,11 @@ def x_profile(X, P, PARAM, VALVES, valve_states, fig=None, ax=None, plot_params=
     PARAM : dictionnary
         Dictionnary of physical parameters set for the system.
     VALVES : dictionnary
-        Valve parameters dictionnary.
-    valve_states : 1D array
-        Array of valve states at plot time, True (or 1) for open and False (or 0)
-        for closed. Dimension N valves.
+        Valve parameters dictionnary. VALVES['open'] is used for valve states
+        if states_override is not specified.
+    states_override : 1D array (default to None)
+        Boolean array overriding VALVE['open'] to plot states. Each element is
+        the state of a valve, True is open, False is closed. Dimension Nvalves.
     fig : matplotlib figure object (default to None)
         Figure where to plot the valves. If not specified, takes output of
         plt.gcf(): current active figure.
@@ -318,7 +319,7 @@ def x_profile(X, P, PARAM, VALVES, valve_states, fig=None, ax=None, plot_params=
 
     # Compute and plot flux profile
     # -----------------------------
-    k = calc_k(VALVES, PARAM, states_override=valve_states)
+    k = calc_k(VALVES, PARAM, states_override=states_override)
     Q = calc_Q(P, k, PARAM)
     q_line = q_profile(X, Q, fig=fig, ax=ax_q,
                        plot_params=plot_params)
@@ -326,7 +327,7 @@ def x_profile(X, P, PARAM, VALVES, valve_states, fig=None, ax=None, plot_params=
 
     # Plot valves
     # -----------
-    valves_pc = valves(X, VALVES, states_override=valve_states, fig=fig,
+    valves_pc = valves(X, VALVES, states_override=states_override, fig=fig,
                        ax=ax_q, plot_params=plot_params)
 
     #    ax_p.set_title('State of the system at t={:.2f}'.format(t_plot))
