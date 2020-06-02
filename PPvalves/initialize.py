@@ -136,11 +136,11 @@ def boundary(bound, bound_value, PARAM, verbose=False):
 
     elif bound == 'QP':
         p0_ = np.nan
-        pL_ = 0 - PARAM['hb_']
+        pL_ = 0
         qin_ = bound_value
         qout_ = np.nan
         if verbose:
-            print('init.boundary -- Border conditions : qin = {0:.4f}, qout = {1:.4f}'.format(qin_, pL_))
+            print('init.boundary -- Border conditions : qin = {0:.4f}, pL = {1:.4f}'.format(qin_, pL_))
 
     else:
         raise ValueError("bound can only be 'PP', 'QP', 'QQ'.")
