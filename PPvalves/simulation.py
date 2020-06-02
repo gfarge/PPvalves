@@ -15,7 +15,8 @@ import pickle
 
 import PPvalves.mat_math as mat
 import PPvalves.initialize as init
-import PPvalves.valves as va
+import PPvalves.valves as valv
+import PPvalves.utility as util
 
 
 def run_nov(P,PARAM):
@@ -42,112 +43,201 @@ def run_nov(P,PARAM):
 
 #---------------------------------------------------------------------------------
 
-def run(P, PARAM, VALVES, cheap=False, verbose=False):
+def run_light(P0, PARAM, VALVES):
     """
-    Solves the diffusion eqution in time.
+    Runs PPV, solving diffusion equation and actionning valves. Does not store
+    pressure history, simply previous and next times. If pressure is fixed
+    downdip, returns in-flux, if flux is fixed, returns entry pressure. This
+    serves as an effective diagnostic of the system.
 
-    - Parameters:
-    	+ :param P: if cheap=False, P is a NtimexNspace 2D np.array. First line is initialized
-    	 with initial conditions. If cheap=False, P is a Nspace 1D array initialized with
-    	 initial conditions.
-    	+ :param PARAM: dictionnary description of the physical and numerical
-    	 variables of the system. k(x), beta, mu, phi, rho, h, dt_, and
-    	 boundary conditions (adim) must figure in it:
-    		- if p0_ (resp pL_) is NaN and qin_ (resp qout_) is not, then
-    		 apply Neuman boundary conditions
-    		- if qin_ (resp qout_) is NaN and p0_ (resp pL_) is not, then
-    		 apply Dirichlet boundary conditions
-    		- if both qout_and pL_ are NaN, then apply "stable flux"
-    		 (dq/dx = 0) boundary conditions
-    	+ :param VALVES: dictionnary description of valves. Necessary fields
-    	 are 'state' (0 for closed, 1 for open), idx (first space index of
-    	 k_valve), dPhi, dPlo (threshold values for opening and closing), dP
-    	 (pore pressure differential between each end of the valve, along
-    	 time). Best to use the output of make_valves.
-    	+ :param cheap: boolean, if True, run_ppv only saves P_previous and P_next,
-    	 and does not output P in time, but only v_activity
+    Parameters
+    ----------
+    P0 : 1d array
+        Initial state of pore pressure in the system. Dimension PARAM['Nx'] +
+        1.
+    VALVES : dict.
+        Valves parameters dictionnary.
+    PARAM : dict.
+        Dictionnary of physical parameters describing the system.
 
-    - Output:
-    	+ :return: (only if cheap=False) P as a NtimexNspace 2D np.array,
-    	 with the full solution for
-    	 pore pressure.
-    	+ :return: v_activity, valve activity: column1: valve state,
-    	 column2: valve dP. 3D array: Ntime*2*Nvalve, valves are
-    	 ordered with growing position along X.
-
+    Returns
+    -------
+    bound_in_t : 1d array
+        Flux (resp. pressure) at entry fictive point in time, dimension
+        PARAM['Nt'] + 1.
+    v_activity : 3d array
+        Indicators of valve state and pressure differential witnessed at all
+        times. Used to compute catalogs of events. Dimensions : PARAM['Nt'] + 1
+        * 2 * N_valves. First column: states (True or 1 is open, False or 0 is
+        closed), second column: dP across valve (taken at pressure points
+        right outside low permeability zone).
+    trun : dict.
+        Dictionnary with the details of the time spent on computing the product
+        (trun['prod']), the time spent on solving for next state of pressure
+        (trun['solve']), the time spent on actionning valves (trun['valve']).
+        The sum of all three is the complete runtime.
     """
-    # Init time
-    trun = {}
-    trun['prod'] = 0
-    trun['solve'] = 0
-    trun['valve'] = 0
+    # Create variables for useful values
+    # ==================================
+    Nt = PARAM['Nt']  # number of time steps for this simulation
+    h = PARAM['h_']  # space step
 
-    # Unpack
-    Nt = PARAM['Nt']
-    h = PARAM['h_']
+    # Initialization steps
+    # ====================
+    trun = {'prod' : 0, 'solve' : 0, 'valve' : 0}  # runtime dictionnary
 
-    # Initialize v_activity: valve activity
-    v_activity = np.zeros((Nt+1,2,len(VALVES['idx'])))
-    v_activity[0,0,:] = VALVES['open']
-    v_id1 = VALVES['idx']
-    v_id2 = VALVES['idx'] + VALVES['width']/h
+    # --> Locate valves, initialize valve activity
+    v_activity = np.zeros((Nt+1,2, len(VALVES['idx'])))
+    v_activity[0, 0, :] = VALVES['open']  # initialize valve states
+
+    v_id1 = VALVES['idx']  # Pressure pt. right before valves
+    v_id2 = VALVES['idx'] + VALVES['width']/h  # Pr. pt. right after valves
     v_id2 = v_id2.astype(int)
 
-    if cheap:
-        v_activity[0, 1, :] = P[v_id1] - P[v_id2]
-    else:
-        v_activity[0, 1, :] = P[0, v_id1] - P[0, v_id2]
+    v_activity[0, 1, :] = P0[v_id1] - P0[v_id2]
 
-    # Set up initial system
-    if verbose: print('run_ppv -- sytsem setup...')
-    A,B,b = init.build_sys(PARAM)
-    if cheap:
-        Pprev = copy.copy(P)
-        Pnext = copy.copy(P)
+    # Initialize bound 0
+    # ------------------
+    bound_in_t = np.zeros(Nt+1)
+    bound_in_t[0] = util.calc_bound_0(P0[0], PARAM)
 
-    # Go through time
+    # Set up matrix system
+    # --------------------
+    A, B, b = init.build_sys(PARAM)
+
+    # Solving in time
+    # ===============
+    Pnext = P0
+    for tt in range(Nt):
+        Pprev = Pnext  # Stepping forward
+
+        # Compute knowns (context)
+        # ------------------------
+        tprod0 = time.time()  # start timer for product
+
+        r = mat.product(B,Pprev) + b # calc knowns (right hand side)
+
+        trun['prod'] = trun['prod'] + time.time() - tprod0  # add elapsed t
+
+        # Solve for next time
+        # -------------------
+        tsolve0 = time.time()  # start timer for solver
+
+        Pnext = mat.TDMAsolver(A,r) # solve system
+        bound_in_t[tt+1] = util.calc_bound_0(Pnext[0], PARAM)  # get bound 0
+
+        trun['solve'] = trun['solve'] + time.time() - tsolve0 # add elapsed t
+
+        # Manage valve evolution
+        # ----------------------
+        tvalve0 = time.time()  # start timer for valves
+
+        VALVES, active_valves = valv.evolve(Pnext, h, VALVES)
+
+        #--> Build new system according to new valve states
+        if np.any(active_valves):
+            PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
+            A, B, b = init.build_sys(PARAM) # update system with new permeab.
+        trun['valve'] = trun['valve'] + time.time() - tvalve0  # add elapsed t
+        # --> Update v_activity
+        v_activity[tt+1, 0, :] = VALVES['open']
+        v_activity[tt+1, 1, :] = VALVES['dP']
+
+    return bound_in_t, v_activity, trun
+
+# ----------------------------------------------------------------------------
+
+def run(P, PARAM, VALVES, verbose=False):
+    """
+    Runs PPV, solving diffusion equation and actionning valves. Stores and
+    returns pressure history.
+
+    Parameters
+    ----------
+    P : 2d array
+        Initialized matrix of pore pressures. Dimensions PARAM['Nt'] + 1 *
+        PARAM['Nx'] + 1.
+    VALVES : dict.
+        Valves parameters dictionnary.
+    PARAM : dict.
+        Dictionnary of physical parameters describing the system.
+
+    Returns
+    -------
+    P : 2d array
+        Pore pressure history, same shape as input P.
+    v_activity : 3d array
+        Indicators of valve state and pressure differential witnessed at all
+        times. Used to compute catalogs of events. Dimensions : PARAM['Nt'] + 1
+        * 2 * N_valves. First column: states (True or 1 is open, False or 0 is
+        closed), second column: dP across valve (taken at pressure points
+        right outside low permeability zone).
+    trun : dict.
+        Dictionnary with the details of the time spent on computing the product
+        (trun['prod']), the time spent on solving for next state of pressure
+        (trun['solve']), the time spent on actionning valves (trun['valve']).
+        The sum of all three is the complete runtime.
+    """
+    # Create variables for useful values
+    # ==================================
+    Nt = PARAM['Nt']  # number of time steps for this simulation
+    h = PARAM['h_']  # space step
+
+    # Initialization steps
+    # ====================
+    trun = {'prod' : 0, 'solve' : 0, 'valve' : 0}  # runtime dictionnary
+
+    # --> Locate valves, initialize valve activity
+    v_activity = np.zeros((Nt+1,2, len(VALVES['idx'])))
+    v_activity[0, 0, :] = VALVES['open']  # initialize valve states
+
+    v_id1 = VALVES['idx']  # Pressure pt. right before valves
+    v_id2 = VALVES['idx'] + VALVES['width']/h  # Pr. pt. right after valves
+    v_id2 = v_id2.astype(int)
+
+    v_activity[0, 1, :] = P[0, v_id1] - P[0, v_id2]
+
+    # Set up matrix system
+    # --------------------
+    A, B, b = init.build_sys(PARAM)
+
+    # Solving in time
+    # ===============
     if verbose: print('run_ppv -- starting run...')
     for tt in range(Nt):
-        if cheap:
-            Pprev = Pnext
-        #--> Solve for p(tt+1)
-        tprod0 = time.time()
+        # Compute knowns (context)
+        # ------------------------
+        tprod0 = time.time()  # start timer for product
 
-        if cheap:
-            r = mat.product(B,Pprev) + b # calc knowns (right hand side)
-        else:
-            r = mat.product(B,P[tt,:]) + b # calc knowns (right hand side)
+        r = mat.product(B, P[tt, :]) + b # calc knowns (right hand side)
 
-        trun['prod'] = trun['prod'] + time.time() - tprod0
-        tsolve0 = time.time()
+        trun['prod'] = trun['prod'] + time.time() - tprod0  # add elapsed t
 
-        if cheap:
-            Pnext = mat.TDMAsolver(A,r) # solve system
-        else:
-            P[tt+1,:] = mat.TDMAsolver(A,r) # solve system
-        trun['solve'] = trun['solve'] + time.time() - tsolve0
-        #--> valve evolution
-        tvalve0 = time.time()
+        # Solve for next time
+        # -------------------
+        tsolve0 = time.time()  # start timer for solver
 
-        if cheap:
-            VALVES, active_v = va.evolve(Pnext, h, VALVES)
-        else:
-            VALVES, active_v = va.evolve(P[tt+1,:], h, VALVES)
+        P[tt+1, :] = mat.TDMAsolver(A, r) # solve system
 
-        #--> Build new system accordingly
-        if np.any(active_v):
-            PARAM['k'] = va.update_k(VALVES, active_v, PARAM)
-            A,B,b = init.build_sys(PARAM) # update system with new k
-        trun['valve'] = trun['valve'] + time.time() - tvalve0
-        # Update v_activity
-        v_activity[tt+1,0,:] = VALVES['open']
-        v_activity[tt+1,1,:] = VALVES['dP']
+        trun['solve'] = trun['solve'] + time.time() - tsolve0 # add elapsed t
+
+        # Manage valve evolution
+        # ----------------------
+        tvalve0 = time.time()  # start timer for valves
+
+        VALVES, active_valves = valv.evolve(P[tt+1, :], h, VALVES)
+
+        #--> Build new system according to new valve states
+        if np.any(active_valves):
+            PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
+            A, B, b = init.build_sys(PARAM) # update system with new permeab.
+        trun['valve'] = trun['valve'] + time.time() - tvalve0  # add elapsed t
+        # --> Update v_activity
+        v_activity[tt+1, 0, :] = VALVES['open']
+        v_activity[tt+1, 1, :] = VALVES['dP']
+
     if verbose: print('run_ppv -- Done!')
-
-    if cheap:
-        return Pnext, v_activity, trun
-    else:
-        return P, v_activity, trun
+    return P, v_activity, trun
 
 #---------------------------------------------------------------------------------
 
