@@ -72,3 +72,44 @@ def calc_Q(P, k, PARAM):
     Q = -1*rho*k[1:-1]/mu / q_scale * (dpdx * P_scale/X_scale) # Pression réduite
 
     return Q
+
+# ----------------------------------------------------------------------------
+
+def calc_bound_0(P0, PARAM):
+    """
+    Computes the value of in-flux (resp. input pressure) for fixed pressure
+    (resp. fixed flux) at the input fictive point.
+
+    Parameters
+    ----------
+    P0 : float or 1d array
+        Pore pressure at first point of domain. Can be at a given time (float)
+        or in time (1d array).
+    PARAM : dict.
+        Physical parameters dictionnary.
+
+    Returns
+    -------
+    bound_0 : float or 1d array
+        Value of in-flux (resp. input pressure) for fixed pressure (resp. fixed
+        flux) at the input fictive point. Depending on input, can be a value at
+        a given time, or in time. Same shape as input P0.
+
+    Note:
+    -----
+    Only 'PP' and 'QP' boundary conditions are implemented.
+
+    """
+    # In the case where input pressure is fixed: bound_0 = q0
+    if np.isnan(PARAM['qin_']):
+        bound_0 = PARAM['k_bg']*PARAM['rho']/PARAM['mu'] \
+                 * (PARAM['p0_'] - P0) \
+                 * PARAM['P_scale']/PARAM['X_scale']/PARAM['q_scale']
+
+    # In the case where input flux is fixed: bound_0 = p0
+    elif np.isnan(PARAM['p0_']):
+        bound_0 = P0 + PARAM['qin_'] * PARAM['hb_'] \
+                  * PARAM['mu']/PARAM['rho']/PARAM['k_bg'] \
+                  * PARAM['q_scale']*PARAM['X_scale']/PARAM['P_scale']
+
+    return bound_0
