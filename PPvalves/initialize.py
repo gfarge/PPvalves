@@ -3,7 +3,11 @@ building the system to solve. """
 
 # Imports
 # =======
+import copy
 import numpy as np
+
+import PPvalves.equilibrium as equil
+import PPvalves.utility as util
 
 # Core
 # ====
@@ -151,23 +155,93 @@ def boundary(bound, bound_value, PARAM, verbose=False):
     return PARAM
 
 # ----------------------------------------------------------------------------
-
-def init_cond(option, PARAM):
+def init_cond(VALVES, PARAM, q0=1, dp0=None, states_override=None):
     """
-    Set up initial conditions of reduced pore pressure.
+    Sets up initial conditions of pore pressure, permeability and valve states.
+    The initial conditions correspond to the state of a given valve system at
+    equilibrium, under a flux q0 or a cross-system pressure differential dp0.
+    The valve opening/closing state is either given by VALVES['open'] or by the
+    states_override option.
+
+    Parameters
+    ----------
+    VALVES : dict.
+        Valves paramaters dictionnary. If states_override is not used,
+        VALVES['open'] is used to define the states of valves.
+    PARAM : dictionnary
+        Parameters dictionnary.
+    q0 : float (default q0 = 1, lithostatic flux)
+        The flux the whole system should witness in its initial condition.
+        Only q0 or dp0 should be defined, the other is set to None.
+    dp0 : float (default dp0 = None)
+        The cross-system pore pressure differential the system should witness
+        in its initial condition. Only q0 or dp0 should be defined, the other
+        is set to None.
+    states_override : 1D array (default=None)
+        Valve states for which to set initial conditions, overriding the valve
+        states in VALVES['open']. True (or 1) is open, False (or 0) is closed,
+        dimension of N_valves.
+
+    Returns
+    -------
+    P : 1d array
+        Pore pressure initial state, dimension PARAM['Nx'] + 1
+    VALVES : dict.
+        Valves dictionnary with input initial states.
+    PARAM : dict.
+        Physical parameters dictionnary, with k updated.
+
+    Examples
+    --------
+    - For a flat lithostatic pressure: input dp0=None, q0=1 and all valves
+      open.
+    - For a flat hydrostatic pressure: input dp0=None, q0=0 and all valves
+      open.
+
+    """
+    # Compute permeability
+    # --------------------
+    PARAM['k'] = util.calc_k(VALVES, PARAM, states_override=states_override)
+
+    # Compute pore pressure profile
+    # -----------------------------
+    # --> First use PARAM structure but using q0/dp0 as boundary conditions
+    PARAM_pp_prof = copy.copy(PARAM)
+    if (q0 is None) and (dp0 is not None):
+        PARAM_pp_prof['qin_'] = np.nan
+        PARAM_pp_prof['qout_'] = np.nan
+        PARAM_pp_prof['p0_'] = dp0
+        PARAM_pp_prof['pL_'] = 0
+    elif (q0 is not None) and (dp0 is None):
+        PARAM_pp_prof['qin_'] = q0
+        PARAM_pp_prof['qout_'] = np.nan
+        PARAM_pp_prof['p0_'] = np.nan
+        PARAM_pp_prof['pL_'] = 0
+    else:
+        raise ValueError('One and only one of dp0/q0 should be specified, the other left to None')
+
+    P = equil.calc_pp_inf(VALVES, PARAM_pp_prof, \
+                          states_override=states_override)
+
+    # Update valve states if states are overridden
+    # --------------------------------------------
+    if states_override is not None:
+        VALVES['open'] = states_override
+
+    return P, VALVES, PARAM
+
+def test_init_cond(option, PARAM):
+    """
+    Set up initial conditions of reduced pore pressure for testing.
 
     Parameters
     ----------
     option : float
         Initial condition option
-    		- option=0 : Pr is set to hydrostatic gradient (0) and
-    		shallowest point at lithostatic pressure
-    		- option=1 : Pr is set to lithostatic gradient and shallowest
-    		point at lithostatic pressure
-    		- option=2 : Pr is set to a step function, with step
+    		- option=1 : Pr is set to a step function, with step
     		characteristics set in PARAM['step'] (dP amplitude and
     		step index).
-    		- option=3 : Pr is set to a cosine function, with characteristics
+    		- option=2 : Pr is set to a cosine function, with characteristics
     		taken in PARAM['cos_P'] (number of wavelength and amplitude).
     PARAM: dictionnary
         Dictionnary of the physical and numerical parameters describing the
@@ -195,16 +269,8 @@ def init_cond(option, PARAM):
 
     Pr = np.zeros(len(Z))
 
-    # Hydrostatic gradient
-    if option==0:
-        #print("initcond -- Hydrostatic gradient, no flux in the system")
-        Ztop = Z[-1]
-        Pr[-1] = rho_r*g*Ztop * Z_scale/P_scale # Ptop
-        #Pr[:-1] = Pr[-1] + rho*g*(Z[:-1]-Ztop) * Z_scale/P_scale # All pressures
-        # in between
-        Pr[:] = (rho_r-rho)*g*Ztop * Z_scale/P_scale
-    # Step function
-    if option==2:
+   # Step function
+    if option==1:
         dP, iX0 = PARAM['step']
         #print("initcond -- Erf test: initial step, dP = {:.2f}".format(dP))
         Ztop = Z[-1]
@@ -216,14 +282,8 @@ def init_cond(option, PARAM):
         step[:iX0] = step[:iX0] + 0.5*dP*np.ones(iX0)
         step[iX0:] = step[iX0:] - 0.5*dP*np.ones(len(Pr)-iX0)
         Pr = Pr + step
-    # Lithostatic gradient
-    if option == 1:
-        Ztop=Z[-1]
-        #print("initcond -- Lithostatic gradient, qlitho in the system")
-        #Pr = (rho_r-rho)*g*(Z-Ztop+hb_*np.sin(alpha)) * Z_scale/P_scale
-        Pr = np.linspace(1,0,num=Nx+1)
-    # Cosine function
-    if option==3:
+   # Cosine function
+    if option==2:
         h_= PARAM['h_']
         Nx = PARAM['Nx']
         nb_wavelength, amp = PARAM['cos_P']
