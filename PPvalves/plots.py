@@ -430,6 +430,7 @@ def bounds(p0, PARAM, fig=None, ax=None, plot_params={}):
     if np.isnan(PARAM['qout_']):
         # --> Fixed pressure
         x_out = 1 + PARAM['hb_']
+        pL = PARAM['pL_']
 
         str_out = r'$p_{{out}}={0:.2f}$'.format(PARAM['pL_'])
 
@@ -442,6 +443,7 @@ def bounds(p0, PARAM, fig=None, ax=None, plot_params={}):
     else:
         # --> Fixed flux
         x_in = 1
+        pL = 0  # to be changed
 
         str_out = r'$q_{{out}}={0:.2f}$'.format(PARAM['qout_'])
 
@@ -458,23 +460,25 @@ def bounds(p0, PARAM, fig=None, ax=None, plot_params={}):
                         ms=mark_in_s, mew=mark_in_ew,
                         mfc=mark_in_fc, mec=mark_in_ec,
                         zorder=plot_params['b_zorder'])
-    l_mark_out = ax.plot(x_out, 0, ls=None, marker=mark_out,
+    l_mark_out = ax.plot(x_out, pL, ls=None, marker=mark_out,
                          ms=mark_out_s, mew=mark_out_ew,
                          mfc=mark_out_fc, mec=mark_out_ec,
                          zorder=plot_params['b_zorder'])
 
     # Plot the boundary conditions text
     # ---------------------------------
-    txt_in = ax.text(0.02, p0*1.02, str_in,
-                     fontsize=8,
-                     va='bottom', ha='left',
-                     bbox={'alpha' : 0.5, 'facecolor':'w', 'edgecolor':'w'},
-                     zorder=plot_params['b_zorder'])
-    txt_out = ax.text(1, 0, str_out,
-                      fontsize=8,
-                      va='bottom', ha='right',
-                      bbox={'alpha' : 0.5, 'facecolor':'w', 'edgecolor':'w'},
-                      zorder=plot_params['b_zorder'])
+    txt_in = ax.text(0.05, p0*1.02, str_in,
+                     fontsize=10,
+                     va='center', ha='left',
+                     bbox={'boxstyle' : "square, pad=0.1",
+                           'alpha' : 0.5, 'facecolor':'w', 'edgecolor':'w'},
+                     zorder=9)
+    txt_out = ax.text(0.95, 0, str_out,
+                      fontsize=10,
+                      va='center', ha='right',
+                      bbox={'boxstyle' : "square, pad=0.1",
+                            'alpha' : 0.5, 'facecolor':'w', 'edgecolor':'w'},
+                      zorder=9)
 
     g_objs = [l_mark_in, l_mark_out, txt_in, txt_out]
     return ax, g_objs
@@ -526,6 +530,9 @@ def init(X, p0, states0, VALVES, PARAM, plot_params={}, save_name=None):
 
     ax_pp = fig.add_subplot(gs[:, :6])
     ax_b = fig.add_subplot(gs[:, 6:])
+
+    ax_pp.set_title('Initial and boundary conditions')
+
 
     # Ticks and label parameters
     # --------------------------
@@ -616,19 +623,17 @@ def bound_gauge(bound, VALVES, PARAM, states_override=None, fig=None, ax=None, p
     # Compute critical thresholds
     # ---------------------------
     if bound == 'q':
+        bound = 'flux'
         bound_value = PARAM['qin_']
-        v_op_crit = equi.calc_q_crit(0, VALVES, PARAM, event='opening',
-                                     states_override=states_override)
-        v_cl_crit = equi.calc_q_crit(0, VALVES, PARAM, event='closing',
-                                     states_override=states_override)
+        v_op_crit = equi.calc_q_crit(0, VALVES, PARAM, event='opening')
+        v_cl_crit = equi.calc_q_crit(0, VALVES, PARAM, event='closing')
         bound_value_c = plot_params['q_lc']
 
     elif bound == 'p':
+        bound = 'pressure'
         bound_value = PARAM['p0_']
-        v_op_crit = equi.calc_dP_crit(0, VALVES, PARAM, event='opening',
-                                      states_override=states_override)
-        v_cl_crit = equi.calc_dP_crit(0, VALVES, PARAM, event='closing',
-                                      states_override=states_override)
+        v_op_crit = equi.calc_dP_crit(0, VALVES, PARAM, event='opening')
+        v_cl_crit = equi.calc_dP_crit(0, VALVES, PARAM, event='closing')
         bound_value_c = plot_params['pp_lc']
 
     # Define plot limits, ticks, tick labels
@@ -646,6 +651,9 @@ def bound_gauge(bound, VALVES, PARAM, states_override=None, fig=None, ax=None, p
 
     ax.set_yticks([v_cl_crit, v_op_crit])
     ax.set_yticklabels(["{:.2f}".format(v_cl_crit), "{:.2f}".format(v_op_crit)])
+
+    ax.set_ylabel('Crit. input {:}'.format(bound), rotation=270, labelpad=15)
+    ax.yaxis.set_label_position("right")
 
     # Plot thresholds and domains
     # ---------------------------
@@ -673,13 +681,13 @@ def bound_gauge(bound, VALVES, PARAM, states_override=None, fig=None, ax=None, p
     if v_op_crit < v_cl_crit:
         p_trans_dom = Rectangle((0, y_trans_dom), 1, h_trans_dom,
                                 ec=plot_params['v_op_fc'], fc=plot_params['v_cl_fc'],
-                                hatch='.', lw=4)
+                                hatch='..', lw=1)
         txt_trans = ax.text(0.05, y_trans_dom + 0.5 * h_trans_dom, 'Act',
                             ha='left', va='center', rotation=270)
     else:
         p_trans_dom = Rectangle((0, y_trans_dom), 1, h_trans_dom,
                                 ec=plot_params['v_op_fc'], fc=plot_params['v_cl_fc'],
-                                hatch='///', lw=4)
+                                hatch='///', lw=1)
         txt_trans = ax.text(0.05, y_trans_dom + 0.5 * h_trans_dom, 'CI',
                             ha='left', va='center', rotation=270)
     ax.add_patch(p_trans_dom)
@@ -687,7 +695,7 @@ def bound_gauge(bound, VALVES, PARAM, states_override=None, fig=None, ax=None, p
     # Plot boundary conditions
     # ------------------------
     l_bound_value = ax.plot(0.7, bound_value, ls=None,
-                            marker='+',  ms=10,
+                            marker='+',  ms=10, mew=2,
                             mec=bound_value_c, zorder=11)
 
     g_objs = [p_op_dom, p_cl_dom, p_trans_dom,
