@@ -358,11 +358,13 @@ def calc_q_inf(VALVES, PARAM, states_override=None):
 
 #---------------------------------------------------------------------------------
 
-def calc_dP_crit(idx_v0, VALVES, PARAM, event='opening', states_override=None):
+def calc_dP_crit(idx_v0, VALVES, PARAM, event='opening'):
     """
     Computes the critical value of the equilibrium pressure differential across
-    a valve system (taken in fictive points) for which opening (resp. closing)
-    threshold of a given valve v0 is reached.
+    a valve system (taken at fictive points) for which opening (resp. closing)
+    threshold of a given valve v0 is reached. For now, this function is only
+    implemented for event='opening' when all other valves are closed, and
+    event='closing' when all other valves are open.
 
     Parameters
     ----------
@@ -376,12 +378,6 @@ def calc_dP_crit(idx_v0, VALVES, PARAM, event='opening', states_override=None):
     event : str
         Type of event for which to compute the critical pressure differential.
         'opening' for opening event, 'closing' for closing event.
-    states_override : ndarray, boolean (default=None)
-        Array of valves states: True is open,
-    	False is closed. It overrides VALVES['open'].
-    	VALVES. States can be 1D (N_valves length), or 2D (N_time x
-    	N_valves). For the latter case, k_eq will be an array of
-    	length N_time.
     Returns
     -------
     dP_crit : float
@@ -393,31 +389,17 @@ def calc_dP_crit(idx_v0, VALVES, PARAM, event='opening', states_override=None):
     k_bg = PARAM['k_bg']  # background channel permeability
     L_ = 1 + 2*PARAM['hb_']
 
-    # Unpack valves parameters
-    # ------------------------
-    if states_override is None:
-        closed_valves = np.bitwise_not(VALVES['open'])
-    else:
-        closed_valves = np.bitwise_not(states_override)
-
     wid_v = VALVES['width']
-
-    k_v = np.zeros(len(wid_v))
-    for iv in range(len(wid_v)):
-        if closed_valves[iv]:
-            k_v[iv] = VALVES['klo'][iv]
-        else:
-            k_v[iv] = k_bg
-
-    R_v = wid_v/k_v
-
-    # --> For the given valve v0
-    R_v0 = R_v[idx_v0]
 
     if event == 'opening':
         dP_thr_v0 = VALVES['dPhi'][idx_v0]
+        R_v = wid_v/VALVES['klo']
     elif event == 'closing':
         dP_thr_v0 = VALVES['dPlo'][idx_v0]
+        R_v = wid_v/k_bg
+
+    # --> For the given valve v0
+    R_v0 = R_v[idx_v0]
 
     # Actually compute it
     # -------------------
@@ -429,7 +411,7 @@ def calc_dP_crit(idx_v0, VALVES, PARAM, event='opening', states_override=None):
 
 #---------------------------------------------------------------------------------
 
-def calc_q_crit(idx_v0, VALVES, PARAM, event='opening', states_override=None):
+def calc_q_crit(idx_v0, VALVES, PARAM, event='opening'):
     """
     Computes the critical value of the equilibrium flux in a valve system, for
     which opening (resp.  closing) threshold of a given valve v0 is reached.
@@ -446,12 +428,7 @@ def calc_q_crit(idx_v0, VALVES, PARAM, event='opening', states_override=None):
     event : str (default='opening')
         Type of event for which to compute the critical flux. 'opening' for
         opening event, 'closing' for closing event.
-    states_override : ndarray, boolean (default=None)
-        Array of valves states: True is open,
-    	False is closed. It overrides VALVES['open'].
-    	VALVES. States can be 1D (N_valves length), or 2D (N_time x
-    	N_valves). For the latter case, k_eq will be an array of
-    	length N_time.
+
     Returns
     -------
     q_crit : float
@@ -475,8 +452,10 @@ def calc_q_crit(idx_v0, VALVES, PARAM, event='opening', states_override=None):
 
     if event == 'opening':
         dP_thr_v0 = VALVES['dPhi'][idx_v0]
+        k_v0 = VALVES['klo'][idx_v0]
     elif event == 'closing':
         dP_thr_v0 = VALVES['dPlo'][idx_v0]
+        k_v0 = PARAM['k_bg']
 
 
     # Actually compute it
