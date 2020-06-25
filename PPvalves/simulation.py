@@ -31,11 +31,14 @@ def run_nov(P,PARAM):
     # Set up initial system
     print('propagate -- sytsem setup...')
     A, B, b = init.build_sys(PARAM)
+    print(np.shape(A))
+    print(np.shape(B))
+    print(np.shape(b))
 
     # Go through time
     print('propagate -- starting run...')
     for tt in range(Nt):
-        d = mat.product(B,P[tt,:]) + b  # compact form of knowns
+        d = mat.product(B, P[tt,:]) + b  # compact form of knowns
         P[tt+1,:] = mat.TDMAsolver(A,d)  # solving the system
 
     print('propagate -- Done !')

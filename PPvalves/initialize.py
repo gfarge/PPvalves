@@ -129,8 +129,8 @@ def boundary(bound, bound_value, PARAM, verbose=False):
     elif bound == 'QQ':
         p0_ = np.nan
         pL_ = np.nan
-        qin_ = 1.
-        qout_ = 1.
+        qin_ = bound_value
+        qout_ = bound_value
         if verbose:
             print('init.boundary -- Border conditions : qin = {0:.4f}, qout = {1:.4f}'.format(qin_, qout_))
 
@@ -230,7 +230,7 @@ def init_cond(VALVES, PARAM, q0=1, dp0=None, states_override=None):
 
     return P, VALVES, PARAM
 
-def test_init_cond(option, PARAM):
+def test_init_cond(option, init_param, PARAM):
     """
     Set up initial conditions of reduced pore pressure for testing.
 
@@ -238,61 +238,47 @@ def test_init_cond(option, PARAM):
     ----------
     option : float
         Initial condition option
-    		- option=1 : Pr is set to a step function, with step
-    		characteristics set in PARAM['step'] (dP amplitude and
-    		step index).
-    		- option=2 : Pr is set to a cosine function, with characteristics
-    		taken in PARAM['cos_P'] (number of wavelength and amplitude).
-    PARAM: dictionnary
-        Dictionnary of the physical and numerical parameters describing the
-        system.
+    		- option=1 : Initial conditions are set to a ramp function.
+              init_params must contain x1 and x2, the first point of the ramp,
+              x2 the last point. It is a linear ramp step from the region
+              before x1 at 1, to the region after x2 at 0.
+    		- option=2 : Initial conditions are set to a cosine function.
+              init_params must contain n_wv and amp, number of wavelengths and
+              amplitude.
+    init_param : tuple
+        Initial conditions parameters. See above for details.
+    PARAM : dictionnary
+        Dictionnary of the system's physical parameters.
 
     Returns
     -------
-    Pr : ndarray
-        Initialized vector of reduced pore-pressures.
+    p0 : ndarray
+        Initialized vector of pore-pressures.
 
     """
-    # Unpack
-    Z = PARAM['Z0_'] - np.linspace(0, 1, num=PARAM['Nx']+1)
-    ## Physical and numerical parameters
-    rho = PARAM['rho']
-    rho_r = PARAM['rho_r']
-    g = PARAM['g']
-    hb_ = PARAM['hb_']
-    alpha = PARAM['alpha']
-    Nx = PARAM['Nx']
+    X = np.linspace(0, 1, num=PARAM['Nx']+1)
+    p0 = np.zeros(PARAM['Nx'] + 1)
 
-    ## Scales
-    P_scale = PARAM['P_scale']
-    Z_scale = PARAM['Z_scale']
+    # First option: the step
+    # ----------------------
+    if option == 1:
+        x1, x2 = init_param
 
-    Pr = np.zeros(len(Z))
+        for ii in range(PARAM['Nx']+1):
+            if X[ii] <= x1:
+                p0[ii] = 1
+            elif (X[ii] < x2) & (X[ii] > x1):
+                p0[ii] = (x2 - X[ii]) * 1/(x2 - x1)
+            elif X[ii] >= x2:
+                p0[ii] = 0
 
-   # Step function
-    if option==1:
-        dP, iX0 = PARAM['step']
-        #print("initcond -- Erf test: initial step, dP = {:.2f}".format(dP))
-        Ztop = Z[-1]
-        #P[-1] = rho_r*g*Ztop * Z_scale/P_scale # Ptop
-        #P[:-1] = P[-1] + rho*g*(Z[:-1]-Ztop) * Z_scale/P_scale # All pressures
-        # in between
-        Pr[:] = (rho_r-rho)*g*Ztop * Z_scale/P_scale
-        step = np.zeros(len(Pr))
-        step[:iX0] = step[:iX0] + 0.5*dP*np.ones(iX0)
-        step[iX0:] = step[iX0:] - 0.5*dP*np.ones(len(Pr)-iX0)
-        Pr = Pr + step
-   # Cosine function
-    if option==2:
-        h_= PARAM['h_']
-        Nx = PARAM['Nx']
-        nb_wavelength, amp = PARAM['cos_P']
-        # print("initcond -- Cosine profile, {0:d} wavelengths, amp = {1:.2f}".format(nb_wavelength, amp))
-        X_cos = 2*np.pi*np.linspace(0.,Nx*h_,num=Nx+1)
-        cos_P = amp*np.cos(X_cos*nb_wavelength)
-        Pr = cos_P
+    # Second option: the cosine
+    # -------------------------
+    elif option == 2:
+        n_wv, amp = init_param
+        p0 = amp * np.cos(X * n_wv)
 
-    return Pr
+    return p0
 
 # ----------------------------------------------------------------------------
 

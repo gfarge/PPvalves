@@ -10,6 +10,49 @@ import scipy.special as ssp
 # Core
 # ====
 
+def calc_trans_ramp(t, X, x1, x2, D):
+    """
+    Computes the solution of the diffusion of a ramp: a linear step from x1 to
+    x2. Before x1, the initial condition is 1, after x2, it's 0.
+
+    Derivation of this solution is presented in Exact_diffusion_solutions
+    notebook.
+
+    Parameters
+    ----------
+    t : float
+        Given time to compute the solution at.
+    X : 1D array
+        Space array to compute the solution on.
+    x1 : float
+        Location of the beginning of the ramp.
+    x2 : float
+        Location of the end of the ramp.
+
+    Returns
+    -------
+    p : 1D array
+        Diffusive transient at time t, over X. Same dimension as X.
+    """
+    # Compute transient for step
+    # --------------------------
+    S = 1/2 * (1 - ssp.erf((X - x1)/(np.sqrt(4*D*t))))
+
+    # Compute transient for ramp
+    # --------------------------
+    I0 = x2 * 1/2 * (ssp.erf((X - x1)/np.sqrt(4*D*t)) \
+                     - ssp.erf((X - x2)/np.sqrt(4*D*t)))
+    I1 = np.sqrt(D*t/np.pi) * np.exp(-1*(X - x1)**2/(4*D*t)) \
+         + X * 1/2 * (1 + ssp.erf((X - x1)/np.sqrt(4*D*t)))
+    I2 = np.sqrt(D*t/np.pi) * np.exp(-1*(X - x2)**2/(4*D*t)) \
+         + X * 1/2 * (1 + ssp.erf((X - x2)/np.sqrt(4*D*t)))
+
+    R = 1 / (x2 - x1) * (I0 - (I1 - I2))
+
+    p = S + R
+
+    return p
+
 
 def Perf(X, T, X0, D, dP):
     """ Calculate the P error function for all times on the whole domain (inf domain)"""

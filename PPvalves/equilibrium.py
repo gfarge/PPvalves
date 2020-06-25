@@ -358,7 +358,7 @@ def calc_q_inf(VALVES, PARAM, states_override=None):
 
 #---------------------------------------------------------------------------------
 
-def calc_dP_crit(idx_v0, VALVES, PARAM, event='open', states_override=None):
+def calc_dP_crit(idx_v0, VALVES, PARAM, event='opening', states_override=None):
     """
     Computes the critical value of the equilibrium pressure differential across
     a valve system (taken in fictive points) for which opening (resp. closing)
