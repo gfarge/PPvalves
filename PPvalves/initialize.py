@@ -12,71 +12,102 @@ import PPvalves.utility as util
 # Core
 # ====
 
-def default_parameters(Nx, Ttot_):
+def read_input(input_args):
     """
-    Creates a default parameters dictionnary
+    Parses input arguments and processes them into the PARAM dictionnary
+    (physical and numerical parameters).  When a certain parameter is not
+    specified, its default value is used.
 
     Parameters
     ----------
-    Nx : int
-        Number of space steps in the domain.
-    Ttot_ : float
-        Adimensionalized duration of the simulation.
+    input_args : list
+        List of strings of characters, that will be parsed and interpreted.
+        Example: to choose the value 6.8e-6 for parameter Xi, "Xi=6.8e-6" must
+        be present in the list. Any parameter for which no value is specified
+        will be set to default.
 
     Returns
     -------
-    PARAM : dictionnary
-        Parameters dictionnary.
+    PARAM : dictionnary
+        Numerical and physical parameters dictionnary. Full description in
+        README.
     """
-    PARAM = {}
+    # Default parameters
+    # ------------------
+    # NB: here, only the parameters that do not depend on others. With those,
+    # scales, numerical parameters etc are defined.
 
-    # Densities and gravity
-    # ---------------------
-    PARAM['g'] = 9.81      # gravity acceleration, in m.s-2
-    PARAM['rho'] = 1000.   # fluid density, in kg.m-3 (2850 kg.m-3)
-    PARAM['rho_r'] = 2850. # rock density, in kg.m-3 (2850 kg.m-3)
+    PARAM = {
+        'g' : 9.81,  # gravity acceleration (m.s-2)
+        'rho' : 1000, 'rho_r' : 2850,  # fluid and rock density (kg.m-3)
 
-    # Fault geometry
-    # --------------
-    PARAM['alpha'] = 10 / 180 * np.pi  # fault dip anglue
+        'alpha' : 10 / 180 * np.pi,  # fault dip angle
+        'A' : 1.e3,  # in m2, fault section area (1e3 m2)
+        'X0' : 0, 'Xtop' : 20 * 1000,  # extremities of the channel (m)
+        'Z0' : 40 * 1000,  # depth of deep end of channel (m)
 
-    X0 = 0.         # in m, Deep origin of flow (x grows updip)
-    Xtop = 20000.   # in m, shallow end of domain
+        'mu' : 1.e-3, # fluid viscosity, Pa.s (1e-3)
+        'phi': 0.05,  # rock porosity, between 0 and 1 (0.05, max 0.1)
+        'k_bg' : 6.e-12,  # rock permeability, m2 (3e-12 m2)
+        'beta' : 2.2e-8,  # pore/fluid compressibility, in Pa-1 (2.2 GPa-1)
 
-    Z0 = 40.        # in km, Deep origin of flow
-    Z0 = Z0 * 1000. # convert to m
-    Ztop = Z0 - (Xtop - X0)*np.sin(PARAM['alpha'])
+        'Nx' : 500,  # number of space increments in domain (number of pnts -1)
+        'hb_' : 1 / 100,  # depth of boundary (last --> fictive pnts)
+        'Ttot_' : 0.05,  # physical duration of the run, scaled
 
-    # Fluid physical description and transport properties
-    # ---------------------------------------------------
-    PARAM['mu'] = 1.e-3     # fluid viscosity, Pa.s (1e-3)
-    PARAM['phi'] = 0.05     # rock porosity, between 0 and 1 (0.05, max 0.1)
-    PARAM['k_bg'] = 6.e-12  # rock permeability, m2 (3e-12 m2)
-    PARAM['beta'] = 2.2e-8  # pore/fluid compressibility, /!\ in Pa-1 (2.2 GPa-1)
-    PARAM['A'] = 1.e3       # in m2, fault section area (1e3 m2)
+        'bound' : 'QP',  # boundary conditions code ('PP', 'QP')
+        'bound_value' : 1,  # scaled value of fixed variable at boundary in 0
 
-    D = PARAM['k_bg'] / PARAM['phi']/PARAM['mu']/PARAM['beta']
+        'init_v_state' : 'open'  # initial valve state
+        }
 
-    # Dimensions of physical variables
-    # --------------------------------
-    PARAM['X_scale'] = Xtop - X0
-    PARAM['Z_scale'] = PARAM['X_scale']*np.sin(PARAM['alpha'])
-    PARAM['T_scale'] = PARAM['X_scale'] **2 / D
-    PARAM['P_scale'] = (PARAM['rho_r']-PARAM['rho'])*PARAM['g'] *\
-            PARAM['X_scale']*np.sin(PARAM['alpha'])
-    PARAM['q_scale'] = PARAM['k_bg']*PARAM['rho']/PARAM['mu'] *\
-            PARAM['P_scale']/PARAM['X_scale']
+    for arg_str in input_args:
+        arg, value = arg_str.split('=')
+        if arg in PARAM.keys():
+            print('Got {:}, puts it in'.format(arg))
+            if isinstance(PARAM[arg], int):
+                PARAM[arg] = int(value)
+            else:
+                PARAM[arg] = float(value)
+
+    # Compute the rest of parameters
+    # ------------------------------
+    # (i) Misc
+    PARAM['Ztop'] = PARAM['Z0'] \
+                   - (PARAM['Xtop'] - PARAM['X0'])*np.sin(PARAM['alpha'])
+
+    PARAM['D'] = PARAM['k_bg'] / PARAM['phi']/PARAM['mu']/PARAM['beta']
+
+    # (ii) Dimensions
+    PARAM['X_scale'] = PARAM['Xtop'] - PARAM['X0']
+    PARAM['Z_scale'] = PARAM['X_scale'] * np.sin(PARAM['alpha'])
+    PARAM['T_scale'] = PARAM['X_scale']**2 / PARAM['D']
+    PARAM['P_scale'] = (PARAM['rho_r'] - PARAM['rho']) * PARAM['g']\
+                      * PARAM['X_scale'] * np.sin(PARAM['alpha'])
+    PARAM['q_scale'] = PARAM['k_bg'] * PARAM['rho'] / PARAM['mu']\
+                      * PARAM['P_scale'] / PARAM['X_scale']
     PARAM['M_scale'] = PARAM['q_scale'] * PARAM['T_scale']
 
-    PARAM['Z0_'] = Z0/PARAM['X_scale']
+    PARAM['Z0_'] = PARAM['Z0']/PARAM['X_scale']
 
-    # Discretization
-    # --------------
-    PARAM['Nx'] = Nx
-    PARAM['h_'] = 1 / Nx
-    PARAM['hb_'] = 1 / 100
+    # (iii) Discretization
+    PARAM['h_'] = 1 / PARAM['Nx']
     PARAM['dt_'] = 0.5 * PARAM['h_']**2
-    PARAM['Nt'] = int(np.ceil(Ttot_/PARAM['dt_']))
+    PARAM['Nt'] = int(np.ceil(PARAM['Ttot_']/PARAM['dt_']))
+
+    # Check for boundary conditions args
+    # ----------------------------------
+    # --> Check for input
+    for arg_str in input_args:
+        arg, value = arg_str.split('=')
+        if arg == 'bound':
+            PARAM['bound'] = value
+            print('Got {:}, puts it in'.format(arg))
+        elif arg == 'bound_value':
+            PARAM['bound_value'] = float(value)
+            print('Got {:}, puts it in'.format(arg))
+
+    PARAM = boundary(PARAM['bound'], PARAM['bound_value'], PARAM)
 
     return PARAM
 
@@ -154,7 +185,9 @@ def boundary(bound, bound_value, PARAM, verbose=False):
 
     return PARAM
 
+
 # ----------------------------------------------------------------------------
+
 def init_cond(VALVES, PARAM, q0=1, dp0=None, states_override=None):
     """
     Sets up initial conditions of pore pressure, permeability and valve states.
@@ -229,6 +262,8 @@ def init_cond(VALVES, PARAM, q0=1, dp0=None, states_override=None):
         VALVES['open'] = states_override
 
     return P, VALVES, PARAM
+
+# -----------------------------------------------------------------------------
 
 def test_init_cond(option, init_param, PARAM):
     """
