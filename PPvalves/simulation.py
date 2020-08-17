@@ -19,7 +19,7 @@ import PPvalves.valves as valv
 import PPvalves.utility as util
 
 
-def run_nov(P,PARAM):
+def run_nov(P, PARAM, verbose=True):
     """
     Propagates an initial state of the pore-pressure in time. valves but no
     dynamic valves.
@@ -29,24 +29,24 @@ def run_nov(P,PARAM):
     Nt = PARAM['Nt']
 
     # Set up initial system
-    print('propagate -- sytsem setup...')
+    if verbose: print('simulation.run_nov -- sytsem setup...')
     A, B, b = init.build_sys(PARAM)
-    print(np.shape(A))
-    print(np.shape(B))
-    print(np.shape(b))
+#    print(np.shape(A))
+#    print(np.shape(B))
+#    print(np.shape(b))
 
     # Go through time
-    print('propagate -- starting run...')
+    if verbose: print('simulation.run_nov -- starting run...')
     for tt in range(Nt):
         d = mat.product(B, P[tt,:]) + b  # compact form of knowns
         P[tt+1,:] = mat.TDMAsolver(A,d)  # solving the system
 
-    print('propagate -- Done !')
+    if verbose: print('simulation.run_nov -- Done !')
     return P
 
 #---------------------------------------------------------------------------------
 
-def run_light(P0, PARAM, VALVES):
+def run_light(P0, PARAM, VALVES, verbose=True):
     """
     Runs PPV, solving diffusion equation and actionning valves. Does not store
     pressure history, simply previous and next times. If pressure is fixed
@@ -62,6 +62,8 @@ def run_light(P0, PARAM, VALVES):
         Valves parameters dictionnary.
     PARAM : dict.
         Dictionnary of physical parameters describing the system.
+    verbose : bool (default = True)
+        If True, prints stage of run.
 
     Returns
     -------
@@ -80,6 +82,7 @@ def run_light(P0, PARAM, VALVES):
         (trun['solve']), the time spent on actionning valves (trun['valve']).
         The sum of all three is the complete runtime.
     """
+    if verbose: print('simulation.run_light -- initialization...')
     # Create variables for useful values
     # ==================================
     Nt = PARAM['Nt']  # number of time steps for this simulation
@@ -106,10 +109,12 @@ def run_light(P0, PARAM, VALVES):
 
     # Set up matrix system
     # --------------------
+    if verbose: print('simulation.run_light -- building system...')
     A, B, b = init.build_sys(PARAM)
 
     # Solving in time
     # ===============
+    if verbose: print('simulation.run_light -- starting run...')
     Pnext = P0
     for tt in range(Nt):
         Pprev = Pnext  # Stepping forward
@@ -145,12 +150,13 @@ def run_light(P0, PARAM, VALVES):
         # --> Update v_activity
         v_activity[tt+1, 0, :] = VALVES['open']
         v_activity[tt+1, 1, :] = VALVES['dP']
+    if verbose: print('simulation.run_light -- Done!')
 
     return bound_in_t, v_activity, trun
 
 # ----------------------------------------------------------------------------
 
-def run(P, PARAM, VALVES, verbose=False):
+def run(P, PARAM, VALVES, verbose=True):
     """
     Runs PPV, solving diffusion equation and actionning valves. Stores and
     returns pressure history.
@@ -181,6 +187,7 @@ def run(P, PARAM, VALVES, verbose=False):
         (trun['solve']), the time spent on actionning valves (trun['valve']).
         The sum of all three is the complete runtime.
     """
+    if verbose: print('simulation.run -- initialization...')
     # Create variables for useful values
     # ==================================
     Nt = PARAM['Nt']  # number of time steps for this simulation
@@ -206,7 +213,7 @@ def run(P, PARAM, VALVES, verbose=False):
 
     # Solving in time
     # ===============
-    if verbose: print('run_ppv -- starting run...')
+    if verbose: print('simulation.run -- starting run...')
     for tt in range(Nt):
         # Compute knowns (context)
         # ------------------------
@@ -239,7 +246,7 @@ def run(P, PARAM, VALVES, verbose=False):
         v_activity[tt+1, 0, :] = VALVES['open']
         v_activity[tt+1, 1, :] = VALVES['dP']
 
-    if verbose: print('run_ppv -- Done!')
+    if verbose: print('simulation.run -- Done!')
     return P, v_activity, trun
 
 #---------------------------------------------------------------------------------
@@ -268,12 +275,12 @@ def run_time(PARAM):
     # Compute
     trun = A * Nx**3 * Ttot_
 
-    print('This run would be {:}s long'.format(trun))
+    print('simulation.run_time -- This run should be approximately {:} seconds long'.format(trun))
     return trun
 
 # -----------------------------------------------------------------------------
 
-def save(filename, P_, v_activity, VALVES, PARAM, full=False):
+def save(filename, P_, v_activity, VALVES, PARAM, full=False, verbose=True):
     """
     Save the results and parameters of a simulation. Options to save only valve
     activity or add in full pore pressure history. The results are saved as a
@@ -295,6 +302,8 @@ def save(filename, P_, v_activity, VALVES, PARAM, full=False):
         *(b)* the pressure differential across the valve.
     full : bool (default=`False`)
         Option to save full pressure history (if full=`True`).
+    verbose : bool (default=`True`)
+        Option to have the function print what it's doing, succinctly.
 
     """
     # Build output dictionnary
@@ -307,11 +316,10 @@ def save(filename, P_, v_activity, VALVES, PARAM, full=False):
         # --> option to save full pressure history
         out['P_'] = P_
         filename += '.full'
-        print('ppv.save -- saving pore pressure history too')
+        if verbose : print('simulation.save -- saving full pore pressure history')
 
     filename += '.pkl'
     # Actually saving
     # ---------------
-    print('Saving at {:}...'.format(filename))
+    if verbose : print('simulation.save -- saving at {:}...'.format(filename))
     pickle.dump(out, open(filename, 'wb'))
-    print('\nDone!')
