@@ -82,10 +82,10 @@ def valves(X, VALVES, states_override=None, fig=None, ax=None, X_axis='x', plot_
     # -----------------------------------
     if X_axis == 'x':
         zlim = ax.get_ylim()
-        print(zlim)
+#        print(zlim)
     elif X_axis == 'y':
         zlim = ax.get_xlim()
-        print(zlim)
+#        print(zlim)
 
     # Build valve patches and colors as a function of valve states
     # ------------------------------------------------------------
@@ -599,4 +599,346 @@ def bound_gauge(bound, VALVES, PARAM, fig=None, ax=None, plot_params={}):
 
     return ax, g_objs
 
+# ------------------------------------------------------------------
+
+def recurrence(event_t, rec, log=True, tlim=None, plot_params={}, fig=None, ax=None):
+    """
+    Plots events recurrence interval in time.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension is N_ev, the recurrence intervals are
+        counted at each events, for the next interval: last event is excluded.
+    rec : 1D array
+        Array of events recurrence interval, time before the next event.
+        Dimension is N_ev - 1
+    log : bool (default=`True`)
+        Option to have the y-axis (recurrence intervals) in log scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = 'act_lc'
+        : 'k')
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    """
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = ['act_lc']
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot the events
+    # ---------------
+    ev_l, = ax.plot(event_t[:-1], rec, 'o', c=plot_params['act_lc'], ms=1)
+    if log:
+        ax.set_yscale('log')
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Set labels and title
+    # --------------------
+    ax.set_title("Events recurrence interval (time before next event)")
+    ax.set_xlabel("Time (scaled)")
+    ax.set_ylabel("Rec. interval (scaled)", c=plot_params['act_lc'])
+
+    plt.tight_layout()
+
+    g_objs = ev_l
+
+    return fig, ax, g_objs
+
 # ----------------------------------------------------------------------------
+
+def activity_dip(event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None):
+    """
+    Plots activity across dip in time.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension is N_event.
+    event_x : 1D array
+        Array of event locations, dimension is N_event.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = 'act_lc'
+        : 'k')
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    """
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = ['act_lc']
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot the events
+    # ---------------
+    ev_l, = ax.plot(event_t, event_x, 'o', c=plot_params['act_lc'], ms=1)
+
+    if tlim is not None:
+        ax.set_tlim(tlim)
+
+    # Set labels and title
+    # --------------------
+    ax.set_title("Activity across dip in time")
+    ax.set_xlabel("Time (scaled)")
+    ax.set_ylabel("Along-dip X (scaled)", c=plot_params['act_lc'])
+
+    plt.tight_layout()
+
+    g_objs = ev_l
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None):
+    """
+    Plots equivalent permeability in time.
+
+    Parameters
+    ----------
+    rate_time : 1D array
+        Array of times for which the activity rate is computed, dimension is
+        N_times.
+    rate : 1D array
+        Array of activity rate in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = 'k_eq_lc'
+        : 'darkturquoise')
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    """
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = ['act_lc']
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot
+    # ----
+    act_r_l, = plt.plot(rate_time, rate, ls='-', lw=1.5, c=plot_params['act_lc'])
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Labels and title
+    # ----------------
+    ax.set_title("Activity rate in time")
+    ax.set_xlabel("Time (scaled)")
+    ax.set_ylabel(r"Activity rate", c=plot_params['act_lc'])
+    plt.tight_layout()
+
+    g_objs = act_r_l
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def perm_eq(T, k_eq, tlim=None, log=True, plot_params={}, fig=None, ax=None):
+    """
+    Plots equivalent permeability in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    k_eq : 1D array
+        Array of equivalent permeability in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    log : bool (default=`True`)
+        Option to have the y-axis (permeability) in log-scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = 'k_eq_lc'
+        : 'darkturquoise')
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    """
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = ['k_eq_lc']
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot
+    # ----
+    k_eq_l, = plt.plot(T, k_eq, ls='-', lw=1.5, c=plot_params['k_eq_lc'])
+
+    if log:
+        ax.set_yscale('log')
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Labels and title
+    # ----------------
+    ax.set_title("System's equivalent permeability in time")
+    ax.set_xlabel("Time (scaled)")
+    ax.set_ylabel(r"$k_{eq}$ ($m^2$)", c=plot_params['k_eq_lc'])
+    plt.tight_layout()
+
+    g_objs = k_eq_l
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
+    """
+    Plots mass balance in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    deltaM : 1D array
+        Array of mass balance in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    log : bool (default=`True`)
+        Option to have the y-axis (permeability) in log-scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = 'mass_lc'
+        : 'darkturquoise')
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    """
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = ['mass_lc']
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot
+    # ----
+    mass_b_l, = plt.plot(T, deltaM, ls='-', lw=1.5, c=plot_params['mass_lc'])
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Labels and title
+    # ----------------
+    ax.set_title("Mass balance in the system")
+    ax.set_xlabel("Time (scaled)")
+    ax.set_ylabel(r"$\delta M$ (scaled)", c=plot_params['mass_lc'])
+    plt.tight_layout()
+
+    g_objs = mass_b_l
+
+    return fig, ax, g_objs

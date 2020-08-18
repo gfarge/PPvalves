@@ -50,7 +50,12 @@ def set_plot_params(input_params, needed_params):
         'q_b_ms' : 8,
         'q_b_mew' : .5,
 
-        'b_zorder' : 20
+        'b_zorder' : 20,
+
+        'act_lc' : 'k',
+        'k_eq_lc' : 'darkturquoise',
+        'mass_lc' : 'purple'
+
         }
 
     # Specify value for missing input

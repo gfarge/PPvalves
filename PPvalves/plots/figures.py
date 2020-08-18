@@ -12,7 +12,9 @@ from matplotlib.patches import Rectangle
 # My packages
 # -----------
 from PPvalves.plots.utility import set_plot_params
-from PPvalves.plots.elements import valves, q_profile, pp_profile, bounds, bound_gauge
+from PPvalves.plots.elements import valves, q_profile, pp_profile, bounds, \
+                                    bound_gauge, recurrence, activity_dip, \
+                                    perm_eq, activity_rate, mass_balance
 
 from PPvalves.utility import calc_k, calc_Q
 import PPvalves.equilibrium as equi
@@ -23,7 +25,7 @@ import PPvalves.equilibrium as equi
 
 # ------------------------------------------------------------------
 
-def x_profile(X, P, PARAM, VALVES, states_override=None, fig=None, ax=None, plot_params={}, save_name=None):
+def x_profile(X, P, PARAM, VALVES, states_override=None, plot_params={}, save_name=None):
     """
     Plot profile of pore pressure, flux and valve states and positions at a
     given time on an existing figure and axes.
@@ -63,13 +65,7 @@ def x_profile(X, P, PARAM, VALVES, states_override=None, fig=None, ax=None, plot
     """
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
-    if fig is None:
-        fig = plt.gcf()
-
-    if ax is None:
-        ax_q = plt.gca()
-    else:
-        ax_q = ax
+    fig, ax_q = plt.subplots(figsize=(8, 3.5))
 
     # --> Add another axis for p, and switch location of labels
     ax_p = ax_q.twinx()
@@ -101,6 +97,8 @@ def x_profile(X, P, PARAM, VALVES, states_override=None, fig=None, ax=None, plot
 
     #    ax_p.set_title('State of the system at t={:.2f}'.format(t_plot))
 
+    plt.tight_layout()
+
     # Saving?
     # -------
     if save_name is not None:
@@ -112,7 +110,7 @@ def x_profile(X, P, PARAM, VALVES, states_override=None, fig=None, ax=None, plot
     axes = [ax_p, ax_q]
     g_objs = [pp_line, q_line, valves_pc, v_op_pc, v_cl_pc]
 
-    return axes, g_objs
+    return fig, axes, g_objs
 
 
 # ----------------------------------------------------------------------------
@@ -204,3 +202,224 @@ def init(X, p0, states0, VALVES, PARAM, plot_params={}, save_name=None):
     return fig, axes
 
 # ------------------------------------------------------------------
+
+def recurrence_fig(event_t, rec, log=True, tlim=None, save_name=None):
+    """
+    Plots events recurrence interval in time.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension is N_ev, the recurrence intervals are
+        counted at each events, for the next interval: last event is excluded.
+    rec : 1D array
+        Array of events recurrence interval, time before the next event.
+        Dimension is N_ev - 1
+    log : bool (default=`True`)
+        Option to have the y-axis (recurrence intervals) in log scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : axes object from matplotlib.
+        The axes created in this function.
+    """
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = recurrence(rec, event_t, log=log, tlim=tlim,
+                                 fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print('Saving figure at {:}'.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs
+
+# ------------------------------------------------------------------
+
+def activity_dip_fig(event_t, event_x, tlim=None, save_name=None):
+    """
+    Plots activity across dip in time.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension is N_event.
+    event_x : 1D array
+        Array of event locations, dimension is N_event.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : axes object from matplotlib.
+        The axes created in this function.
+    """
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = activity_dip(event_t, event_x, tlim=tlim, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print('Saving figure at {:}'.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs
+
+
+# ------------------------------------------------------------------
+
+def activity_rate_fig(rate_time, rate, tlim=None, save_name=None):
+    """
+    Plots activity rate in time.
+
+    Parameters
+    ----------
+    rate_time : 1D array
+        Array of times for which the activity rate is computed, dimension is
+        N_times.
+    rate : 1D array
+        Array of activity rate in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : axes object from matplotlib.
+        The axes created in this function.
+    """
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = activity_rate(rate_time, rate, tlim=tlim, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print('Saving figure at {:}'.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def perm_eq_fig(T, k_eq, tlim=None, log=True, save_name=None):
+    """
+    Plots equivalent permeability in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    k_eq : 1D array
+        Array of equivalent permeability in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    log : bool (default=`True`)
+        Option to have the y-axis (permeability) in log-scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    """
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = perm_eq(T, k_eq, tlim=tlim, log=log, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print('Saving figure at {:}'.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def mass_balance_fig(T, deltaM, tlim=None, save_name=None):
+    """
+    Plots mass balance in system in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    deltaM : 1D array
+        Array of mass balance in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    log : bool (default=`True`)
+        Option to have the y-axis (permeability) in log-scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    """
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = mass_balance(T, deltaM, tlim=tlim, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print('Saving figure at {:}'.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs
