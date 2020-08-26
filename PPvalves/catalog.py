@@ -15,24 +15,30 @@ def event_count(ev_type, states, time, catalog=False, v_x=None):
     the index when the just calculated dP crosses the threshold
     corresponding to the event type selected.
 
-    - Parameters:
-            + :param ev_type: type of event to count, either "close", or
-    	"open"
-            + :param states: is a nd array of states history: Nt * Nbarr.
-            False is closed, True is
+    Parameters
+    ----------
+    ev_type : str
+        type of event to count, either "close", or "open".
+    states : nd array
+        Valve states history: N_times * N_valves.  False is closed, True is
             open. Output of run_ppv, v_activity[times,0,valve_idx],
             where valve_idx is the idxs of the valves you want the
             event count for.
-            + :param time: is the time vector, np array, same shape as first
-    	+ :param catalog: boolean, if turned True, the catalog option
-    	allows close_count to return x_events in addition to t_event.
-    	When turned on, this option recquires that v_x is specified.
-    	+ :param v_x: np array, 1D, same size as 2nd dimension of
-    	states, location of each valve.
+    time : nd array
+        Array of times, same shape as first dimension of valve states.
+    catalog : bool (default `False`)
+        if turned to `True`, the catalog option allows close_count to return
+        x_events in addition to t_event.  When turned on, this option recquires
+        that v_x is specified.
+    v_x : 1d array,
+        Location of each valve, same size as 2nd dimension of states.
 
-    - Outputs:
-            + :return: events_t, np array of event times.
-            + :return: events_x, np array of event times, if catalog is True.
+    Returns
+    -------
+    events_t : nd array
+        Event times.
+    events_x : nd array
+        Event locations, if catalog is True.
 
     """
 
@@ -109,22 +115,28 @@ def open_count(states, time, catalog=False, v_x=None):
     the index when the just calculated dP is higher than dPhi for
     the valve. Calls event_count, same parameters.
 
-    - Parameters:
-            + :param states: is a nd array of states history: Nt * Nbarr.
-            False is closed, True is
-            open. Output of run_ppv, v_activity[times,0,valve_idx],
-            where valve_idx is the idxs of the valves you want the
-            event count for.
-            + :param time: is the time vector, np array, same shape as first
-    	+ :param catalog: boolean, if turned True, the catalog option
-    	allows close_count to return x_events in addition to t_event.
-    	When turned on, this option recquires that v_x is specified.
-    	+ :param v_x: np array, 1D, same size as 2nd dimension of
-    	states, location of each valve.
+    Parameters:
+    -----------
+    states: nd array
+        Valve states history, dimension Ntimes * Nvalves.  False is closed, True is
+        open. Output of run_ppv, v_activity[times,0,valve_idx], where valve_idx
+        is the idxs of the valves you want the event count for.
+    time : nd array
+        Array of times, same shape as first dimension of valve states.
+    catalog : bool (default `False`)
+        if turned to `True`, the catalog option allows close_count to return
+        x_events in addition to t_event.  When turned on, this option recquires
+        that v_x is specified.
+    v_x : 1d array,
+        Location of each valve, same size as 2nd dimension of states.
 
-    - Outputs:
-            + :return: events_t, np array of event times.
-            + :return: events_x, np array of event times, if catalog is True.
+    Returns
+    -------
+    events_t : nd array
+        Event times.
+    events_x : nd array
+        Event locations, if catalog is True.
+
 
     """
 
@@ -141,22 +153,27 @@ def close_count(states, time, catalog=False, v_x=None):
     the index when the just calculated dP is higher than dPhi for
     the valve. Calls event_count, same parameters.
 
-    - Parameters:
-            + :param states: is a nd array of states history: Nt * Nbarr.
-            False is closed, True is
-            open. Output of run_ppv, v_activity[times,0,valve_idx],
-            where valve_idx is the idxs of the valves you want the
-            event count for.
-            + :param time: is the time vector, np array, same shape as first
-    	+ :param catalog: boolean, if turned True, the catalog option
-    	allows close_count to return x_events in addition to t_event.
-    	When turned on, this option recquires that v_x is specified.
-    	+ :param v_x: np array, 1D, same size as 2nd dimension of
-    	states, location of each valve.
+    Parameters:
+    -----------
+    states: nd array
+        Valve states history, dimension Ntimes * Nvalves.  False is closed, True is
+        open. Output of run_ppv, v_activity[times,0,valve_idx], where valve_idx
+        is the idxs of the valves you want the event count for.
+    time : nd array
+        Array of times, same shape as first dimension of valve states.
+    catalog : bool (default `False`)
+        if turned to `True`, the catalog option allows close_count to return
+        x_events in addition to t_event.  When turned on, this option recquires
+        that v_x is specified.
+    v_x : 1d array,
+        Location of each valve, same size as 2nd dimension of states.
 
-    - Outputs:
-            + :return: events_t, np array of event times.
-            + :return: events_x, np array of event times, if catalog is True.
+    Returns
+    -------
+    events_t : nd array
+        Event times.
+    events_x : nd array
+        Event locations, if catalog is True.
 
     """
 
@@ -172,13 +189,16 @@ def recurrence(event_time):
     Calculates time before next event for an event sequence.
 
 
-    - Parameters
-            + :param event_time: 1D array of event times, in seconds
-            + :type event_time: ndarray
+    Parameters
+    ----------
+    event_time : 1D array
+        Event times.
 
-    - Output
-            + :rtype: ndarray
-            + :return: time before next event, in seconds
+    Returns
+    -------
+    time_before_next
+        Time before next event for the all the events but the last one. Same
+        unit as the event times.
     """
 
     time_before_next = event_time[1:] - event_time[:-1]
@@ -187,36 +207,35 @@ def recurrence(event_time):
 
 #---------------------------------------------------------------------------------
 
-def event_count_signal(event_time, dt, t0=0., tn='max', norm=False):
+def event_count_signal(event_time, dt, t0=0., tn=None, norm=False):
     """
     Calculates the event count signal: returns an evenly spaced array
     of the binned count of events.
 
-    - Parameters
-            + :param event_time: 1D array of event times, in seconds.
-            + :type event_time: ndarray
-            + :param dt: duration of bins, final discretization of the event
-               count signal, in seconds.
-            + :type dt: float
-            + :param t0: float, beginning time of the first bin, in seconds.
-             Default is 0.
-            + :type t0: float
-            + :param tn: float, beginning time of the final bin, in seconds.
-              Default is time of last event.
-            + :type tn: float
-            + :param norm: default is False, option to normalize by norm of vector.
-            + :type norm: bool
+    Parameters
+    ----------
+    event_time : 1D array
+        Event times.
+    dt : float
+        Binning length to compute activity rate, final discretization of the
+        event count signal, in seconds.
+    t0 : float (default = `0`)
+        Beginning time of the first bin, in seconds.
+    tn : float (default `None`)
+        Beginning time of the final bin, in seconds. Default is time of last event.
+    norm : bool (default = `False`)
+        Option to normalize by norm of vector.
 
-    - Output
-            + :return:  event_count_signal : 1D array of evenly spaced count of
-              events in bins of dt.
-            + :rtype:  event_count_signal : ndarray
-            + :return: bin_edges : 1D array of boundaries of all bins, in second.
-            + :rtype: bin_edges : ndarray
+    Returns
+    -------
+    event_count_signal : 1D array
+        Evenly spaced count of events in bins of dt. Activity rate.
+    bin_edges : 1D array
+        Boundaries of all bins, in second.
     """
 
     # Check if tn is 'max' and if so set it to its value
-    if tn == 'max':
+    if tn is None:
         tn = max(event_time)
 
     # The evenly spaced count is in fact a simple histogram
