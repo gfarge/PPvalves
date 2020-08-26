@@ -54,7 +54,10 @@ def set_plot_params(input_params, needed_params):
 
         'act_lc' : 'k',
         'k_eq_lc' : 'darkturquoise',
-        'mass_lc' : 'purple'
+        'mass_lc' : 'purple',
+
+        'cyclic_cmap' : 'twilight',
+        'time_cmap' : 'viridis'
 
         }
 

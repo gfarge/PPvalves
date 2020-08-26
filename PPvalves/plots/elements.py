@@ -724,7 +724,7 @@ def activity_dip(event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None)
     ev_l, = ax.plot(event_t, event_x, 'o', c=plot_params['act_lc'], ms=1)
 
     if tlim is not None:
-        ax.set_tlim(tlim)
+        ax.set_xlim(tlim)
 
     # Set labels and title
     # --------------------
@@ -788,7 +788,7 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None)
 
     # Plot
     # ----
-    act_r_l, = plt.plot(rate_time, rate, ls='-', lw=1.5, c=plot_params['act_lc'])
+    act_r_l, = ax.plot(rate_time, rate, ls='-', lw=1.5, c=plot_params['act_lc'])
 
     if tlim is not None:
         ax.set_xlim(tlim)
@@ -856,7 +856,7 @@ def perm_eq(T, k_eq, tlim=None, log=True, plot_params={}, fig=None, ax=None):
 
     # Plot
     # ----
-    k_eq_l, = plt.plot(T, k_eq, ls='-', lw=1.5, c=plot_params['k_eq_lc'])
+    k_eq_l, = ax.plot(T, k_eq, ls='-', lw=1.5, c=plot_params['k_eq_lc'])
 
     if log:
         ax.set_yscale('log')
@@ -889,9 +889,6 @@ def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
         Array of mass balance in time, dimension is N_times.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
-    log : bool (default=`True`)
-        Option to have the y-axis (permeability) in log-scale. Set to
-        logarithmic (`True`) by default, to linear otherwise.
     plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters. Implemented:
         linecolor (any matplotlib ways of indicating color) default = 'mass_lc'
@@ -927,7 +924,7 @@ def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
 
     # Plot
     # ----
-    mass_b_l, = plt.plot(T, deltaM, ls='-', lw=1.5, c=plot_params['mass_lc'])
+    mass_b_l, = ax.plot(T, deltaM, ls='-', lw=1.5, c=plot_params['mass_lc'])
 
     if tlim is not None:
         ax.set_xlim(tlim)
@@ -940,5 +937,103 @@ def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
     plt.tight_layout()
 
     g_objs = mass_b_l
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def bound_in(T, bound_0, PARAM, tlim=None, txt=False, plot_params={}, fig=None, ax=None):
+    """
+    Plots pp/q value of in-bound in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    bound_0 : 1D array
+        Array of values taken by the in bound in time, dimension is N_times.
+    PARAM : dictionnary
+        Physical and numerical parameters dictionnary to determine which
+        variable is plotted.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    txt : bool (default `False`)
+        Option to represent and print the effective value of the input boundary
+        variable.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = 'pp_lc'
+        : 'crimson', 'q_lc' : 'teal')
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    """
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    if PARAM['bound'][0]=='Q':
+        needed_params = ['pp_lc']
+    else:
+        needed_params = ['q_lc']
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    if PARAM['bound'][0] == 'Q':
+        lc = plot_params['pp_lc']
+        ylabel = r'$p_{in}$ (scaled)'
+        title = 'Input pressure in time'
+    else:
+        lc = plot_params['q_lc']
+        ylabel = r'$q_{in}$ (scaled)'
+        title = 'Input flux in time'
+
+    # Plot
+    # ----
+    bound_0_l, = ax.plot(T, bound_0, ls='-', lw=1.5, c=lc)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Add value of effective bound?
+    # -----------------------------
+    if txt:
+        v_eff = np.mean(bound_0[len(2*bound_0)//3:])
+        ax.axhline(v_eff, lw=.8, c='k', zorder=0)
+
+        if PARAM['bound'][0] == 'Q':
+            label = r"$\overline{{p_{{in}}}}={:.2f}$".format(v_eff)
+        else:
+            label = r"$\overline{{q_{{in}}}}={:.2f}$".format(v_eff)
+
+        ax.text(ax.get_xlim()[0]+0.01, v_eff, label, ha='left', va='bottom',
+                bbox={'boxstyle' : 'square, pad=0.1', 'alpha' : 0.5,
+                      'facecolor' : 'w', 'edgecolor' : 'w'}, zorder=11)
+
+    # Labels and title
+    # ----------------
+    ax.set_title(title)
+    ax.set_xlabel("Time (scaled)")
+    ax.set_ylabel(ylabel, c=lc)
+    plt.tight_layout()
+
+    g_objs = bound_0_l
 
     return fig, ax, g_objs
