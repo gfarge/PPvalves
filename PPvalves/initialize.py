@@ -12,7 +12,7 @@ import PPvalves.utility as util
 # Core
 # ====
 
-def read_input(input_args):
+def read_input(input_args, verbose=False):
     """
     Parses input arguments and processes them into the PARAM dictionnary
     (physical and numerical parameters).  When a certain parameter is not
@@ -25,6 +25,8 @@ def read_input(input_args):
         Example: to choose the value 6.8e-6 for parameter Xi, "Xi=6.8e-6" must
         be present in the list. Any parameter for which no value is specified
         will be set to default.
+    verbose : bool (default `False`)
+        Option to make it speak to you.
 
     Returns
     -------
@@ -56,7 +58,7 @@ def read_input(input_args):
         'Ttot_' : 0.05,  # physical duration of the run, scaled
 
         'bound' : 'QP',  # boundary conditions code ('PP', 'QP')
-        'bound_value' : 1,  # scaled value of fixed variable at boundary in 0
+        'bound_value' : 1.0,  # scaled value of fixed variable at boundary in 0
 
         'init_v_state' : 'open'  # initial valve state
         }
@@ -64,11 +66,13 @@ def read_input(input_args):
     for arg_str in input_args:
         arg, value = arg_str.split('=')
         if arg in PARAM.keys():
-            print('Got {:}, puts it in'.format(arg))
+            if verbose: print('Got {:}, puts it in'.format(arg))
             if isinstance(PARAM[arg], int):
                 PARAM[arg] = int(value)
-            else:
+            elif isinstance(PARAM[arg], float):
                 PARAM[arg] = float(value)
+            elif isinstance(PARAM[arg], str):
+                PARAM[arg] = value
 
     # Compute the rest of parameters
     # ------------------------------
@@ -95,18 +99,9 @@ def read_input(input_args):
     PARAM['dt_'] = 0.5 * PARAM['h_']**2
     PARAM['Nt'] = int(np.ceil(PARAM['Ttot_']/PARAM['dt_']))
 
-    # Check for boundary conditions args
-    # ----------------------------------
-    # --> Check for input
-    for arg_str in input_args:
-        arg, value = arg_str.split('=')
-        if arg == 'bound':
-            PARAM['bound'] = value
-            print('Got {:}, puts it in'.format(arg))
-        elif arg == 'bound_value':
-            PARAM['bound_value'] = float(value)
-            print('Got {:}, puts it in'.format(arg))
 
+    # Set up boundary conditions
+    # --------------------------
     PARAM = boundary(PARAM['bound'], PARAM['bound_value'], PARAM)
 
     return PARAM
