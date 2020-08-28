@@ -13,7 +13,7 @@ from PPvalves.utility import calc_k, calc_Q
 # Core
 # ====
 
-def in_out(P, PARAM, int_t=True, verbose=False):
+def in_out(IN, PARAM, bounds=False, int_t=True, verbose=False):
     r"""
     Computes the time derivative of the total mass (per unit area) along the
     domain, at time $t$.
@@ -23,10 +23,15 @@ def in_out(P, PARAM, int_t=True, verbose=False):
 
     Parameters
     ----------
-    P : ndarray
-    	Pore-pressure history, dimensions 2D : Nt,Nx.
+    IN : ndarray
+        Default : pore-pressure history, dimensions 2D : Nt,Nx. If
+        `bounds=True`, value of the free variable at each bound, dimensions 2D:
+        Nt, 2 (in, out).
     PARAM : dict
     	Parameters dictionnary.
+    bounds : bool (default=`False`)
+        Option to input value of the free variable at each bound instead of
+        full pore pressure history.
     int_t : bool, default = False
     	Set to True fo option to compute $\delta M(t)$ instead of
     	$\frac{dM}{dt}(t)$.
@@ -45,6 +50,11 @@ def in_out(P, PARAM, int_t=True, verbose=False):
     """
     # Unpack
     # ------
+    # --> A clearer name for P/bounds
+    if bounds:
+        bounds_in_t = IN
+    else:
+        P = IN
     # --> Boundary conditions
     qin_ = PARAM['qin_']
     qout_ = PARAM['qout_']
@@ -67,13 +77,19 @@ def in_out(P, PARAM, int_t=True, verbose=False):
     # ------------------------------------------
     if np.isnan(qin_) and (not np.isnan(p0_)):
         # --> Fixed pressure in 0
-        qin_ = rho*k_bg/mu * (p0_ - P[:, 0])/hb_ * P_scale/X_scale / q_scale
+        if bounds:
+            qin_ = bounds_in_t[:, 0]
+        else:
+            qin_ = rho*k_bg/mu * (p0_ - P[:, 0])/hb_ * P_scale/X_scale / q_scale
     elif (not np.isnan(qin_)) and np.isnan(p0_):
         # --> Fixed flux in 0
         pass
     if np.isnan(qout_) and (not np.isnan(pL_)):
         # --> Fixed pressure in L
-        qout_ = rho*k_bg/mu * (P[:, -1] - pL_)/hb_ * P_scale/X_scale / q_scale
+        if bounds:
+            qout_ = bounds_in_t[:, -1]
+        else:
+            qout_ = rho*k_bg/mu * (P[:, -1] - pL_)/hb_ * P_scale/X_scale / q_scale
     elif (not np.isnan(qout_)) and np.isnan(pL_):
         # --> Fixed flux in L
         pass

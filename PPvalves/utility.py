@@ -113,3 +113,44 @@ def calc_bound_0(P0, PARAM):
                   * PARAM['q_scale']*PARAM['X_scale']/PARAM['P_scale']
 
     return bound_0
+
+# ----------------------------------------------------------------------------
+
+def calc_bound_L(PL, PARAM):
+    """
+    Computes the value of out-flux (resp. output pressure) for fixed pressure
+    (resp. fixed flux) at the output fictive point.
+
+    Parameters
+    ----------
+    PL : float or 1d array
+        Pore pressure at last point of domain. Can be at a given time (float)
+        or in time (1d array).
+    PARAM : dict.
+        Physical parameters dictionnary.
+
+    Returns
+    -------
+    bound_L : float or 1d array
+        Value of out-flux (resp. output pressure) for fixed pressure (resp. fixed
+        flux) at the output fictive point. Depending on input, can be a value at
+        a given time, or in time. Same shape as input PL.
+
+    Note:
+    -----
+    Only 'PP' and 'QP' boundary conditions are implemented.
+
+    """
+    # In the case where output pressure is fixed: bound_L = qout_
+    if np.isnan(PARAM['qout_']):
+        bound_L = PARAM['k_bg']*PARAM['rho']/PARAM['mu'] \
+                 * (PL - PARAM['pL_']) \
+                 * PARAM['P_scale']/PARAM['X_scale']/PARAM['q_scale']
+
+    # In the case where input flux is fixed: bound_L = pL
+    elif np.isnan(PARAM['pL_']):
+        bound_L = PL - PARAM['qout_'] * PARAM['hb_'] \
+                  * PARAM['mu']/PARAM['rho']/PARAM['k_bg'] \
+                  * PARAM['q_scale']*PARAM['X_scale']/PARAM['P_scale']
+
+    return bound_L
