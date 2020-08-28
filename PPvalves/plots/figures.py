@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib import ticker
+from matplotlib.gridspec import GridSpec
 
 # My packages
 # -----------
@@ -156,7 +157,7 @@ def init(X, p0, states0, VALVES, PARAM, plot_params={}, save_name=None):
     # Initialize figure layout
     # ------------------------
     fig = plt.figure(figsize=(8, 3.5))
-    gs = fig.add_gridspec(1, 8)
+    gs = GridSpec(1, 8, figure=fig)
     fig.subplots_adjust(wspace=0.05)
 
     ax_pp = fig.add_subplot(gs[:, :7])
