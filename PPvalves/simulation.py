@@ -67,9 +67,11 @@ def run_light(P0, PARAM, VALVES, verbose=True):
 
     Returns
     -------
-    bound_in_t : 1d array
-        Flux (resp. pressure) at entry fictive point in time, dimension
-        PARAM['Nt'] + 1.
+    Plast : 1d array
+        Last state of pore pressure across the domain, dimension PARAM['Nx']+1.
+    bounds_in_t : 2d array
+        Flux (resp. pressure) at in- and output fictive points in time, dimension
+        (PARAM['Nt'] + 1) * 2.
     v_activity : 3d array
         Indicators of valve state and pressure differential witnessed at all
         times. Used to compute catalogs of events. Dimensions : PARAM['Nt'] + 1
@@ -81,6 +83,7 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         (trun['prod']), the time spent on solving for next state of pressure
         (trun['solve']), the time spent on actionning valves (trun['valve']).
         The sum of all three is the complete runtime.
+
     """
     if verbose: print('simulation.run_light -- initialization...')
     # Create variables for useful values
@@ -104,8 +107,9 @@ def run_light(P0, PARAM, VALVES, verbose=True):
 
     # Initialize bound 0
     # ------------------
-    bound_in_t = np.zeros(Nt+1)
-    bound_in_t[0] = util.calc_bound_0(P0[0], PARAM)
+    bounds_in_t = np.zeros((Nt+1, 2))
+    bounds_in_t[0, 0] = util.calc_bound_0(P0[0], PARAM)
+    bounds_in_t[0, 1] = util.calc_bound_L(P0[-1], PARAM)
 
     # Set up matrix system
     # --------------------
@@ -123,7 +127,7 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         # ------------------------
         tprod0 = time.time()  # start timer for product
 
-        r = mat.product(B,Pprev) + b # calc knowns (right hand side)
+        r = mat.product(B, Pprev) + b # calc knowns (right hand side)
 
         trun['prod'] = trun['prod'] + time.time() - tprod0  # add elapsed t
 
@@ -132,7 +136,8 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         tsolve0 = time.time()  # start timer for solver
 
         Pnext = mat.TDMAsolver(A,r) # solve system
-        bound_in_t[tt+1] = util.calc_bound_0(Pnext[0], PARAM)  # get bound 0
+        bounds_in_t[tt+1, 0] = util.calc_bound_0(Pnext[0], PARAM)  # get bound 0
+        bounds_in_t[tt+1, 1] = util.calc_bound_L(Pnext[-1], PARAM) # get bound L
 
         trun['solve'] = trun['solve'] + time.time() - tsolve0 # add elapsed t
 
@@ -152,7 +157,9 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         v_activity[tt+1, 1, :] = VALVES['dP']
     if verbose: print('simulation.run_light -- Done!')
 
-    return bound_in_t, v_activity, trun
+    Plast = Pnext
+
+    return Plast, bounds_in_t, v_activity, trun
 
 # ----------------------------------------------------------------------------
 
@@ -280,18 +287,17 @@ def run_time(PARAM):
 
 # -----------------------------------------------------------------------------
 
-def save(filename, P_, v_activity, VALVES, PARAM, full=False, verbose=True):
+def save(filename, v_activity, VALVES, PARAM, P_=None, P0=None, Plast=None, \
+         bounds=None , verbose=True):
     """
-    Save the results and parameters of a simulation. Options to save only valve
-    activity or add in full pore pressure history. The results are saved as a
-    dictionnary, using pickle.
+    Save the results and parameters of a simulation. The results are saved as a
+    dictionnary, using the pickle package. The save fields include all
+    specified input.
 
     Parameters
     ----------
     filename : str
        Path and filename where to save the file. No extension needed.
-    P_ : 2d array
-        Pressure history, dimensions: Nt * Nx. Only saved if full = `True`.
     PARAM : dict
         Parameters dictionnary.
     VALVES : dict
@@ -300,26 +306,42 @@ def save(filename, P_, v_activity, VALVES, PARAM, full=False, verbose=True):
         Valve activity array, dimensions: Nt * 2 * Nvalves. On the second
         dimension, stores *(a)* the valve state (1 is open, 0 is closed),
         *(b)* the pressure differential across the valve.
-    full : bool (default=`False`)
-        Option to save full pressure history (if full=`True`).
+    P_ : 2d array (default=`None`)
+        Pressure history, dimensions: Nt * Nx. Optionnal.
+    P0 : 1d array (default=`None`)
+        Pressure history at first point of domain, dimensions: Nt. Optionnal.
+    Plast : 1d array (default=`None`)
+        Pressure history at last point of domain, dimensions: Nt. Optionnal.
+    bounds : 2d array (default=`None`)
+        Value of the free variable at each boundary, dimensions: Nt * 2 (input,
+        output). Optionnal.
     verbose : bool (default=`True`)
         Option to have the function print what it's doing, succinctly.
 
     """
     # Build output dictionnary
     # ------------------------
+    # --> Necessary saving
     out = {}
     out['PARAM'] = PARAM
     out['VALVES'] = VALVES
     out['v_activity'] = v_activity
-    if full:
-        # --> option to save full pressure history
-        out['P_'] = P_
-        filename += '.full'
-        if verbose : print('simulation.save -- saving full pore pressure history')
 
-    filename += '.pkl'
+    # --> Optionnal saving
+    if P_ is not None:
+        out['P_'] = P_
+
+    if Plast is not None:
+        out['Plast'] = Plast
+
+    if P0 is not None:
+        out['P0'] = P0
+
+    if bounds is not None:
+        out['bounds'] = bounds
+
     # Actually saving
     # ---------------
+    filename += '.pkl'
     if verbose : print('simulation.save -- saving at {:}...'.format(filename))
     pickle.dump(out, open(filename, 'wb'))
