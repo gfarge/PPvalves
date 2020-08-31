@@ -513,7 +513,7 @@ def tseries_comp(T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, tlim=None,\
         T = show_T[1] - show_T[0]
         T1, T2 = show_T
 
-        ax.axvspan(T1, T2, fc='0.9', ec='0.9')
+        ax.axvspan(T1, T2, fc='0.7', ec='0.7')
 
         if with_txt:
             ax.text(T1 + 0.1*T, ax.get_ylim()[0],

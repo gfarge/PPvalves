@@ -198,7 +198,6 @@ def valve_markers(X, VALVES, states_override=None, fig=None, ax=None, X_axis='x'
                                   ec=m_op_c, zorder=plot_params['v_zorder']+1,
                                   fc=[0, 0, 0 ,0])
 
-
     return valves_op_pc, valves_cl_pc
 
 # ----------------------------------------------------------------------------
