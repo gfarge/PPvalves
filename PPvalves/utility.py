@@ -103,7 +103,7 @@ def calc_bound_0(P0, PARAM):
     # In the case where input pressure is fixed: bound_0 = q0
     if np.isnan(PARAM['qin_']):
         bound_0 = PARAM['k_bg']*PARAM['rho']/PARAM['mu'] \
-                 * (PARAM['p0_'] - P0) \
+                 * (PARAM['p0_'] - P0)/PARAM['hb_'] \
                  * PARAM['P_scale']/PARAM['X_scale']/PARAM['q_scale']
 
     # In the case where input flux is fixed: bound_0 = p0
@@ -144,7 +144,7 @@ def calc_bound_L(PL, PARAM):
     # In the case where output pressure is fixed: bound_L = qout_
     if np.isnan(PARAM['qout_']):
         bound_L = PARAM['k_bg']*PARAM['rho']/PARAM['mu'] \
-                 * (PL - PARAM['pL_']) \
+                 * (PL - PARAM['pL_'])/PARAM['hb_'] \
                  * PARAM['P_scale']/PARAM['X_scale']/PARAM['q_scale']
 
     # In the case where input flux is fixed: bound_L = pL
