@@ -637,6 +637,16 @@ def recurrence(event_t, rec, log=True, tlim=None, plot_params={}, fig=None, ax=N
     g_objs : line object from matplotlib
         The line object created in this function.
     """
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] < event_t) & (event_t < tlim[1])
+        event_t = event_t[t_win]
+        rec = rec[t_win]
+
+    if len(event_t) > 1e4:
+        rasterize=True
+
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
@@ -652,7 +662,8 @@ def recurrence(event_t, rec, log=True, tlim=None, plot_params={}, fig=None, ax=N
 
     # Plot the events
     # ---------------
-    ev_l, = ax.plot(event_t[:-1], rec, 'o', c=plot_params['act_lc'], ms=1)
+    ev_l, = ax.plot(event_t[:-1], rec, 'o', c=plot_params['act_lc'], ms=1,
+                    rasterized=rasterize)
     if log:
         ax.set_yscale('log')
 
@@ -705,6 +716,16 @@ def activity_dip(event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None)
     g_objs : line object from matplotlib
         The line object created in this function.
     """
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] < event_t) & (event_t < tlim[1])
+        event_t = event_t[t_win]
+        event_x = event_x[t_win]
+
+    if len(event_t) > 1e4:
+        rasterize=True
+
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
@@ -720,7 +741,8 @@ def activity_dip(event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None)
 
     # Plot the events
     # ---------------
-    ev_l, = ax.plot(event_t, event_x, 'o', c=plot_params['act_lc'], ms=1)
+    ev_l, = ax.plot(event_t, event_x, 'o', c=plot_params['act_lc'], ms=1,
+                    rasterized=rasterize)
 
     if tlim is not None:
         ax.set_xlim(tlim)
@@ -772,6 +794,16 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None)
     g_objs : line object from matplotlib
         The line object created in this function.
     """
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] < T) & (T < tlim[1])
+        rate_time = rate_time[t_win]
+        rate = rate [t_win]
+
+    if len(rate_time) > 1e4:
+        rasterize=True
+
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
@@ -787,7 +819,8 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None)
 
     # Plot
     # ----
-    act_r_l, = ax.plot(rate_time, rate, ls='-', lw=1.5, c=plot_params['act_lc'])
+    act_r_l, = ax.plot(rate_time, rate, ls='-', lw=1.5, c=plot_params['act_lc'],
+                       rasterized=rasterize)
 
     if tlim is not None:
         ax.set_xlim(tlim)
@@ -840,6 +873,16 @@ def perm_eq(T, k_eq, tlim=None, log=True, plot_params={}, fig=None, ax=None):
     g_objs : line object from matplotlib
         The line object created in this function.
     """
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] < T) & (T < tlim[1])
+        T = T[t_win]
+        k_eq = k_eq[t_win]
+
+    if len(T) > 1e4:
+        rasterize=True
+
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
@@ -855,7 +898,8 @@ def perm_eq(T, k_eq, tlim=None, log=True, plot_params={}, fig=None, ax=None):
 
     # Plot
     # ----
-    k_eq_l, = ax.plot(T, k_eq, ls='-', lw=1.5, c=plot_params['k_eq_lc'])
+    k_eq_l, = ax.plot(T, k_eq, ls='-', lw=1.5, c=plot_params['k_eq_lc'],
+                      rasterized=rasterize)
 
     if log:
         ax.set_yscale('log')
@@ -908,6 +952,16 @@ def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
     g_objs : line object from matplotlib
         The line object created in this function.
     """
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] < T) & (T < tlim[1])
+        T = T[t_win]
+        bound_0 = bound_0[t_win]
+
+    if len(T) > 1e4:
+        rasterize=True
+
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
@@ -923,7 +977,8 @@ def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
 
     # Plot
     # ----
-    mass_b_l, = ax.plot(T, deltaM, ls='-', lw=1.5, c=plot_params['mass_lc'])
+    mass_b_l, = ax.plot(T, deltaM, ls='-', lw=1.5, c=plot_params['mass_lc'],
+                        rasterized=rasterize)
 
     if tlim is not None:
         ax.set_xlim(tlim)
@@ -979,6 +1034,13 @@ def bound_in(T, bound_0, PARAM, tlim=None, txt=False, plot_params={}, fig=None, 
     g_objs : line object from matplotlib
         The line object created in this function.
     """
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] < T) & (T < tlim[1])
+        T = T[t_win]
+        bound_0 = bound_0[t_win]
+
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
@@ -1006,7 +1068,7 @@ def bound_in(T, bound_0, PARAM, tlim=None, txt=False, plot_params={}, fig=None, 
 
     # Plot
     # ----
-    bound_0_l, = ax.plot(T, bound_0, ls='-', lw=1.5, c=lc)
+    bound_0_l, = ax.plot(T, bound_0, ls='-', lw=1.5, c=lc, rasterized=rasterize)
 
     if tlim is not None:
         ax.set_xlim(tlim)
