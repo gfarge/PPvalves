@@ -646,6 +646,8 @@ def recurrence(event_t, rec, log=True, tlim=None, plot_params={}, fig=None, ax=N
 
     if len(event_t) > 1e4:
         rasterize=True
+    else:
+        rasterize=False
 
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
@@ -725,6 +727,8 @@ def activity_dip(event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None)
 
     if len(event_t) > 1e4:
         rasterize=True
+    else:
+        rasterize=False
 
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
@@ -803,6 +807,8 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None)
 
     if len(rate_time) > 1e4:
         rasterize=True
+    else:
+        rasterize=False
 
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
@@ -882,6 +888,8 @@ def perm_eq(T, k_eq, tlim=None, log=True, plot_params={}, fig=None, ax=None):
 
     if len(T) > 1e4:
         rasterize=True
+    else:
+        rasterize=False
 
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
@@ -957,10 +965,12 @@ def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
     if tlim is not None:
         t_win = (tlim[0] < T) & (T < tlim[1])
         T = T[t_win]
-        bound_0 = bound_0[t_win]
+        deltaM = deltaM[t_win]
 
     if len(T) > 1e4:
         rasterize=True
+    else:
+        rasterize=False
 
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
@@ -1040,6 +1050,11 @@ def bound_in(T, bound_0, PARAM, tlim=None, txt=False, plot_params={}, fig=None, 
         t_win = (tlim[0] < T) & (T < tlim[1])
         T = T[t_win]
         bound_0 = bound_0[t_win]
+
+    if len(T) > 1e4:
+        rasterize=True
+    else:
+        rasterize=False
 
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
