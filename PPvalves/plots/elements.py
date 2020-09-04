@@ -768,7 +768,7 @@ def activity_dip(event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None)
 
 def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None):
     """
-    Plots equivalent permeability in time.
+    Plots activity rate in time.
 
     Parameters
     ----------

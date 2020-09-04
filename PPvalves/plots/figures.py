@@ -237,7 +237,7 @@ def recurrence_fig(event_t, rec, log=True, tlim=None, save_name=None):
     # -----------------------
     fig, ax = plt.subplots(figsize=(8, 3.5))
 
-    fig, ax, g_objs = recurrence(rec, event_t, log=log, tlim=tlim,
+    fig, ax, g_objs = recurrence(event_t, rec, log=log, tlim=tlim,
                                  fig=fig, ax=ax)
     plt.tight_layout()
 
@@ -337,7 +337,7 @@ def activity_rate_fig(rate_time, rate, tlim=None, save_name=None):
 
 # ----------------------------------------------------------------------------
 
-def perm_eq_fig(T, k_eq, tlim=None, log=True, save_name=None):
+def perm_eq_fig(T, k_eq, k_ref=None, tlim=None, log=True, save_name=None):
     """
     Plots equivalent permeability in time.
 
@@ -347,6 +347,8 @@ def perm_eq_fig(T, k_eq, tlim=None, log=True, save_name=None):
         Array of times, dimension is N_times.
     k_eq : 1D array
         Array of equivalent permeability in time, dimension is N_times.
+    k_ref : tuple (default `None`)
+        Option to plot background and fully closed equivalent permeability.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
     log : bool (default=`True`)
@@ -368,7 +370,8 @@ def perm_eq_fig(T, k_eq, tlim=None, log=True, save_name=None):
     # -----------------------
     fig, ax = plt.subplots(figsize=(8, 3.5))
 
-    fig, ax, g_objs = perm_eq(T, k_eq, tlim=tlim, log=log, fig=fig, ax=ax)
+    fig, ax, g_objs = perm_eq(T, k_eq, k_ref=k_ref, tlim=tlim, log=log,
+                              fig=fig, ax=ax)
     plt.tight_layout()
 
     # Saving?
