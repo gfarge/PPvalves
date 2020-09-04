@@ -639,6 +639,7 @@ def recurrence(event_t, rec, log=True, tlim=None, plot_params={}, fig=None, ax=N
     """
     # Define plot time window
     # -----------------------
+    event_t = event_t[:-1]  # time before next event, exclude last
     if tlim is not None:
         t_win = (tlim[0] < event_t) & (event_t < tlim[1])
         event_t = event_t[t_win]
@@ -664,7 +665,7 @@ def recurrence(event_t, rec, log=True, tlim=None, plot_params={}, fig=None, ax=N
 
     # Plot the events
     # ---------------
-    ev_l, = ax.plot(event_t[:-1], rec, 'o', c=plot_params['act_lc'], ms=1,
+    ev_l, = ax.plot(event_t, rec, 'o', c=plot_params['act_lc'], ms=1,
                     rasterized=rasterize)
     if log:
         ax.set_yscale('log')
@@ -801,7 +802,7 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None)
     # Define plot time window
     # -----------------------
     if tlim is not None:
-        t_win = (tlim[0] < T) & (T < tlim[1])
+        t_win = (tlim[0] < rate_time) & (rate_time < tlim[1])
         rate_time = rate_time[t_win]
         rate = rate [t_win]
 
@@ -844,7 +845,7 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None)
 
 # ----------------------------------------------------------------------------
 
-def perm_eq(T, k_eq, tlim=None, log=True, plot_params={}, fig=None, ax=None):
+def perm_eq(T, k_eq, k_ref=None, tlim=None, log=True, plot_params={}, fig=None, ax=None):
     """
     Plots equivalent permeability in time.
 
@@ -854,6 +855,8 @@ def perm_eq(T, k_eq, tlim=None, log=True, plot_params={}, fig=None, ax=None):
         Array of times, dimension is N_times.
     k_eq : 1D array
         Array of equivalent permeability in time, dimension is N_times.
+    k_ref : tuple (default `None`)
+        Option to plot background and fully closed equivalent permeability.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
     log : bool (default=`True`)
@@ -908,6 +911,9 @@ def perm_eq(T, k_eq, tlim=None, log=True, plot_params={}, fig=None, ax=None):
     # ----
     k_eq_l, = ax.plot(T, k_eq, ls='-', lw=1.5, c=plot_params['k_eq_lc'],
                       rasterized=rasterize)
+
+    if k_ref is not None:
+        ax.axhline(k_ref, ls='-', c='k')
 
     if log:
         ax.set_yscale('log')
