@@ -913,7 +913,8 @@ def perm_eq(T, k_eq, k_ref=None, tlim=None, log=True, plot_params={}, fig=None, 
                       rasterized=rasterize)
 
     if k_ref is not None:
-        ax.axhline(k_ref, ls='-', c='k')
+        ax.axhline(k_ref[0], ls='..', c='k')
+        ax.axhline(k_ref[1], ls='..', c='k')
 
     if log:
         ax.set_yscale('log')
