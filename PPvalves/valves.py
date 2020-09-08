@@ -8,6 +8,34 @@ import numpy as np
 
 # Core
 # ====
+def comb(dx, v_wid, PARAM):
+    """
+    Scatters valve at a constant distance along the domain.
+
+    Parameters
+    ----------
+    dx : float
+        Inter-valve distance to maintain across the domain, in non-dimensional
+        unit of length (fraction of total domain length).
+    v_wid : float
+        Width of the valve as a fraction of the total length of the domain
+        (non-dimensional length of valve).
+    PARAM : dict
+        Parameters dictionnary.
+
+    Returns
+    -------
+    v_idx : 1D array
+        Array of valve indices, index of P(x) just before valve.
+
+    """
+    v_idx_0 = 1  # first possible valve index
+    v_idx_N = PARAM['Nx'] - int(v_wid/PARAM['h_'])  # last possible valve index
+    d_idx = int((dx + v_wid)/PARAM['h_'])  # distance between valve indices
+
+    v_idx = np.arange(v_idx_0, v_idx_N, d_idx)
+
+    return v_idx
 
 def scatter(scale, v_wid, PARAM):
     """
