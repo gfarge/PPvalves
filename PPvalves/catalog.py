@@ -358,3 +358,96 @@ def corr_coeff(sig1, sig2, dt, norm=True):
     return cc, cc_lag
 
 #---------------------------------------------------------------------------------
+
+
+def act_interval_frac(event_t, tau):
+    """
+    This function computes the fraction of intervals of lengths `tau[ii]` that
+    contain at least an event.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times of occurence, dimension N_ev.
+    tau : 1D array
+        Array of interval lengths to test, dimension N_tau.
+
+    Returns
+    -------
+    X_tau : 1D array
+        Fraction of intervals of corresponding lengths `tau` that contain at
+        least an event, dimension N_tau
+    tau : 1D array
+        Input tau adjusted so as to match the actual value of `tau[ii]` that is
+        tested, which has to be a multiple of the min of `tau`, dimension N_tau.
+
+    """
+    tau_min = min(tau)  # lowest tau is taken as sweeping window time increment
+    count, _ = event_count_signal(event_t, tau_min, t0=min(event_t))
+
+    X_tau = np.zeros(len(tau))
+
+    for ii, tt in enumerate(tau):
+        # First: build sweeping window
+        len_tau_win = int(np.round(tt/tau_min))
+        tau_win = np.ones(len_tau_win)  # sweeping window to count events
+        tau[ii] = len_tau_win * tau_min
+
+        # Second: correlate and count intervals with activity
+        corr = np.correlate(count, tau_win, mode='valid')
+
+        X_tau[ii] = 1 - np.sum(corr == 0) / len(corr)
+
+    return X_tau, tau
+
+
+#---------------------------------------------------------------------------------
+
+def correlation_matrix(event_t, event_x, dt, X):
+    """
+    Computes the correlation of activity in different zones.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension N_ev.
+    event_x : 1D array
+        Array of event positions, dimension N_ev.
+    dt : float
+        Time step to compute the activity of the different zones.
+    X : 1D array
+        Array of the positions of the activity zones boundaries, dimension N_X
+
+    Returns
+    -------
+    corr_mat : 2D array
+        Cross-correlation coefficient matrix for the activity of the different
+        regions specified by X, dimensions N_X - 1, N_X - 1.
+    lag_mat : 2D array
+        Lag time matrix corresponding to the maximum cross-correlation for the
+        activity of different regions specified by X, dimensions N_X - 1, N_X -
+        1.
+
+    """
+    # Compute the activity in each region
+    # -----------------------------------
+    activities = []  # The array of regional activities
+    for ix in range(len(X)-1):
+        region = (event_x >= X[ix]) & (event_x < X[ix + 1])
+        regional_act, _ = event_count_signal(event_t[region], dt,
+                                             t0=min(event_t))
+        activities.append(regional_act)
+
+    # Perform the cross-correlation and build the corr and lag matrices
+    # -----------------------------------------------------------------
+    corr_mat = np.zeros((len(X) - 1, len(X) - 1))
+    lag_mat = np.zeros((len(X) - 1, len(X) - 1))
+
+    for ix in range(len(X) - 1):
+        for jx in range(ix, len(X) - 1):
+            cc, cc_lag = corr_coeff(activities[ix], activities[jx],
+                                              dt, norm=True)
+            corr_mat[ix, jx] = corr_mat[jx, ix] = cc
+            lag_mat[ix, jx] = lag_mat[jx, ix] = cc_lag
+
+    return corr_mat, lag_mat
