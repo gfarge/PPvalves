@@ -726,7 +726,7 @@ def activity_dip(event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None)
         event_t = event_t[t_win]
         event_x = event_x[t_win]
 
-    if len(event_t) > 1e4:
+    if len(event_t) > 1e3:
         rasterize=True
     else:
         rasterize=False
@@ -913,8 +913,8 @@ def perm_eq(T, k_eq, k_ref=None, tlim=None, log=True, plot_params={}, fig=None, 
                       rasterized=rasterize)
 
     if k_ref is not None:
-        ax.axhline(k_ref[0], ls='..', c='k')
-        ax.axhline(k_ref[1], ls='..', c='k')
+        ax.axhline(k_ref[0], ls=':', c='k')
+        ax.axhline(k_ref[1], ls=':', c='k')
 
     if log:
         ax.set_yscale('log')

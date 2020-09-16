@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib import ticker
 from matplotlib.gridspec import GridSpec
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
 
 # My packages
 # -----------
@@ -687,3 +689,125 @@ def phase_diagram(T, variables, labels, scales=('linear','linear'), tlim=None, \
         plt.show()
 
     return fig, ax
+
+# -----------------------------------------------------------------------------
+
+def corr_mats(reg_bounds, corr_mat, lag_mat, X_valves=None, txt=True, \
+              plot_params={}, save_name=None):
+    """
+    Plots the correlation matrices: cross-correlation coefficient and
+    cross-correlation lag.
+
+    Parameters
+    ----------
+    reg_bounds : 1D array
+        Spatial bounds of the regions for which correlation and lag are
+        plotted, dimension N_reg + 1.
+    corr_mat : 2D array
+        Cross-correlation matrix for regional activity, dimension N_reg, N_reg.
+    lag_mat : 2D array
+        Cross-correlation lag matrix for regional activity, dimension N_reg,
+        N_reg.
+    X_valves : 1D array (optionnal)
+        Array of valve positions, dimension N_valves.
+    txt : bool (default to `True`)
+        Option to write the value of each cell in the cell.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters for the pore pressure profile,
+        flux profile and valves.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : mpl figure object
+        Our figure.
+    axes : list of mpl axes objects
+        Our axes.
+
+    """
+    # Get defaults
+    # ============
+    needed_params = ['lag_cmap', 'corr_cmap']
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Start plotting
+    # ==============
+    fig, axes = plt.subplots(1, 2, figsize=(9, 5))
+
+    # Correlation matrix
+    # ------------------
+    ax = axes[0]
+    # --> Matrix
+    pc = ax.pcolormesh(reg_bounds, reg_bounds, corr_mat,
+                       vmin=np.min(corr_mat),
+                       vmax=np.max(corr_mat[corr_mat<0.99]),
+                       cmap=plot_params['corr_cmap'])
+    # --> Valves?
+    if X_valves is not None:
+        ax.plot(X_valves, X_valves, 'ks', label='Valves')
+        ax.legend(loc='lower right', bbox_to_anchor=(.99, .01))
+
+
+    # --> Colorbar on top
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("top", '5%', pad=0.3)
+    plt.colorbar(pc, cax=cax, orientation='horizontal',
+                 label='Correlation coefficient')
+    cax.xaxis.set_label_position('top')
+
+    # --> Text in half the cells?
+    if txt:
+        for ii in range(len(reg_bounds)-1):
+            for jj in range(ii + 1, len(reg_bounds)-1):
+                Xtxt = (reg_bounds[ii] + reg_bounds[ii + 1])/2
+                Ytxt = (reg_bounds[jj] + reg_bounds[jj + 1])/2
+                ax.text(Xtxt, Ytxt, '{:.2f}'.format(corr_mat[ii, jj]),
+                        fontname='Andale Mono', va='center', ha='center',
+                        c='w')
+    # --> Labels
+    ax.set_xlabel("Along dip distance")
+    ax.set_ylabel("Along dip distance")
+
+    # Correlation lag matrix
+    # ----------------------
+    ax = axes[1]
+    # --> Matrix
+    lag_mat = abs(lag_mat)
+    pc = ax.pcolormesh(reg_bounds, reg_bounds, lag_mat, cmap='BuPu',
+                       vmin=0,
+                       vmax=np.max(lag_mat[lag_mat != np.max(lag_mat)]))
+    # --> Valves ?
+    if X_valves is not None:
+        ax.plot(X_valves, X_valves, 'ks')
+
+    # --> Colorbar
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("top", '5%', pad=0.3 )
+    plt.colorbar(pc, cax=cax, orientation='horizontal',
+                 label='Correlation lag')
+    cax.xaxis.set_label_position('top')
+
+    # --> Text in half the cells
+    if txt:
+        for ii in range(len(reg_bounds)-1):
+            for jj in range(ii+1, len(reg_bounds)-1):
+                Xtxt = (reg_bounds[ii] + reg_bounds[ii + 1])/2
+                Ytxt = (reg_bounds[jj] + reg_bounds[jj + 1])/2
+                ax.text(Xtxt, Ytxt, '{:g}'.format(abs(lag_mat[ii, jj])),
+                        fontname='Andale Mono', va='center', ha='center',
+                        c='k')
+    # --> Labels
+    ax.set_xlabel("Along dip distance")
+    ax.set_ylabel("Along dip distance")
+
+    plt.tight_layout()
+    # Saving?
+    # =======
+    if save_name is not None:
+        print('Saving figure at {:}'.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, axes

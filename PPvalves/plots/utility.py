@@ -57,7 +57,9 @@ def set_plot_params(input_params, needed_params):
         'mass_lc' : 'purple',
 
         'cyclic_cmap' : 'twilight',
-        'time_cmap' : 'viridis'
+        'time_cmap' : 'viridis',
+        'corr_cmap' : 'cividis',
+        'lag_cmap' :  'BuPu'
 
         }
 
