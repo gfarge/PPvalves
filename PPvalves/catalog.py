@@ -7,7 +7,7 @@ import numpy as np
 
 # Core
 
-#---------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 def event_count(ev_type, states, time, catalog=False, v_x=None):
     """
@@ -107,7 +107,7 @@ def event_count(ev_type, states, time, catalog=False, v_x=None):
         t_events = time[events_i]
         return t_events
 
-#---------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 def open_count(states, time, catalog=False, v_x=None):
     """
@@ -139,13 +139,12 @@ def open_count(states, time, catalog=False, v_x=None):
 
 
     """
-
     # Call event count
-    out = event_count('open', states, time, catalog,v_x)
+    out = event_count('open', states, time, catalog, v_x)
 
     return out
 
-#---------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 def close_count(states, time, catalog=False, v_x=None):
     """
@@ -188,7 +187,6 @@ def recurrence(event_time):
     """
     Calculates time before next event for an event sequence.
 
-
     Parameters
     ----------
     event_time : 1D array
@@ -205,7 +203,7 @@ def recurrence(event_time):
 
     return time_before_next
 
-#---------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 def event_count_signal(event_time, dt, t0=0., tn=None, norm=False):
     """
@@ -250,60 +248,34 @@ def event_count_signal(event_time, dt, t0=0., tn=None, norm=False):
 
     return ev_count, bin_edges
 
-#---------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
-def autocorr(sig, dt, norm=True):
+def crosscorr(sig1, sig2, dt, norm=True, no_bias=True):
     """
-    Calculates the autocorrelation of a signal.
+    Calculates the cross-correlation of two signal. Signals can be of different
+    sizes, but the correlation lag might be strange in this case.
 
-    - Parameters
-            + :param sig: 1D array of signal to compute the autocorrelation of.
-            + :type sig: ndarray
-            + :param dt: time step in the signal, in seconds. If sig = binned count, use bin size
-            + :type dt: float
-            + :param norm: autocorrelation normalized by the square of the norm
-              of the signal (default is True).
-            + :param norm: bool
+    Parameters
+    ----------
+    sig1, sig2 : 1D arrays
+        Signals to cross-correlate, dimensions N and M.
+    dt : float
+        Time delta in signals.
+    norm : bool (default to `True`)
+        Option to normalize the cross-correlation by the product of the signals
+        norm.
+    no_bias : bool (default to `True`)
+        Option to remove bias due to variable number of points at each lag in
+        cross-correlation.
 
-    - Output
-            + :return: :autocorr: 1D array containing autocorrelation value
-            + :rtype: :autocorr: ndarray
-            + :return: :lag: 1D array of time lag of autocorrelation, in seconds
-            + :rtype: :lag: ndarray
-    """
+    Returns
+    -------
+    corr : 1D array
+        Cross-correlation of the input signals, dimension N + M - 1
+    lag : 1D array
+        Time lag for each value of the cross-correlation, dimension N + M - 1.
+        Centering around 0 is only ensured if sig1 and sig2 are the same size.
 
-    # Normalize
-    if norm:
-        sig1 = (sig - np.mean(sig)) / (np.std(sig)*len(sig))
-        sig2 = (sig - np.mean(sig)) / np.std(sig)
-
-    # Calculate correlation
-    autocorr_s = np.correlate(sig1.astype(float), sig2.astype(float), 'full')
-
-    # Compute time lag of autocorrelation
-    lag = np.arange(0, len(sig1)+len(sig2)-1)-(len(sig1)-1)
-    lag = lag.astype(float)*dt
-    return autocorr_s, lag
-
-#---------------------------------------------------------------------------------
-
-def crosscorr(sig1, sig2, dt, norm=True):
-    """
-    Calculates the crosscorrelation of two signal. Can be of different sizes.
-
-    - Parameters
-            + :param sig1, sig2: 1D arrays of signal.
-            + :type sig1, sig2: ndarrays
-            + :param dt: time step in the input signal, in seconds. If sig = binned count, use bin size.
-            + :type dt: float
-            + :param norm: if True crosscorrelation normalized by the square of the norm of the signal (default True).
-            + :type norm: bool
-
-    - Output
-            + :return: corr: 1D array containing cross-correlation values.
-            + :rtype: corr: ndarray
-            + :return: lag : 1D array of time lag of correlation, in seconds. Lag may be strange if sig1 and sig2 do not have the same length
-            + :rtype: lag: ndarray
     """
 
     # Normalize
@@ -318,46 +290,99 @@ def crosscorr(sig1, sig2, dt, norm=True):
     if norm:
         corr = corr.astype(float) / (np.linalg.norm(sig1)*np.linalg.norm(sig2))
 
+    # Remove bias from number of points
+    if no_bias:
+        bias = crosscorr_bias(sig1, sig2)
+        corr = corr/bias
+
     # Compute time lag of autocorrelation
-    lag = np.arange(0,len(sig1)+len(sig2)-1)-(len(sig1)-1)
-    lag = lag.astype(float)*dt
+    lag = np.arange(0, len(sig1) + len(sig2) - 1) - (len(sig1) - 1)
+    lag = lag.astype(float) * dt
+
+    # Remove both ends of lag and correlation, to get rid of edge effects due
+    # to removing the bias
+    if no_bias:
+        valid = (abs(lag) < 4/5*max(lag))
+        lag = lag[valid]
+        corr = corr[valid]
 
     return corr, lag
 
 
-#---------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
-def corr_coeff(sig1, sig2, dt, norm=True):
+def crosscorr_bias(sig1, sig2):
+    """
+    Computes the bias vector due to the number of points of at each lag of the
+    cross correlation.
+
+    Parameters
+    ----------
+    sig1 : 1D array
+        First signal to correlate, dimension N.
+    sig2 : 1D array
+        Second signal to correlate, dimension M.
+
+    Returns
+    -------
+    bias : 1D array
+        The bias vector, corresponding to all values of lag (both negative and
+        positive), dimension N+M-1
+
+    """
+    N = len(sig1)
+    M = len(sig2)
+
+    # Bias for part where signals overlap entirely
+    bias_full = [1 for ii in range(max(M, N) - min(M, N) + 1)]
+
+    # Bias for part before full overlap
+    bias_bef = [ii/min(N, M) for ii in range(1, min(M, N))]
+
+    # Bias for part after full overlap
+    bias_aft = [ii/min(N, M) for ii in range(min(M, N) - 1, 0, -1)]
+
+    # Assemble
+    bias = np.concatenate((bias_bef, bias_full, bias_aft))
+
+    return bias
+
+#------------------------------------------------------------------------------
+
+
+def corr_coeff(sig1, sig2, dt):
     """
     Calculates the correlation coefficient between two signals.
 
     The correlation coefficient is taken as the maximum of the cross-correlation
     of the two signals, the corresponding lag is also returned.
 
-    - Parameters
-        + :param sig1, sig2: 1D arrays of evenly spaced input signal.
-        + :type sig1, sig2: ndarrays
-        + :param dt: spacing of the values of the input signal, in seconds.
-        + :type dt: float
-        + :param norm: If True, normalisation is applied when calculating the cross correlation: the cross-correlation is normalized by the product of the signals' norms (default True).
-        + :type norm: bool
+    Parameters
+    ----------
+    sig1, sig2 : 1D arrays
+        Signals to cross-correlate, dimensions N and M.
+    dt : float
+        Time delta in signals.
 
-    - Output
-        + :return: cc: correlation coefficient.
-        + :rtype: cc: bool
-        + :return: lag : lag in seconds.  If positive (resp. negative), sig2 was shifted forward (backwards) in time to correspond with sig1. In other words, if positive (resp. negative), sig1 events are  after sig2 events (resp before).
-        + :rtype: lag : float
+    Returns
+    -------
+    cc : float
+        Correlation coefficient.
+    cc_lag : 1D array
+        Time lag corresponding to correlation coefficient.
+
     """
 
     # Calculates the cross correlation
-    corr, corr_lag = crosscorr(sig1, sig2, dt, norm=norm)
+    corr, corr_lag = crosscorr(sig1, sig2, dt, norm=True, no_bias=False)
+
     # Get correlation coefficient and time lag
     cc = max(abs(corr))
     cc_lag = corr_lag[np.argmax(abs(corr))]
 
     return cc, cc_lag
 
-#---------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 
 def act_interval_frac(event_t, tau):
@@ -401,7 +426,7 @@ def act_interval_frac(event_t, tau):
     return X_tau, tau
 
 
-#---------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 def correlation_matrix(event_t, event_x, dt, X):
     """
@@ -445,8 +470,7 @@ def correlation_matrix(event_t, event_x, dt, X):
 
     for ix in range(len(X) - 1):
         for jx in range(ix, len(X) - 1):
-            cc, cc_lag = corr_coeff(activities[ix], activities[jx],
-                                              dt, norm=True)
+            cc, cc_lag = corr_coeff(activities[ix], activities[jx], dt)
             corr_mat[ix, jx] = corr_mat[jx, ix] = cc
             lag_mat[ix, jx] = lag_mat[jx, ix] = cc_lag
 
