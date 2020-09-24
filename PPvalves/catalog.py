@@ -3,6 +3,10 @@ the results of PPV runs but also of real catalogs."""
 
 # /// Imports
 import numpy as np
+from mtspec import mtspec
+from scipy.special import erfinv
+from scipy.signal import savgol_filter
+from scipy.stats import chisquare, chi2, poisson
 
 
 # Core
@@ -475,3 +479,201 @@ def correlation_matrix(event_t, event_x, dt, X):
             lag_mat[ix, jx] = lag_mat[jx, ix] = cc_lag
 
     return corr_mat, lag_mat
+
+#-------------------------------------------------------------------------------
+
+def calc_alpha(ev_count, dt, per_max):
+    """
+    Compute the slope of the event count auto-correlation spectrum.
+
+    Parameters
+    ----------
+    ev_count : 1D array
+        Event count, number of events in regular time bins, dimension N_bins.
+    dt : float
+        Size of time bin.
+    per_max : float
+        Maximum period to take into account in the fit.
+
+    Returns
+    -------
+    sp : 1D array
+        Multi-taper spectrum of the event count auto-correlation.
+    per : 1D array
+        Periods associated at which the amplitude spectrum is computed.
+    alpha : float
+        The log-log slope of the spectrum of event count auto-correlation,
+        along period, not frequency.
+
+    """
+    # Compute un-bias autocorrelation
+    # -------------------------------
+    a_corr, _ = crosscorr(ev_count, ev_count, dt, norm=True, no_bias=True)
+
+    # Compute its spectrum
+    # --------------------
+    sp, fq = mtspec(a_corr, dt, time_bandwidth=3.5, number_of_tapers=5)
+    sp = np.sqrt(sp) * len(sp)  # convert PSD into amplitude
+
+    # --> Get rid of 0 frequency
+    sp = sp[fq > 0]
+    fq = fq[fq > 0]
+
+    per = 1/fq
+
+    # Compute slope of spectrum
+    # -------------------------
+    log_per = np.log10(per[per < per_max])
+    log_sp = np.log10(sp[per < per_max])
+
+    p = np.polyfit(log_per, log_sp, 1)
+    alpha = p[0]
+
+    return sp, per, alpha
+
+#-------------------------------------------------------------------------------
+
+def detect_period(ev_count, dt):
+    """
+    Detect a periodicity in the activity autocorrelation. The period
+    corresponds to the lag of the first peak that falls above the 99.99%
+    confidence interval for a white noise.
+
+    Parameters
+    ----------
+    ev_count : 1D array
+        Event count, number of events in regular time bins, dimension N_bins.
+    dt : float
+        Size of time bin.
+
+    Returns
+    -------
+    period : float
+        Period detected with the autocorrelation.
+    validity : float
+        Estimation of the validity of the estimated period. It corresponds to a
+        correlation coefficient between the count autocorrelation and a the
+        autocorrelation of a sine (with the same period as the detected one).
+        The lower (closer to 0) the validity is, the more the detected period
+        can only be interpreted as a correlation time-scale. The higher (closer
+        to 1), the more it corresponds to an actual periodicity.
+
+    """
+    # Compute un-bias autocorrelation
+    # -------------------------------
+    a_corr, lag = crosscorr(ev_count, ev_count, dt, norm=True, no_bias=False)
+
+    # Smooth it
+    # ---------
+    smooth_len = 0.01
+    a_corr = savgol_filter(a_corr, int((smooth_len/dt//2) * 2 + 1), 2)
+
+    # Compute confidence interval
+    # ---------------------------
+    lvl = 1 - 1e-3
+    conf = erfinv(lvl) * np.sqrt(2) / np.sqrt(len(ev_count))
+
+    # Detect period
+    # -------------
+    a_corr = a_corr[lag >= 0]  # working only with positive lag
+    lag = lag[lag >= 0]
+
+    if np.any(a_corr > conf):
+    # --> If some non-white noise points (above confidence interval), locate
+    # them
+        above = a_corr > conf
+        bumps_idx = []  # list of the bumps indices above conf. int.
+        bump = []  # indices of each bump above conf. int.
+
+        for ii in range(len(above)):
+            if above[ii]:  # for this index, value above conf. int.
+                bump.append(ii)  # add it to the bump
+            else:  # for this index, we are not in a bump (anymore)
+                if len(bump) > 0:  # if we were in a bump before...
+                    bumps_idx.append(bump)  # ...store it
+                bump = []  # reinitialize bump
+
+        bumps_idx = bumps_idx[1:]  # remove the 0 correlation bump
+
+        done = False
+        while (len(bumps_idx) > 0) and not done:
+            first_bump = bumps_idx[0]
+            if len(first_bump) > 1:  # if long bump: that's a period!
+                # --> detect the period
+                period = lag[first_bump][np.argmax(a_corr[first_bump])]
+                # --> estimate validity
+                count_time = np.arange(0, len(ev_count)*dt+1, dt)
+                sine = np.sin(2*np.pi/period * count_time)
+                sine_corr, _ = crosscorr(sine, sine, dt, no_bias=False)
+                validity, _ = corr_coeff(sine_corr, a_corr, dt)
+
+                # --> And we arrrre
+                done = True
+
+            else:  # if only one point in bump...
+                bumps_idx = bumps_idx[1:]   # ... remove it and carry on
+
+        if (len(bumps_idx) == 0) and not done:
+        # --> If no long bumps, no significant period
+            period = 0
+            validity = 0
+
+    else:
+        # --> If none, no significant periodicity
+        period = 0
+        validity = 0
+
+    return period, validity
+
+
+#-------------------------------------------------------------------------------
+
+def poisson_adequation(ev_count, alpha):
+    """
+    Performs a chi-square test to try to refute the null hypothesis: "the event
+    count follows a Poisson distribution".
+
+    Parameters
+    ----------
+    ev_count : 1D array
+        Array containing the binned event count.
+    alpha : float, lower than 1
+        Risk level taken in the refutation of the null hypothesis. 1 - alpha
+        corresponds to the confidence interval with which it can be refuted.
+
+    Returns
+    -------
+    adequation : bool
+        Answer of the test. If True, the null hypothesis cannot be refuted, the
+        event count could very well be explained by a Poisson distribution. If
+        False, the null hypothesis can be refuted with a level of confidence of
+        1 - alpha.
+    p_value : float
+        p-value of test, corresponds to the probability of obtaining the test
+        statistic, under realisation of the null hypothesis. Output of
+        scipy.stats.chisquare().
+
+    """
+    # Build frequencies of observed count values for observed counts
+    # --------------------------------------------------------------
+    bins = np.arange(-0.5, max(ev_count)+1, 1)
+    f, _ = np.histogram(ev_count, bins=bins)
+    f = f / len(ev_count)
+
+    # Build frequencies for a Poisson process
+    # ---------------------------------------
+    lambd = np.mean(ev_count)
+    f_th = poisson.pmf((bins[1:]+bins[:-1])/2, lambd)
+
+    # Perform test
+    # ------------
+    T, p_value = chisquare(f, f_th, 1)
+#    print("chi_square_adequation -- T = {:.2e}, v = {:.2e}".format(T, \
+        #                                       chi2.ppf(1 - alpha, (len(f) - 1) - 1)))
+
+    if T > chi2.ppf(1 - alpha, (len(f) - 1) - 1):
+        adequation = False
+    else:
+        adequation = True
+
+    return adequation, p_value
