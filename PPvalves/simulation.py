@@ -288,7 +288,7 @@ def run_time(PARAM):
 # -----------------------------------------------------------------------------
 
 def save(filename, v_activity, VALVES, PARAM, P_=None, P0=None, Plast=None, \
-         bounds=None , verbose=True):
+         bounds=None, results=None, verbose=True):
     """
     Save the results and parameters of a simulation. The results are saved as a
     dictionnary, using the pickle package. The save fields include all
@@ -315,6 +315,9 @@ def save(filename, v_activity, VALVES, PARAM, P_=None, P0=None, Plast=None, \
     bounds : 2d array (default=`None`)
         Value of the free variable at each boundary, dimensions: Nt * 2 (input,
         output). Optionnal.
+    results : dictionnary (default=`None`)
+        Results array. A series of measurements taken on the outcome of the
+        simulation.
     verbose : bool (default=`True`)
         Option to have the function print what it's doing, succinctly.
 
@@ -339,6 +342,9 @@ def save(filename, v_activity, VALVES, PARAM, P_=None, P0=None, Plast=None, \
 
     if bounds is not None:
         out['bounds'] = bounds
+
+    if results is not None:
+        out['results'] = results
 
     # Actually saving
     # ---------------
