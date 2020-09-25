@@ -216,7 +216,8 @@ def calc_k_eq(VALVES, PARAM, states_override=None):
 
     # --> For given time step
     else:
-        R_eq = np.sum(R_v[closed_valves]) + (L_ - np.sum([closed_valves])) / k_bg
+        R_eq = np.sum(R_v[closed_valves]) \
+              + (L_ - np.sum(wid_v[closed_valves])) / k_bg
 
     keq = L_ / R_eq  # from equivalent resistance to equivalent permeability
     return keq
