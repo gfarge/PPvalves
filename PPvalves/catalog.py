@@ -615,13 +615,13 @@ def detect_period(ev_count, dt):
 
         if (len(bumps_idx) == 0) and not done:
         # --> If no long bumps, no significant period
-            period = 0
-            validity = 0
+            period = None
+            validity = None
 
     else:
         # --> If none, no significant periodicity
-        period = 0
-        validity = 0
+        period = None
+        validity = None
 
     return period, validity
 
