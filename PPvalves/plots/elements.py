@@ -6,6 +6,8 @@
 # -----------------
 import numpy as np
 
+from scipy.signal import savgol_filter
+
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.collections import PatchCollection
@@ -907,14 +909,19 @@ def perm_eq(T, k_eq, k_ref=None, tlim=None, log=True, plot_params={}, fig=None, 
     needed_params = ['k_eq_lc']
     plot_params = set_plot_params(plot_params, needed_params)
 
+    # Add smoothed version
+    # --------------------
+    k_eq_sm = savgol_filter(k_eq, 1001, 1)
+
     # Plot
     # ----
-    k_eq_l, = ax.plot(T, k_eq, ls='-', lw=1.5, c=plot_params['k_eq_lc'],
+    k_eq_l, = ax.plot(T, k_eq, ls='-', lw=0.8, c='0.5', rasterized=rasterize)
+    k_eq_sm_l, = ax.plot(T, k_eq_sm, ls='-', lw=1.5, c=plot_params['k_eq_lc'],
                       rasterized=rasterize)
 
     if k_ref is not None:
-        ax.axhline(k_ref[0], ls=':', c='k')
-        ax.axhline(k_ref[1], ls=':', c='k')
+        ax.axhline(k_ref[0], ls=':', c='k', lw=1)
+        ax.axhline(k_ref[1], ls=':', c='k', lw=1)
 
     if log:
         ax.set_yscale('log')
@@ -929,7 +936,7 @@ def perm_eq(T, k_eq, k_ref=None, tlim=None, log=True, plot_params={}, fig=None, 
     ax.set_ylabel(r"$k_{eq}$ ($m^2$)", c=plot_params['k_eq_lc'])
     plt.tight_layout()
 
-    g_objs = k_eq_l
+    g_objs = [k_eq_l, k_eq_sm_l]
 
     return fig, ax, g_objs
 
@@ -1013,7 +1020,7 @@ def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
 
 # ----------------------------------------------------------------------------
 
-def bound_in(T, bound_0, PARAM, tlim=None, txt=False, plot_params={}, fig=None, ax=None):
+def bound_in(T, bound_0, PARAM, tlim=None, v_eff=None, plot_params={}, fig=None, ax=None):
     """
     Plots pp/q value of in-bound in time.
 
@@ -1028,9 +1035,9 @@ def bound_in(T, bound_0, PARAM, tlim=None, txt=False, plot_params={}, fig=None, 
         variable is plotted.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
-    txt : bool (default `False`)
-        Option to represent and print the effective value of the input boundary
-        variable.
+    v_eff : float (default `None`)
+        Effective value of the input boundary variable. If specified it is
+        plotted and added as a text insert.
     plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters. Implemented:
         linecolor (any matplotlib ways of indicating color) default = 'pp_lc'
@@ -1097,9 +1104,8 @@ def bound_in(T, bound_0, PARAM, tlim=None, txt=False, plot_params={}, fig=None, 
 
     # Add value of effective bound?
     # -----------------------------
-    if txt:
-        v_eff = np.mean(bound_0[len(2*bound_0)//3:])
-        ax.axhline(v_eff, lw=.8, c='k', zorder=0)
+    if v_eff is not None:
+        ax.axhline(v_eff, lw=.8, c='k', zorder=30)
 
         if PARAM['bound'][0] == 'Q':
             label = r"$\overline{{p_{{in}}}}={:.2f}$".format(v_eff)
