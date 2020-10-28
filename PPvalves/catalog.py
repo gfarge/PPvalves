@@ -13,6 +13,31 @@ from scipy.stats import chisquare, chi2, poisson
 
 #------------------------------------------------------------------------------
 
+def open_ratio(states):
+    """
+    Computes the ratio of open valves to total number of valves in time.
+
+    Parameters
+    ----------
+    states: nd array
+        Valve states history, dimension Ntimes * Nvalves.  False is closed, True is
+        open. Output of run_ppv, v_activity[times,0,valve_idx], where valve_idx
+        is the idxs of the valves you want the event count for.
+
+    Returns
+    -------
+    ratio : 1D array
+        At each time states is specified, the proportion of open valves is
+        returned.
+
+    """
+    Nv = np.shape(states)[1]  # Total number of valves
+    ratio = np.sum(states, axis=1) / Nv
+
+    return ratio
+
+#------------------------------------------------------------------------------
+
 def event_count(ev_type, states, time, catalog=False, v_x=None):
     """
     Gives the time at which an event occurs, that is,

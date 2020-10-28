@@ -187,10 +187,10 @@ def valve_markers(X, VALVES, states_override=None, fig=None, ax=None, X_axis='x'
     # ------------------------------------------------------------
     if X_axis == 'x':
         valves_cl_pc = ax.scatter(X_marker, Y_cl_marker, marker='x', ec=m_cl_c,
-                                  zorder=plot_params['v_zorder']+1)
+                                  s=10, zorder=plot_params['v_zorder']+1, lw=.8)
         valves_op_pc = ax.scatter(X_marker, Y_op_marker,
-                                  marker=[(-1, -1), (1, 0), (-1, 1)], lw=1.5,
-                                  ec=m_op_c, zorder=plot_params['v_zorder']+1,
+                                  marker=[(-1, -1), (1, 0), (-1, 1)], lw=.8,
+                                  s=10, ec=m_op_c, zorder=plot_params['v_zorder']+1,
                                   fc=[0, 0, 0 ,0])
     elif X_axis == 'y':
         valves_cl_pc = ax.scatter(Y_cl_marker, X_marker, marker='x', ec=m_cl_c,
@@ -377,7 +377,8 @@ def bounds(p0, PARAM, fig=None, ax=None, plot_params={}):
     else:
         # --> Fixed flux
         x_in = 0
-        str_in = r'$q_{{in}}={0:.2f}$'.format(PARAM['qin_'])
+#        str_in = r'$q_{{in}}={0:.2f}$'.format(PARAM['qin_'])
+        str_in = r'$q_{{in}}$'.format(PARAM['qin_'])
 
         mark_in = plot_params['q_b_m']
         mark_in_ec = 'k'
@@ -390,7 +391,8 @@ def bounds(p0, PARAM, fig=None, ax=None, plot_params={}):
         x_out = 1 + PARAM['hb_']
         pL = PARAM['pL_']
 
-        str_out = r'$p_{{out}}={0:.2f}$'.format(PARAM['pL_'])
+#        str_out = r'$p_{{out}}={0:.2f}$'.format(PARAM['pL_'])
+        str_out = r'$p_{{out}}$'.format(PARAM['pL_'])
 
         mark_out = plot_params['pp_b_m']
         mark_out_ec = plot_params['pp_lc']
@@ -427,16 +429,16 @@ def bounds(p0, PARAM, fig=None, ax=None, plot_params={}):
     # ---------------------------------
     txt_in = ax.text(0.05, p0*1.0, str_in,
                      fontsize=10,
-                     va='center', ha='left',
+                     va='top', ha='right',
                      bbox={'boxstyle' : "square, pad=0.1",
                            'alpha' : 0.5, 'facecolor':'w', 'edgecolor':'w'},
-                     zorder=9)
+                     zorder=30)
     txt_out = ax.text(0.95, 0, str_out,
                       fontsize=10,
-                      va='center', ha='right',
+                      va='bottom', ha='left',
                       bbox={'boxstyle' : "square, pad=0.1",
                             'alpha' : 0.5, 'facecolor':'w', 'edgecolor':'w'},
-                      zorder=9)
+                      zorder=30)
 
     # Arrange the limits to fit the text box
     # --------------------------------------

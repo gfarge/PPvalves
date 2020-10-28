@@ -162,7 +162,7 @@ def calc_pp_inf(VALVES, PARAM, states_override=None):
 
 #---------------------------------------------------------------------------------
 
-def calc_k_eq(VALVES, PARAM, states_override=None):
+def calc_k_eq(VALVES, PARAM, states_override=None, L=None):
     """
     This function computes the equivalent permeability of a domain with
     valves, based on the equivalent resistivity formula.
@@ -179,6 +179,9 @@ def calc_k_eq(VALVES, PARAM, states_override=None):
     	VALVES. States can be 1D (N_valves length), or 2D (N_time x
     	N_valves). For the latter case, k_eq will be an array of
     	length N_time.
+    L : float (default to `None`)
+        Length of the domain to consider. If not specified, the whole domain
+        length is taken.
     Returns
     -------
     k_eq : float or 1D array
@@ -188,8 +191,12 @@ def calc_k_eq(VALVES, PARAM, states_override=None):
     # Unpack physical parameters
     # --------------------------
     k_bg = PARAM['k_bg']  # background channel permeability
-    L_ = 1. + 2*PARAM['hb_']  # valves widths and domain widths should have the
-                              # same scale
+    if L is None:
+        L_ = 1. + 2*PARAM['hb_']  # valves widths and domain widths should have the
+                                  # same scale
+    else:
+        L_ = L
+
     # Unpack valves parameters
     # ------------------------
     wid_v = VALVES['width']
@@ -464,3 +471,47 @@ def calc_q_crit(idx_v0, VALVES, PARAM, event='opening'):
     q_crit = rho/mu * k_v0 / wid_v0 * dP_thr_v0 * P_scale/X_scale/q_scale
 
     return q_crit
+
+#---------------------------------------------------------------------------------
+
+def calc_k_eff(bounds_eff, PARAM):
+    """
+    Computes the effective permeability of the active system in permanent
+    regime.
+
+    Parameters
+    ----------
+    bounds_eff : list
+        Effective value of the free variable (e.g. pressure if flux is fixed,
+        and vice versa) at the input and output boundaries. First input then
+        output in the list.
+    PARAM : dictionnary
+    	Parameters dictionnary.
+
+    Returns
+    -------
+    k_eff : float
+        Effective value of permeability.
+
+    Note
+    ----
+    For now, only 'QP' and 'PP' are implemented.
+    """
+    # According to boundary conditions, get cross system delta_p, input flux
+    # and length between boundaries
+    if PARAM['bound'][0] == 'Q':
+        q_in = PARAM['qin_']
+        delta_p = bounds_eff[0]
+    else:
+        q_in = bounds_eff[0]
+        delta_p = PARAM['p0_']
+
+    # For now, length scale is going to be 1, no boundary depth taken into
+    # account
+    L = 1  # perhaps better if 1 + 2 * PARAM['hb_'] ?
+
+    # Compute effective permeability
+    k_eff = PARAM['mu'] / PARAM['rho'] * L / delta_p * q_in \
+           * PARAM['X_scale'] / PARAM['P_scale'] * PARAM['q_scale']
+
+    return k_eff

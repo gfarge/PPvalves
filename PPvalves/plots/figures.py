@@ -92,6 +92,7 @@ def x_profile(X, P, PARAM, VALVES, states_override=None, plot_params={}, save_na
     q_line = q_profile(X, Q, fig=fig, ax=ax_q,
                        plot_params=plot_params)
     ax_q.yaxis.set_label_position("right")
+    ax_q.set_ylim((-.2, 1))
 
     # Plot valves
     # -----------
@@ -663,6 +664,7 @@ def phase_diagram(T, variables, labels, scales=('linear','linear'), tlim=None, \
         needed_params = ['cyclic_cmap']
         plot_params = set_plot_params(plot_params, needed_params)
         cmap = plot_params['cyclic_cmap']
+        T = T - T[0] # start T at 0
         T = (T%cycle) * 2*np.pi / cycle  # transform T in phase
 
     # Set up figure and axis
@@ -671,7 +673,7 @@ def phase_diagram(T, variables, labels, scales=('linear','linear'), tlim=None, \
 
     # Plot the scatter
     # ----------------
-    coll = ax.scatter(v_x, v_y, c=T, cmap=cmap, s=5)
+    coll = ax.scatter(v_x, v_y, c=T, cmap=cmap, s=5, rasterized=True)
 
     ax.set_xscale(sc_x)
     ax.set_yscale(sc_y)
