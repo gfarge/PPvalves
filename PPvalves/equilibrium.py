@@ -465,7 +465,6 @@ def calc_q_crit(idx_v0, VALVES, PARAM, event='opening'):
         dP_thr_v0 = VALVES['dPlo'][idx_v0]
         k_v0 = PARAM['k_bg']
 
-
     # Actually compute it
     # -------------------
     q_crit = rho/mu * k_v0 / wid_v0 * dP_thr_v0 * P_scale/X_scale/q_scale

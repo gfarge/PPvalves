@@ -38,7 +38,7 @@ def open_ratio(states):
 
 #------------------------------------------------------------------------------
 
-def event_count(ev_type, states, time, catalog=False, v_x=None):
+def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):
     """
     Gives the time at which an event occurs, that is,
     the index when the just calculated dP crosses the threshold
@@ -58,9 +58,12 @@ def event_count(ev_type, states, time, catalog=False, v_x=None):
     catalog : bool (default `False`)
         if turned to `True`, the catalog option allows close_count to return
         x_events in addition to t_event.  When turned on, this option recquires
-        that v_x is specified.
-    v_x : 1d array,
-        Location of each valve, same size as 2nd dimension of states.
+        that VALVES and X are specified.
+    VALVES : dictionnary (default to `None`)
+        Valve characteristics dictionnary. Needed for `catalog` option
+    X : 1D array (default to `None`)
+        Space array. Needed for `catalog` option
+
 
     Returns
     -------
@@ -72,7 +75,7 @@ def event_count(ev_type, states, time, catalog=False, v_x=None):
     """
 
     # Check if v_x is present if catalog optin is True
-    if catalog & isinstance(v_x, type(None)):
+    if catalog & isinstance(VALVES, type(None)) & isinstance(X, type(None)):
         raise ValueError("When catalog option is turned on, the valves'" + \
          'location needs to be specified with the v_x argument.')
 
@@ -84,6 +87,7 @@ def event_count(ev_type, states, time, catalog=False, v_x=None):
 
         all_events_i = []  # time indices of events
         if catalog:
+            v_x = X[VALVES['idx']] + VALVES['width']/2
             all_events_x = []
 
         for ibarr in range(n_valves):
@@ -138,7 +142,7 @@ def event_count(ev_type, states, time, catalog=False, v_x=None):
 
 #------------------------------------------------------------------------------
 
-def open_count(states, time, catalog=False, v_x=None):
+def open_count(states, time, catalog=False, VALVES=None, X=None):
     """
     Gives the time at which the valves open, that is,
     the index when the just calculated dP is higher than dPhi for
@@ -155,9 +159,11 @@ def open_count(states, time, catalog=False, v_x=None):
     catalog : bool (default `False`)
         if turned to `True`, the catalog option allows close_count to return
         x_events in addition to t_event.  When turned on, this option recquires
-        that v_x is specified.
-    v_x : 1d array,
-        Location of each valve, same size as 2nd dimension of states.
+        that `VALVES` and `X` are specified.
+    VALVES : dictionnary (default to `None`)
+        Valve characteristics dictionnary. Needed for `catalog` option
+    X : 1D array (default to `None`)
+        Space array. Needed for `catalog` option
 
     Returns
     -------
@@ -169,13 +175,13 @@ def open_count(states, time, catalog=False, v_x=None):
 
     """
     # Call event count
-    out = event_count('open', states, time, catalog, v_x)
+    out = event_count('open', states, time, catalog=catalog, VALVES=VALVES, X=X)
 
     return out
 
 #------------------------------------------------------------------------------
 
-def close_count(states, time, catalog=False, v_x=None):
+def close_count(states, time, catalog=False, VALVES=None, X=None):
     """
     Gives the time at which the valves open, that is,
     the index when the just calculated dP is higher than dPhi for
@@ -192,9 +198,11 @@ def close_count(states, time, catalog=False, v_x=None):
     catalog : bool (default `False`)
         if turned to `True`, the catalog option allows close_count to return
         x_events in addition to t_event.  When turned on, this option recquires
-        that v_x is specified.
-    v_x : 1d array,
-        Location of each valve, same size as 2nd dimension of states.
+        that `VALVES` and `X` are specified.
+    VALVES : dictionnary (default to `None`)
+        Valve characteristics dictionnary. Needed for `catalog` option
+    X : 1D array (default to `None`)
+        Space array. Needed for `catalog` option
 
     Returns
     -------
@@ -206,7 +214,7 @@ def close_count(states, time, catalog=False, v_x=None):
     """
 
     # Call event count
-    out = event_count('close', states, time, catalog,v_x)
+    out = event_count('close', states, time, catalog=catalog, VALVES=VALVES, X=X)
 
     return out
 
