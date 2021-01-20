@@ -60,7 +60,11 @@ def read_input(input_args, verbose=False):
         'bound' : 'QP',  # boundary conditions code ('PP', 'QP')
         'bound_value' : 1.0,  # scaled value of fixed variable at boundary in 0
 
-        'init_v_state' : 'open'  # initial valve state
+        'init_v_state' : 'closed',  # initial valve state
+
+        'vdist' : 'first'  # valve distribution, either a file _name_,
+                           # or 'first' for the first distribution we tested
+
         }
 
     for arg_str in input_args:
