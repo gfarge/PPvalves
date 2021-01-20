@@ -598,7 +598,7 @@ def detect_period(ev_count, dt):
 
     # Smooth it
     # ---------
-    smooth_len = 0.01
+    smooth_len = 10*dt  # 0.01
     a_corr = savgol_filter(a_corr, int((smooth_len/dt//2) * 2 + 1), 2)
 
     # Compute confidence interval

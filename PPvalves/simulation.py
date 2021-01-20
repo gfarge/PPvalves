@@ -287,7 +287,7 @@ def run_time(PARAM):
 
 # -----------------------------------------------------------------------------
 
-def save(filename, dic, verbose=True):
+def save(path, dic, verbose=True):
     """
     Save the output of a simulation. It should be packaged in a dictionnary
     first. It is then saved using the pickle package.
@@ -308,4 +308,4 @@ def save(filename, dic, verbose=True):
         path += '.pkl'  # add extension if not present
 
     if verbose : print('simulation.save -- saving at {:}...'.format(path))
-    pickle.dump(out, open(path, 'wb'))
+    pickle.dump(dic, open(path, 'wb'))
