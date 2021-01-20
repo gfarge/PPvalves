@@ -340,7 +340,7 @@ def activity_rate_fig(rate_time, rate, tlim=None, save_name=None):
 
 # ----------------------------------------------------------------------------
 
-def perm_eq_fig(T, k_eq, k_ref=None, tlim=None, log=True, save_name=None):
+def perm_eq_fig(T, k_eq, smoothed=None, k_ref=None, tlim=None, log=True, save_name=None):
     """
     Plots equivalent permeability in time.
 
@@ -352,6 +352,8 @@ def perm_eq_fig(T, k_eq, k_ref=None, tlim=None, log=True, save_name=None):
         Array of equivalent permeability in time, dimension is N_times.
     k_ref : tuple (default `None`)
         Option to plot background and fully closed equivalent permeability.
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
     log : bool (default=`True`)
@@ -373,8 +375,8 @@ def perm_eq_fig(T, k_eq, k_ref=None, tlim=None, log=True, save_name=None):
     # -----------------------
     fig, ax = plt.subplots(figsize=(8, 3.5))
 
-    fig, ax, g_objs = perm_eq(T, k_eq, k_ref=k_ref, tlim=tlim, log=log,
-                              fig=fig, ax=ax)
+    fig, ax, g_objs = perm_eq(T, k_eq, k_ref=k_ref, smoothed=smoothed,
+                              tlim=tlim, log=log, fig=fig, ax=ax)
     plt.tight_layout()
 
     # Saving?
@@ -432,7 +434,7 @@ def mass_balance_fig(T, deltaM, tlim=None, save_name=None):
 
 # ----------------------------------------------------------------------------
 
-def bound_in_fig(T, bound_0, PARAM, v_eff=None, tlim=None, save_name=None):
+def bound_in_fig(T, bound_0, PARAM, smoothed=None, v_eff=None, tlim=None, save_name=None):
     """
     Plots values of pp/q the in bound in time.
 
@@ -442,6 +444,8 @@ def bound_in_fig(T, bound_0, PARAM, v_eff=None, tlim=None, save_name=None):
         Array of times, dimension is N_times.
     bound_0 : 1D array
         Array of values taken by the in bound in time, dimension is N_times.
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
     PARAM : dictionnary
         Dictionnary of physical parameters set for the system.
     v_eff : float (default `None`)
@@ -465,8 +469,8 @@ def bound_in_fig(T, bound_0, PARAM, v_eff=None, tlim=None, save_name=None):
     # -----------------------
     fig, ax = plt.subplots(figsize=(8, 3.5))
 
-    fig, ax, g_objs = bound_in(T, bound_0, PARAM, v_eff=v_eff, tlim=tlim, fig=fig,
-                               ax=ax)
+    fig, ax, g_objs = bound_in(T, bound_0, PARAM, v_eff=v_eff,
+                               smoothed=smoothed, tlim=tlim, fig=fig, ax=ax)
     plt.tight_layout()
 
     # Saving?
@@ -482,7 +486,7 @@ def bound_in_fig(T, bound_0, PARAM, v_eff=None, tlim=None, save_name=None):
 # ----------------------------------------------------------------------------
 
 def tseries_comp(T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, v_eff=None,\
-                 k_ref=None, tlim=None, show_T=None, save_name=None):
+                 k_ref=None, ksmooth=None, bsmooth=None, tlim=None, show_T=None, save_name=None):
     """
     Parameters
     ----------
@@ -506,6 +510,10 @@ def tseries_comp(T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, v_eff=None,\
         plotted and added as a text insert.
     k_ref : tuple (default `None`)
         Option to plot background and fully closed equivalent permeability.
+    ksmooth : 1D array(default `None`)
+        Smoothed permeability variable, same size as the main variable.
+    bsmooth : 1D array(default `None`)
+        Smoothed inbound variable, same size as the main variable.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
     show_T : list/tuple/array (default `None`)
@@ -561,7 +569,7 @@ def tseries_comp(T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, v_eff=None,\
     # Plot each subplot
     # -----------------
     # a/ In-bound
-    _ = bound_in(T, bound_0, PARAM, v_eff=v_eff, tlim=tlim, fig=fig,
+    _ = bound_in(T, bound_0, PARAM, smoothed=bsmooth, v_eff=v_eff, tlim=tlim, fig=fig,
                  ax=axes[0])
     axes[0].set_xlabel("")
     axes[0].set_title("")
@@ -578,7 +586,7 @@ def tseries_comp(T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, v_eff=None,\
         show_period(show_T, axes[1])
 
     # c/ Equivalent permeability
-    _ = perm_eq(T, k_eq, k_ref=k_ref, tlim=tlim, fig=fig, ax=axes[2])
+    _ = perm_eq(T, k_eq, k_ref=k_ref, smoothed=ksmooth, tlim=tlim, fig=fig, ax=axes[2])
     axes[2].set_xlabel("")
     axes[2].set_title("")
 

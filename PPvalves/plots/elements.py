@@ -849,7 +849,7 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None)
 
 # ----------------------------------------------------------------------------
 
-def perm_eq(T, k_eq, k_ref=None, tlim=None, log=True, plot_params={}, fig=None, ax=None):
+def perm_eq(T, k_eq, k_ref=None, smoothed=None, tlim=None, log=True, plot_params={}, fig=None, ax=None):
     """
     Plots equivalent permeability in time.
 
@@ -861,6 +861,8 @@ def perm_eq(T, k_eq, k_ref=None, tlim=None, log=True, plot_params={}, fig=None, 
         Array of equivalent permeability in time, dimension is N_times.
     k_ref : tuple (default `None`)
         Option to plot background and fully closed equivalent permeability.
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
     log : bool (default=`True`)
@@ -892,6 +894,8 @@ def perm_eq(T, k_eq, k_ref=None, tlim=None, log=True, plot_params={}, fig=None, 
         t_win = (tlim[0] < T) & (T < tlim[1])
         T = T[t_win]
         k_eq = k_eq[t_win]
+        if smoothed is not None:
+            smoothed = smoothed[t_win]
 
     if len(T) > 1e4:
         rasterize=True
@@ -911,15 +915,12 @@ def perm_eq(T, k_eq, k_ref=None, tlim=None, log=True, plot_params={}, fig=None, 
     needed_params = ['k_eq_lc']
     plot_params = set_plot_params(plot_params, needed_params)
 
-    # Add smoothed version
-    # --------------------
-    k_eq_sm = savgol_filter(k_eq, 1001, 1)
-
     # Plot
     # ----
-    k_eq_l, = ax.plot(T, k_eq, ls='-', lw=0.8, c='0.5', rasterized=rasterize)
-    k_eq_sm_l, = ax.plot(T, k_eq_sm, ls='-', lw=1.5, c=plot_params['k_eq_lc'],
-                      rasterized=rasterize)
+    k_eq_l, = ax.plot(T, k_eq, ls='-', lw=0.8, c=plot_params['k_eq_lc'], rasterized=rasterize)
+
+    if smoothed is not None:
+        smoothed_l, = ax.plot(T, smoothed, ls='-', lw=1.5, c='.5', rasterized=rasterize)
 
     if k_ref is not None:
         ax.axhline(k_ref[0], ls=':', c='k', lw=1)
@@ -938,7 +939,7 @@ def perm_eq(T, k_eq, k_ref=None, tlim=None, log=True, plot_params={}, fig=None, 
     ax.set_ylabel(r"$k_{eq}$ ($m^2$)", c=plot_params['k_eq_lc'])
     plt.tight_layout()
 
-    g_objs = [k_eq_l, k_eq_sm_l]
+    g_objs = [k_eq_l, smoothed_l]
 
     return fig, ax, g_objs
 
@@ -1022,7 +1023,7 @@ def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
 
 # ----------------------------------------------------------------------------
 
-def bound_in(T, bound_0, PARAM, tlim=None, v_eff=None, plot_params={}, fig=None, ax=None):
+def bound_in(T, bound_0, PARAM, smoothed=None, tlim=None, v_eff=None, plot_params={}, fig=None, ax=None):
     """
     Plots pp/q value of in-bound in time.
 
@@ -1040,6 +1041,8 @@ def bound_in(T, bound_0, PARAM, tlim=None, v_eff=None, plot_params={}, fig=None,
     v_eff : float (default `None`)
         Effective value of the input boundary variable. If specified it is
         plotted and added as a text insert.
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
     plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters. Implemented:
         linecolor (any matplotlib ways of indicating color) default = 'pp_lc'
@@ -1066,6 +1069,8 @@ def bound_in(T, bound_0, PARAM, tlim=None, v_eff=None, plot_params={}, fig=None,
         t_win = (tlim[0] < T) & (T < tlim[1])
         T = T[t_win]
         bound_0 = bound_0[t_win]
+        if smoothed is not None:
+            smoothed = smoothed[t_win]
 
     if len(T) > 1e4:
         rasterize=True
@@ -1100,6 +1105,9 @@ def bound_in(T, bound_0, PARAM, tlim=None, v_eff=None, plot_params={}, fig=None,
     # Plot
     # ----
     bound_0_l, = ax.plot(T, bound_0, ls='-', lw=1.5, c=lc, rasterized=rasterize)
+
+    if smoothed is not None:
+        smoothed_l, = ax.plot(T, smoothed, ls='-', lw=1.5, c='.5', rasterized=rasterize)
 
     if tlim is not None:
         ax.set_xlim(tlim)
