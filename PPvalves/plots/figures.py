@@ -689,6 +689,14 @@ def phase_diagram(T, variables, labels, scales=('linear','linear'), tlim=None, \
     ax.set_xlabel(l_x)
     ax.set_ylabel(l_y)
 
+    # > set up limits
+    dx = .01 * (np.max(v_x) - np.min(v_x))
+    dy = .01 * (np.max(v_y) - np.min(v_y))
+    xlim = (np.min(v_x)-dx, np.max(v_x)+dx)
+    ylim = (np.min(v_y)-dy, np.max(v_y)+dy)
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+
     # Set up colorbar
     # ---------------
     if cycle is None:
