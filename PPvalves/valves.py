@@ -57,12 +57,12 @@ def scatter(scale, v_wid, PARAM):
     h_ = PARAM['h_']
 
     # Initialization
-    prev_end = 0 # last
+    prev_end = 1 # last
     v_id = prev_end # v_id+1 is first index of low k
     v_idx = []
 
     # Draw intervalve distances while they do not cross domain end
-    while v_id + v_wid/h_ < Nx:
+    while v_id + v_wid/h_ < Nx - 1:
         dist = np.random.exponential(scale)
 
         v_id = np.floor(dist/h_) + prev_end
