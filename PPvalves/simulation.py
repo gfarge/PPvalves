@@ -287,67 +287,25 @@ def run_time(PARAM):
 
 # -----------------------------------------------------------------------------
 
-def save(filename, v_activity, VALVES, PARAM, P_=None, P0=None, Plast=None, \
-         bounds=None, results=None, verbose=True):
+def save(filename, dic, verbose=True):
     """
-    Save the results and parameters of a simulation. The results are saved as a
-    dictionnary, using the pickle package. The save fields include all
-    specified input.
+    Save the output of a simulation. It should be packaged in a dictionnary
+    first. It is then saved using the pickle package.
 
     Parameters
     ----------
-    filename : str
+    path : str
        Path and filename where to save the file. No extension needed.
-    PARAM : dict
-        Parameters dictionnary.
-    VALVES : dict
-        Valves parameters dictionnary.
-    v_activity : 3d array
-        Valve activity array, dimensions: Nt * 2 * Nvalves. On the second
-        dimension, stores *(a)* the valve state (1 is open, 0 is closed),
-        *(b)* the pressure differential across the valve.
-    P_ : 2d array (default=`None`)
-        Pressure history, dimensions: Nt * Nx. Optionnal.
-    P0 : 1d array (default=`None`)
-        Pressure history at first point of domain, dimensions: Nt. Optionnal.
-    Plast : 1d array (default=`None`)
-        Pressure history at last point of domain, dimensions: Nt. Optionnal.
-    bounds : 2d array (default=`None`)
-        Value of the free variable at each boundary, dimensions: Nt * 2 (input,
-        output). Optionnal.
-    results : dictionnary (default=`None`)
-        Results array. A series of measurements taken on the outcome of the
-        simulation.
+    dic : dictionnary
+        Dictionnary packaging all output to be saved. Careful to use
+        stereotypical names for the keys: 'PARAM', 'VALVES', 'v_activity',
+        'P0', 'Plast', 'bounds', 't_ev', 'x_ev', 'k_eq'...
     verbose : bool (default=`True`)
         Option to have the function print what it's doing, succinctly.
 
     """
-    # Build output dictionnary
-    # ------------------------
-    # --> Necessary saving
-    out = {}
-    out['PARAM'] = PARAM
-    out['VALVES'] = VALVES
-    out['v_activity'] = v_activity
+    if path[-4:] != '.pkl':
+        path += '.pkl'  # add extension if not present
 
-    # --> Optionnal saving
-    if P_ is not None:
-        out['P_'] = P_
-
-    if Plast is not None:
-        out['Plast'] = Plast
-
-    if P0 is not None:
-        out['P0'] = P0
-
-    if bounds is not None:
-        out['bounds'] = bounds
-
-    if results is not None:
-        out['results'] = results
-
-    # Actually saving
-    # ---------------
-    filename += '.pkl'
-    if verbose : print('simulation.save -- saving at {:}...'.format(filename))
-    pickle.dump(out, open(filename, 'wb'))
+    if verbose : print('simulation.save -- saving at {:}...'.format(path))
+    pickle.dump(out, open(path, 'wb'))
