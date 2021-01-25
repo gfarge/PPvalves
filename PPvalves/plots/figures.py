@@ -11,6 +11,9 @@ from matplotlib.patches import Rectangle
 from matplotlib import ticker
 from matplotlib.gridspec import GridSpec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.colors import to_rgba
+from matplotlib import ticker as tk
+
 
 
 # My packages
@@ -23,6 +26,7 @@ from PPvalves.plots.elements import valves, q_profile, pp_profile, bounds, \
 
 from PPvalves.utility import calc_k, calc_Q
 import PPvalves.equilibrium as equi
+import PPvalves.catalog as cat
 
 
 # Core
@@ -840,3 +844,148 @@ def corr_mats(reg_bounds, corr_mat, lag_mat, X_valves=None, txt=True, \
         plt.show()
 
     return fig, axes
+
+# -----------------------------------------------------------------------------
+def deltap_1v_fig(time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}, save_name=None):
+    """
+    Plots the correlation matrices: cross-correlation coefficient and
+    cross-correlation lag.
+
+    Parameters
+    ----------
+    time : 1D array
+        Time array, dimension Nt.
+    deltap : 1D array
+        Pressure differential at valve array, dimension Nt.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    VALVES : dictionnary
+        Valve parameters dictionnary. VALVES['open'] is used for valve states
+        if states_override is not specified.
+    states : 1D array, boolean
+        States of the valve in time, `True` is open, `False` is closed.
+        Dimension Nt.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters for the pore pressure profile,
+        flux profile and valves.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : mpl figure object
+        Our figure.
+    axes : list of mpl axes objects
+        Our axes.
+
+    """
+    # Unpack a few things
+    # ===================
+    # > thresholds
+    dphi = VALVES['dPhi'][0]
+    dplo = VALVES['dPlo'][0]
+
+    ddp = 0.05*(dphi - dplo)
+    dplim = (dplo-ddp, dphi+ddp)
+
+    # > opening and closing times
+    t_cl = cat.close_count(states, time)
+    t_op = cat.open_count(states, time)
+
+    # > Define c_op and c_cl
+    c_op = '#9ad3bc'
+    c_cl = '#ec524b'
+
+    # Manage time limits and rasterization
+    # ====================================
+    if tlim is not None:
+        t_win = (tlim[0] < time) & (time < tlim[1])
+        time = time[t_win]
+        deltap = deltap[t_win]
+        t_op_win = (t_op > tlim[0]) & (t_op < tlim[1])
+        t_cl_win = (t_cl > tlim[0]) & (t_cl < tlim[1])
+        t_op = t_op[t_op_win]
+        t_cl = t_op[t_cl_win]
+
+    else:
+        tlim=(0, np.max(time))
+
+    if len(time) > 1e4:
+        rasterize=True
+    else:
+        rasterize=False
+
+    # Start plotting
+    # ==============
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    ax.plot(time, deltap, c='k', zorder=10)
+
+    ax.set_xlim(tlim)
+    ax.set_ylim(dplim)
+
+    ax.set_xlabel('Time (scaled)')
+    ax.set_ylabel(r'$\delta p$ across valve (scaled)')
+
+    # --> Thresholds
+    ax.axhline(dphi, ls='--', c=c_op, zorder=9)
+    ax.axhline(dplo, ls='--', c=c_cl, zorder=9)
+
+    # --> Events
+    ax.plot(t_op, np.ones(len(t_op))*dphi, ls='', ms=7,
+                     marker='o', mec='k', mfc='w', mew=1.5, zorder=11)
+    ax.plot(t_op, np.ones(len(t_op))*dphi, ls='', ms=15, marker='o',
+            mec='.5', mfc=to_rgba('w', 0), mew=.5, zorder=11, clip_on=False)
+    ax.plot(t_op, np.ones(len(t_op))*dphi, ls='', ms=20, marker='o',
+            mec='.5', mfc=to_rgba('w', 0), mew=.5, zorder=11, clip_on=False)
+    ax.plot(t_op, np.ones(len(t_op))*dphi, ls='', ms=25, marker='o',
+            mec='.5', mfc=to_rgba('w', 0), mew=.5, zorder=11, clip_on=False)
+
+    ax.plot(t_cl, np.ones(len(t_cl))*dplo, ls='', ms=7,
+            marker='x', mec='k', mfc='w', lw=1, zorder=11)
+
+    # --> Open/closed periods (only implementing starting with all closed for
+    # now)
+    bounds = np.sort(np.hstack([tlim, t_op, t_cl]))
+
+    if len(t_op)>0 and len(t_cl)>0:
+        if t_op[0] > t_cl[0]:
+            # If first event is closing, the first state is open
+            c_cycle = [c_op, c_cl]
+            st_lab = ['Closed', 'Open']
+            st_xy = ([(t_cl[0]+t_op[0])/2, dplo + 2*ddp],
+                     [(t_cl[1]+t_op[0])/2, dphi - 2*ddp])
+        else:
+            c_cycle = [c_cl, c_op]
+            st_lab = ['Open', 'Closed']
+            st_xy = ([(t_cl[0]+t_op[0])/2, dphi - 2*ddp],
+                     [(t_cl[0]+t_op[1])/2, dplo + 2*ddp])
+
+        for ii in range(len(bounds)-1):
+            ax.axvspan(bounds[ii], bounds[ii+1],
+                    fc=to_rgba(c_cycle[ii%2], .3), ec=[0, 0, 0, 0])
+            if ii <= 1:
+                  ax.text(st_xy[ii][0], st_xy[ii][1], st_lab[ii], fontname='Roboto Condensed',
+                          c=c_cycle[(ii+1)%2], va='center', ha='center', fontsize=9)
+
+    # --> Better ticks
+    ax.yaxis.set_major_locator(tk.FixedLocator([dplo, dphi]))
+    ax.yaxis.set_major_formatter(tk.FixedFormatter(['CLOSING', 'OPENING']))
+
+    ax.yaxis.set_minor_locator(tk.MultipleLocator(.005))
+    ax.yaxis.set_minor_formatter(tk.ScalarFormatter())
+
+    axes = ax
+    plt.tight_layout()
+    # Saving?
+    # -------
+    if save_name is not None:
+        print('Saving figure at {:}'.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, axes
+
