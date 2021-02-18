@@ -770,7 +770,7 @@ def activity_dip(event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None)
 
 # ----------------------------------------------------------------------------
 
-def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None):
+def activity_rate(rate_time, rate, tlim=None, plot_params={}, smoothed=None, fig=None, ax=None):
     """
     Plots activity rate in time.
 
@@ -787,6 +787,8 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None)
         A dictionnary of plotting parameters. Implemented:
         linecolor (any matplotlib ways of indicating color) default = 'k_eq_lc'
         : 'darkturquoise')
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
     fig : matplotlib figure object (default to None)
         Figure where to plot the valves. If not specified, takes output of
         plt.gcf(): current active figure.
@@ -808,12 +810,14 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None)
     if tlim is not None:
         t_win = (tlim[0] < rate_time) & (rate_time < tlim[1])
         rate_time = rate_time[t_win]
-        rate = rate [t_win]
+        rate = rate[t_win]
+        if smoothed:
+            smoothed = smoothed[t_win]
 
     if len(rate_time) > 1e4:
-        rasterize=True
+        rasterize = True
     else:
-        rasterize=False
+        rasterize = False
 
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
@@ -830,8 +834,15 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None)
 
     # Plot
     # ----
-    act_r_l, = ax.plot(rate_time, rate, ls='-', lw=1.5, c=plot_params['act_lc'],
-                       rasterized=rasterize)
+    if smoothed is not None:
+
+        act_r_l, = ax.plot(rate_time, rate, ls='-', lw=.7, c='.8',
+                           rasterized=rasterize, zorder=0)
+        smoothed_l, = ax.plot(rate_time, smoothed, ls='-', lw=1.5, zorder=1,
+                             c=plot_params['act_lc'], rasterized=rasterize)
+    else:
+        act_r_l, = ax.plot(rate_time, rate, ls='-', lw=1.5, c=plot_params['act_lc'],
+                           rasterized=rasterize)
 
     if tlim is not None:
         ax.set_xlim(tlim)
@@ -844,6 +855,8 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, fig=None, ax=None)
     plt.tight_layout()
 
     g_objs = act_r_l
+    if smoothed is not None:
+        g_objs = [act_r_l, smoothed_l]
 
     return fig, ax, g_objs
 
@@ -898,9 +911,9 @@ def perm_eq(T, k_eq, k_ref=None, smoothed=None, tlim=None, log=True, plot_params
             smoothed = smoothed[t_win]
 
     if len(T) > 1e4:
-        rasterize=True
+        rasterize = True
     else:
-        rasterize=False
+        rasterize = False
 
     # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
@@ -917,10 +930,14 @@ def perm_eq(T, k_eq, k_ref=None, smoothed=None, tlim=None, log=True, plot_params
 
     # Plot
     # ----
-    k_eq_l, = ax.plot(T, k_eq, ls='-', lw=0.8, c=plot_params['k_eq_lc'], rasterized=rasterize)
-
     if smoothed is not None:
-        smoothed_l, = ax.plot(T, smoothed, ls='-', lw=1.5, c='.5', rasterized=rasterize)
+        k_eq_l, = ax.plot(T, k_eq, ls='-', lw=0.7, c='.8',
+                          rasterized=rasterize, zorder=1)
+        smoothed_l, = ax.plot(T, smoothed, ls='-', lw=1.5, zorder=1,
+                              c=plot_params['k_eq_lc'], rasterized=rasterize)
+    else:
+        k_eq_l, = ax.plot(T, k_eq, ls='-', lw=1.5, c=plot_params['k_eq_lc'],
+                          rasterized=rasterize)
 
     if k_ref is not None:
         ax.axhline(k_ref[0], ls=':', c='k', lw=1)
@@ -939,7 +956,10 @@ def perm_eq(T, k_eq, k_ref=None, smoothed=None, tlim=None, log=True, plot_params
     ax.set_ylabel(r"$k_{eq}$ ($m^2$)", c=plot_params['k_eq_lc'])
     plt.tight_layout()
 
-    g_objs = [k_eq_l, smoothed_l]
+    if smoothed is not None:
+        g_objs = [k_eq_l, smoothed_l]
+    else:
+        g_objs = [k_eq_l]
 
     return fig, ax, g_objs
 
@@ -1104,10 +1124,13 @@ def bound_in(T, bound_0, PARAM, smoothed=None, tlim=None, v_eff=None, plot_param
 
     # Plot
     # ----
-    bound_0_l, = ax.plot(T, bound_0, ls='-', lw=1.5, c=lc, rasterized=rasterize)
-
     if smoothed is not None:
-        smoothed_l, = ax.plot(T, smoothed, ls='-', lw=1.5, c='.5', rasterized=rasterize)
+        bound_0_l, = ax.plot(T, bound_0, ls='-', lw=.7, c='.8',
+                             rasterized=rasterize, zorder=0)
+        smoothed_l, = ax.plot(T, smoothed, ls='-', lw=1.5, c=lc,
+                              rasterized=rasterize, zorder=1)
+    else:
+        bound_0_l, = ax.plot(T, bound_0, ls='-', lw=1.5, c=lc, rasterized=rasterize)
 
     if tlim is not None:
         ax.set_xlim(tlim)
@@ -1134,5 +1157,7 @@ def bound_in(T, bound_0, PARAM, smoothed=None, tlim=None, v_eff=None, plot_param
     plt.tight_layout()
 
     g_objs = bound_0_l
+    if smoothed is not None:
+        g_objs = [bound_0_l, smoothed_l]
 
     return fig, ax, g_objs
