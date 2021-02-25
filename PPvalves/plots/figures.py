@@ -907,7 +907,7 @@ def deltap_1v_fig(time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}
         t_op_win = (t_op > tlim[0]) & (t_op < tlim[1])
         t_cl_win = (t_cl > tlim[0]) & (t_cl < tlim[1])
         t_op = t_op[t_op_win]
-        t_cl = t_op[t_cl_win]
+        t_cl = t_cl[t_cl_win]
 
     else:
         tlim=(0, np.max(time))
@@ -950,7 +950,7 @@ def deltap_1v_fig(time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}
     # now)
     bounds = np.sort(np.hstack([tlim, t_op, t_cl]))
 
-    if len(t_op)>0 and len(t_cl)>0:
+    if len(t_op)>1 and len(t_cl)>1:
         if t_op[0] > t_cl[0]:
             # If first event is closing, the first state is open
             c_cycle = [c_op, c_cl]
