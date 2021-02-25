@@ -1,5 +1,0 @@
-============
-Installation
-============
-
-Nothing here yet! :^)
