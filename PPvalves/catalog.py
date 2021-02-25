@@ -1,7 +1,8 @@
-""" Module used to produce and analyse activity catalogs, adapted to analyse
-the results of PPV runs but also of real catalogs."""
-
-# /// Imports
+"""
+Module used to produce and analyze activity catalogs, adapted to analyse
+the results of PPv runs but also of real catalogs.
+"""
+# >> Imports
 import numpy as np
 from mtspec import mtspec
 from scipy.special import erfinv
@@ -9,8 +10,7 @@ from scipy.signal import savgol_filter
 from scipy.stats import chisquare, chi2, poisson
 
 
-# Core
-
+# >> Core
 #------------------------------------------------------------------------------
 
 def open_ratio(states):
@@ -19,17 +19,19 @@ def open_ratio(states):
 
     Parameters
     ----------
-    states: nd array
-        Valve states history, dimension Ntimes * Nvalves.  False is closed, True is
-        open. Output of run_ppv, v_activity[times,0,valve_idx], where valve_idx
-        is the idxs of the valves you want the event count for.
-
+    states: 2D array
+        History of valve states, dimension `Ntimes, Nvalves`.  `False` is
+        closed, `True` is open.
     Returns
     -------
     ratio : 1D array
-        At each time states is specified, the proportion of open valves is
+        For each time `states` is specified, the proportion of open valves is
         returned.
 
+    Notes
+    -----
+    Parameter `states` is usually taken from `run_ppv` output: `v_activity[times,0,valve_idx]`, where
+    `valve_idx` selects the indices of the valves you want an event count f.
     """
     Nv = np.shape(states)[1]  # Total number of valves
     ratio = np.sum(states, axis=1) / Nv
@@ -39,86 +41,84 @@ def open_ratio(states):
 #------------------------------------------------------------------------------
 
 def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):
-    """
-    Gives the time at which an event occurs, that is,
-    the index when the just calculated dP crosses the threshold
-    corresponding to the event type selected.
+    """Produces a catalog of valve events (openings or closings).
+
+    Produces a catalog of events in time --- and optionally space. The time of
+    an event occuring is taken as the time at which the corresponding threshold
+    of pressure differential is crossed at the given valve.
 
     Parameters
     ----------
     ev_type : str
-        type of event to count, either "close", or "open".
-    states : nd array
-        Valve states history: N_times * N_valves.  False is closed, True is
-            open. Output of run_ppv, v_activity[times,0,valve_idx],
-            where valve_idx is the idxs of the valves you want the
-            event count for.
-    time : nd array
-        Array of times, same shape as first dimension of valve states.
-    catalog : bool (default `False`)
-        if turned to `True`, the catalog option allows close_count to return
-        x_events in addition to t_event.  When turned on, this option recquires
-        that VALVES and X are specified.
-    VALVES : dictionnary (default to `None`)
-        Valve characteristics dictionnary. Needed for `catalog` option
-    X : 1D array (default to `None`)
-        Space array. Needed for `catalog` option
-
+        type of event to count, either `"close"`, or `"open"`.
+    states: 2D array
+        History of valve states, dimension `Ntimes, Nvalves`.  `False` is
+        closed, `True` is open.
+    time : 1D array
+        Array of physical times, same shape as first dimension of `states`.
+    catalog : bool, optional
+        If `catalog=True`, the allows `event_count` to return
+        the position of events `x_events` in addition to their time `t_event`.
+        Then, it recquires that `VALVES` and `X` are specified.
+    VALVES : dictionnary, optional
+        Valve characteristics dictionnary. Needed for `catalog` option.
+    X : 1D array, optional
+        Physical sppace array. Needed for `catalog` option.
 
     Returns
     -------
-    events_t : nd array
+    events_t : 1D array
         Event times.
-    events_x : nd array
+    events_x : 1D array
         Event locations, if catalog is True.
 
+    Notes
+    -----
+    Parameter `states` is usually taken from `run_ppv` output: `v_activity[times,0,valve_idx]`, where
+    `valve_idx` selects the indices of the valves you want an event count f.
     """
-
-    # Check if v_x is present if catalog optin is True
+    # >> Check if catalog option is on
     if catalog & isinstance(VALVES, type(None)) & isinstance(X, type(None)):
         raise ValueError("When catalog option is turned on, the valves'" + \
          'location needs to be specified with the v_x argument.')
 
-    # Get opening time idx for each valve in one array
 
-    # Test if we have 1 or several valves here
+    # >> For several valves
     if len(states.shape) > 1:
-        n_valves = states.shape[1] # valve dimension
+        n_valves = states.shape[1] # number of valves
 
-        all_events_i = []  # time indices of events
+        all_events_i = []  # init: time indices of events
         if catalog:
-            v_x = X[VALVES['idx']] + VALVES['width']/2
-            all_events_x = []
+            v_x = X[VALVES['idx']] + VALVES['width']/2 # location of valves
+            all_events_x = []  # init: locations of events
 
-        for ibarr in range(n_valves):
-            # --> First get the time indices of events
-            # for each history, get the time when states switches from 0 (closed)
-            # to 1 (open)
+        for iv in range(n_valves):
+            # -> Run through valves, for each, compute (t, x)
+            v_states = states[:, iv].astype(int)  # states for this valve
 
-            b_states = states[:, ibarr]
+            if ev_type == 'close':  # get 1 -> 0 events
+                events = (v_states[1:]-v_states[:-1]) == -1
+                v_events_i = np.where(events)[0]+1  # events idxs
 
-            if ev_type == 'close':
-                b_events_i = np.where(b_states[1:].astype(int) -\
-                b_states[:-1].astype(int) == -1)[0]+1
-            elif ev_type == 'open':
-                b_events_i = np.where(b_states[1:].astype(int) -\
-                b_states[:-1].astype(int) == 1)[0]+1
+            elif ev_type == 'open':  # get 0 -> 1 events
+                events = (v_states[1:]-v_states[:-1]) == 1
+                v_events_i = np.where(events)[0]+1  # events idxs
 
-            b_events_i = b_events_i.tolist()
-            all_events_i.extend(b_events_i)
+            v_events_i = v_events_i.tolist()
+            all_events_i.extend(v_events_i)  # add valve events t to all events
 
-            # --> Then build location vector
+            # -> build event location vector
             if catalog:
-                b_events_x = [v_x[ibarr] for ii in\
-            	 range(len(b_events_i))]
-                all_events_x.extend(b_events_x)
+                v_events_x = [v_x[iv] for ii in\
+            	 range(len(v_events_i))]
+                all_events_x.extend(v_events_x) # add valve events t to all events
 
-        # Convert idx to time
+        # >> Convert event time idx to time
         events_t = time[all_events_i]
         if catalog:
             events_x = np.array(all_events_x)
 
-        # Sort array
+        # >> Sort events t, x in chronological order and return
         if catalog:
             id_sort = np.argsort(events_t)
             events_t = events_t[id_sort]
@@ -129,6 +129,7 @@ def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):
             events_t = np.sort(events_t)
             return events_t
 
+    # >> For one valve only
     else:
         if ev_type == 'close':
             events_i = np.where(states[1:].astype(int) -\
@@ -143,38 +144,43 @@ def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):
 #------------------------------------------------------------------------------
 
 def open_count(states, time, catalog=False, VALVES=None, X=None):
-    """
-    Gives the time at which the valves open, that is,
-    the index when the just calculated dP is higher than dPhi for
-    the valve. Calls event_count, same parameters.
+    """Counts and makes a catalog of valve opening events.
 
-    Parameters:
-    -----------
-    states: nd array
-        Valve states history, dimension Ntimes * Nvalves.  False is closed, True is
-        open. Output of run_ppv, v_activity[times,0,valve_idx], where valve_idx
-        is the idxs of the valves you want the event count for.
-    time : nd array
-        Array of times, same shape as first dimension of valve states.
-    catalog : bool (default `False`)
-        if turned to `True`, the catalog option allows close_count to return
-        x_events in addition to t_event.  When turned on, this option recquires
-        that `VALVES` and `X` are specified.
-    VALVES : dictionnary (default to `None`)
-        Valve characteristics dictionnary. Needed for `catalog` option
-    X : 1D array (default to `None`)
-        Space array. Needed for `catalog` option
+    Parameters
+    ----------
+    states: 2D array
+        History of valve states, dimension `Ntimes, Nvalves`.  `False` is
+        closed, `True` is open.
+    time : 1D array
+        Array of physical times, same shape as first dimension of `states`.
+    catalog : bool, optional
+        If `catalog=True`, the allows `event_count` to return
+        the position of events `x_events` in addition to their time `t_event`.
+        Then, it recquires that `VALVES` and `X` are specified.
+    VALVES : dictionnary, optional
+        Valve characteristics dictionnary. Needed for `catalog` option.
+    X : 1D array, optional
+        Physical sppace array. Needed for `catalog` option.
 
     Returns
     -------
-    events_t : nd array
+    events_t : 1D array
         Event times.
-    events_x : nd array
+    events_x : 1D array
         Event locations, if catalog is True.
 
+    Notes
+    -----
+        - This is a shortcut function to use instead of `event_count`.
+        - Parameter `states` is usually taken from `run_ppv` output:
+          `v_activity[times,0,valve_idx]`, where `valve_idx` selects the
+          indices of the valves you want an event count f.
 
+    See also
+    --------
+    event_count : General event count.
     """
-    # Call event count
+    # >> Call event count
     out = event_count('open', states, time, catalog=catalog, VALVES=VALVES, X=X)
 
     return out
@@ -182,38 +188,43 @@ def open_count(states, time, catalog=False, VALVES=None, X=None):
 #------------------------------------------------------------------------------
 
 def close_count(states, time, catalog=False, VALVES=None, X=None):
-    """
-    Gives the time at which the valves open, that is,
-    the index when the just calculated dP is higher than dPhi for
-    the valve. Calls event_count, same parameters.
+    """Counts and makes a catalog of valve opening events.
 
-    Parameters:
-    -----------
-    states: nd array
-        Valve states history, dimension Ntimes * Nvalves.  False is closed, True is
-        open. Output of run_ppv, v_activity[times,0,valve_idx], where valve_idx
-        is the idxs of the valves you want the event count for.
-    time : nd array
-        Array of times, same shape as first dimension of valve states.
-    catalog : bool (default `False`)
-        if turned to `True`, the catalog option allows close_count to return
-        x_events in addition to t_event.  When turned on, this option recquires
-        that `VALVES` and `X` are specified.
-    VALVES : dictionnary (default to `None`)
-        Valve characteristics dictionnary. Needed for `catalog` option
-    X : 1D array (default to `None`)
-        Space array. Needed for `catalog` option
+    Parameters
+    ----------
+    states: 2D array
+        History of valve states, dimension `Ntimes, Nvalves`.  `False` is
+        closed, `True` is open.
+    time : 1D array
+        Array of physical times, same shape as first dimension of `states`.
+    catalog : bool, optional
+        If `catalog=True`, the allows `event_count` to return
+        the position of events `x_events` in addition to their time `t_event`.
+        Then, it recquires that `VALVES` and `X` are specified.
+    VALVES : dictionnary, optional
+        Valve characteristics dictionnary. Needed for `catalog` option.
+    X : 1D array, optional
+        Physical sppace array. Needed for `catalog` option.
 
     Returns
     -------
-    events_t : nd array
+    events_t : 1D array
         Event times.
-    events_x : nd array
+    events_x : 1D array
         Event locations, if catalog is True.
 
-    """
+    Notes
+    -----
+        - This is a shortcut function to use instead of `event_count`.
+        - Parameter `states` is usually taken from `run_ppv` output:
+          `v_activity[times,0,valve_idx]`, where `valve_idx` selects the
+          indices of the valves you want an event count f.
 
-    # Call event count
+    See also
+    --------
+    event_count : General event count.
+    """
+    # >> Call event count
     out = event_count('close', states, time, catalog=catalog, VALVES=VALVES, X=X)
 
     return out
@@ -221,8 +232,7 @@ def close_count(states, time, catalog=False, VALVES=None, X=None):
 #---------------------------------------------------------------------------------
 
 def recurrence(event_time):
-    """
-    Calculates time before next event for an event sequence.
+    """Computes time before next event for a sequence of events.
 
     Parameters
     ----------
@@ -231,9 +241,9 @@ def recurrence(event_time):
 
     Returns
     -------
-    time_before_next
-        Time before next event for the all the events but the last one. Same
-        unit as the event times.
+    time_before_next : 1D array
+        Time before next event for the all the events *but the last one*:
+        dimension is one less than `event_time`. Same unit as the event times.
     """
 
     time_before_next = event_time[1:] - event_time[:-1]
@@ -242,44 +252,40 @@ def recurrence(event_time):
 
 #-------------------------------------------------------------------------------
 
-def event_count_signal(event_time, dt, t0=0., tn=None, norm=False):
-    """
-    Calculates the event count signal: returns an evenly spaced array
-    of the binned count of events.
+def event_count_signal(event_time, dt, t0=0., tn=None):
+    """Computes the event count signal.
+
+    The event count signal is a time-binned count of events. It can easily be
+    linked to an activity rate, as it is the number of events in a given time
+    bin across time.
 
     Parameters
     ----------
     event_time : 1D array
         Event times.
     dt : float
-        Binning length to compute activity rate, final discretization of the
-        event count signal, in seconds.
-    t0 : float (default = `0`)
-        Beginning time of the first bin, in seconds.
-    tn : float (default `None`)
-        Beginning time of the final bin, in seconds. Default is time of last event.
-    norm : bool (default = `False`)
-        Option to normalize by norm of vector.
+        Binning length to compute event count, final discretization of the
+        event count signal.
+    t0 : float, optional
+        Beginning time of the first bin. If left blank, it starts at `t0=0`.
+    tn : float, optional
+        Beginning time of the final bin. Default is time of last event.
 
     Returns
     -------
     event_count_signal : 1D array
-        Evenly spaced count of events in bins of dt. Activity rate.
+        Evenly spaced count of events in time bins of length `dt`.
     bin_edges : 1D array
-        Boundaries of all bins, in second.
+        Boundaries of time bins, one element longer than event_count_signal.
     """
 
-    # Check if tn is 'max' and if so set it to its value
+    # >> Check if tn is 'max' and if so set it to its value
     if tn is None:
         tn = max(event_time)
 
-    # The evenly spaced count is in fact a simple histogram
-    ev_count, bin_edges = np.histogram(event_time,\
-            bins=int((tn-t0)//dt+2), range=(t0, tn+dt))
-
-    # Normalize with norm of vector
-    if norm:
-        ev_count = ev_count.astype(float)/np.linalg.norm(ev_count)
+    # >> The evenly spaced count is in fact a simple histogram
+    ev_count, bin_edges = np.histogram(event_time, bins=int((tn-t0)//dt+2),
+                                       range=(t0, tn+dt))
 
     # /!\ bin_edges length is 1 unit longer than event_count
 
@@ -288,56 +294,60 @@ def event_count_signal(event_time, dt, t0=0., tn=None, norm=False):
 #-------------------------------------------------------------------------------
 
 def crosscorr(sig1, sig2, dt, norm=True, no_bias=True):
-    """
-    Calculates the cross-correlation of two signal. Signals can be of different
-    sizes, but the correlation lag might be strange in this case.
+    """Homemade cross-correlation function.
+
+    Computes the cross-correlation time-series of two signals. Function was
+    designed for signals of same length. If signals of different sizes are
+    used, correlation lag might be strange, use at your own risk.
 
     Parameters
     ----------
     sig1, sig2 : 1D arrays
-        Signals to cross-correlate, dimensions N and M.
+        Signals to cross-correlate, dimensions N and M. Use same discretization
+        lenght `dt` for best results.
     dt : float
-        Time delta in signals.
-    norm : bool (default to `True`)
-        Option to normalize the cross-correlation by the product of the signals
-        norm.
-    no_bias : bool (default to `True`)
-        Option to remove bias due to variable number of points at each lag in
-        cross-correlation.
+        Time step used in both signals.
+    norm : bool, optional
+        By default, normalizes the signals before cross-correlating them. `norm
+        = False` turns it off.
+    no_bias : bool, optional
+        By default, removes the bias due to the variable number of points used
+        to compute the correlation at each lag. This option also removes one
+        fifth of the cross-correlation at each end, to get rid of edge effects
+        due to unbiasing.
 
     Returns
     -------
     corr : 1D array
-        Cross-correlation of the input signals, dimension N + M - 1
+        Cross-correlation of the input signals, dimension N + M - 1.
     lag : 1D array
         Time lag for each value of the cross-correlation, dimension N + M - 1.
         Centering around 0 is only ensured if sig1 and sig2 are the same size.
-
     """
 
-    # Normalize
+    # >> Normalize signals
     if norm:
         sig1 = (sig1 - np.mean(sig1)) / (np.std(sig1)*len(sig1))
         sig2 = (sig2 - np.mean(sig2)) / np.std(sig2)
 
-    # Calculate correlation
+    # >> Compute correlation
     corr = np.correlate(sig1.astype(float), sig2.astype(float),'full')
 
-    # Normalize
+    # >> Normalize
     if norm:
         corr = corr.astype(float) / (np.linalg.norm(sig1)*np.linalg.norm(sig2))
 
-    # Remove bias from number of points
+    # >> Remove bias due to number of points varying at each lag
     if no_bias:
         bias = crosscorr_bias(sig1, sig2)
         corr = corr/bias
 
-    # Compute time lag of autocorrelation
+    # >> Compute time lag of autocorrelation
     lag = np.arange(0, len(sig1) + len(sig2) - 1) - (len(sig1) - 1)
     lag = lag.astype(float) * dt
 
-    # Remove both ends of lag and correlation, to get rid of edge effects due
-    # to removing the bias
+    # >> Removes both ends of lag and correlation, to get rid of edge effects
+    # due to removing the bias
     if no_bias:
         valid = (abs(lag) < 4/5*max(lag))
         lag = lag[valid]
@@ -349,37 +359,33 @@ def crosscorr(sig1, sig2, dt, norm=True, no_bias=True):
 #------------------------------------------------------------------------------
 
 def crosscorr_bias(sig1, sig2):
-    """
-    Computes the bias vector due to the number of points of at each lag of the
-    cross correlation.
+    """Computes the bias of at each lag of the cross correlation.
 
     Parameters
     ----------
-    sig1 : 1D array
-        First signal to correlate, dimension N.
-    sig2 : 1D array
-        Second signal to correlate, dimension M.
+    sig1, sig2 : 1D array
+        Signals to correlate, dimension N and M.
 
     Returns
     -------
     bias : 1D array
         The bias vector, corresponding to all values of lag (both negative and
-        positive), dimension N+M-1
+        positive), dimension N + M - 1.
 
     """
     N = len(sig1)
     M = len(sig2)
 
-    # Bias for part where signals overlap entirely
+    # >> Bias for part where signals overlap entirely
     bias_full = [1 for ii in range(max(M, N) - min(M, N) + 1)]
 
-    # Bias for part before full overlap
+    # >> Bias for part before full overlap
     bias_bef = [ii/min(N, M) for ii in range(1, min(M, N))]
 
-    # Bias for part after full overlap
+    # >> Bias for part after full overlap
     bias_aft = [ii/min(N, M) for ii in range(min(M, N) - 1, 0, -1)]
 
-    # Assemble
+    # >> Concatenate
     bias = np.concatenate((bias_bef, bias_full, bias_aft))
 
     return bias
@@ -388,18 +394,17 @@ def crosscorr_bias(sig1, sig2):
 
 
 def corr_coeff(sig1, sig2, dt):
-    """
-    Calculates the correlation coefficient between two signals.
+    """Computes a correlation coefficient between two signals.
 
     The correlation coefficient is taken as the maximum of the cross-correlation
-    of the two signals, the corresponding lag is also returned.
+    of the two signals, the corresponding time lag is also returned.
 
     Parameters
     ----------
     sig1, sig2 : 1D arrays
         Signals to cross-correlate, dimensions N and M.
     dt : float
-        Time delta in signals.
+        Time step of signals.
 
     Returns
     -------
@@ -407,13 +412,11 @@ def corr_coeff(sig1, sig2, dt):
         Correlation coefficient.
     cc_lag : 1D array
         Time lag corresponding to correlation coefficient.
-
     """
-
-    # Calculates the cross correlation
+    # >> Calculates the cross correlation
     corr, corr_lag = crosscorr(sig1, sig2, dt, norm=True, no_bias=False)
 
-    # Get correlation coefficient and time lag
+    # >> Get correlation coefficient and time lag
     cc = max(abs(corr))
     cc_lag = corr_lag[np.argmax(abs(corr))]
 
@@ -423,25 +426,27 @@ def corr_coeff(sig1, sig2, dt):
 
 
 def act_interval_frac(event_t, tau):
-    """
-    This function computes the fraction of intervals of lengths `tau[ii]` that
-    contain at least an event.
+    """Computes the fraction of time-interval of various length in which there
+    is at least an event.
 
     Parameters
     ----------
     event_t : 1D array
-        Array of event times of occurence, dimension N_ev.
+        Array of event times, dimension `N_ev`.
     tau : 1D array
-        Array of interval lengths to test, dimension N_tau.
+        Array of time interval lengths to test, dimension `N_tau`. If all
+        values of `tau` are not multiples of `min(tau)`, the output `tau` will
+        be different than the input one.
 
     Returns
     -------
     X_tau : 1D array
         Fraction of intervals of corresponding lengths `tau` that contain at
-        least an event, dimension N_tau
+        least an event, dimension `N_tau`
     tau : 1D array
-        Input tau adjusted so as to match the actual value of `tau[ii]` that is
-        tested, which has to be a multiple of the min of `tau`, dimension N_tau.
+        Input `tau` adjusted to match the actual interval length that is
+        tested, which here has to be a multiple of the min of `tau`. Dimension
+        `N_tau`.
 
     """
     tau_min = min(tau)  # lowest tau is taken as sweeping window time increment
@@ -450,15 +455,15 @@ def act_interval_frac(event_t, tau):
     X_tau = np.zeros(len(tau))
 
     for ii, tt in enumerate(tau):
-        # First: build sweeping window
+        # >> First: build sweeping window
         len_tau_win = int(np.round(tt/tau_min))
         tau_win = np.ones(len_tau_win)  # sweeping window to count events
         tau[ii] = len_tau_win * tau_min
 
-        # Second: correlate and count intervals with activity
+        # >> Second: correlate to count intervals with activity
         corr = np.correlate(count, tau_win, mode='valid')
 
-        X_tau[ii] = 1 - np.sum(corr == 0) / len(corr)
+        X_tau[ii] = 1 - np.sum(corr == 0) / len(corr)  # compute fraction
 
     return X_tau, tau
 
@@ -466,42 +471,39 @@ def act_interval_frac(event_t, tau):
 #-------------------------------------------------------------------------------
 
 def correlation_matrix(event_t, event_x, dt, X):
-    """
-    Computes the correlation of activity in different zones.
+    """Computes the correlation of activity in different zones in space.
 
     Parameters
     ----------
     event_t : 1D array
-        Array of event times, dimension N_ev.
+        Array of event times, dimension `N_ev`.
     event_x : 1D array
-        Array of event positions, dimension N_ev.
+        Array of event positions, dimension `N_ev`.
     dt : float
         Time step to compute the activity of the different zones.
     X : 1D array
-        Array of the positions of the activity zones boundaries, dimension N_X
+        Array of the positions of the activity zones boundaries, dimension
+        `N_X`.
 
     Returns
     -------
     corr_mat : 2D array
         Cross-correlation coefficient matrix for the activity of the different
-        regions specified by X, dimensions N_X - 1, N_X - 1.
+        regions specified by `X`, dimensions `N_X - 1`, `N_X - 1`.
     lag_mat : 2D array
         Lag time matrix corresponding to the maximum cross-correlation for the
-        activity of different regions specified by X, dimensions N_X - 1, N_X -
-        1.
-
+        activity of different regions specified by `X`, dimensions `N_X - 1`, `N_X -
+        1`.
     """
-    # Compute the activity in each region
-    # -----------------------------------
-    activities = []  # The array of regional activities
+    # >> Compute the activity in each region
+    activities = []  #  List of regional activities
     for ix in range(len(X)-1):
         region = (event_x >= X[ix]) & (event_x < X[ix + 1])
         regional_act, _ = event_count_signal(event_t[region], dt,
                                              t0=min(event_t))
         activities.append(regional_act)
 
-    # Perform the cross-correlation and build the corr and lag matrices
-    # -----------------------------------------------------------------
+    # >> Perform the cross-correlation and build the corr and lag matrices
     corr_mat = np.zeros((len(X) - 1, len(X) - 1))
     lag_mat = np.zeros((len(X) - 1, len(X) - 1))
 
@@ -516,13 +518,16 @@ def correlation_matrix(event_t, event_x, dt, X):
 #-------------------------------------------------------------------------------
 
 def calc_alpha(ev_count, dt, per_max):
-    """
-    Compute the slope of the event count auto-correlation spectrum.
+    """Computes the slope of the event count auto-correlation spectrum.
+
+    This spectral slope is a good estimator of time-clustering of a
+    point-process: if it is close to 0, the point process shows less time
+    clustering than if it is significantly higher [1]_.
 
     Parameters
     ----------
     ev_count : 1D array
-        Event count, number of events in regular time bins, dimension N_bins.
+        Event count, number of events in regular time bins, dimension `N_bins`.
     dt : float
         Size of time bin.
     per_max : float
@@ -533,29 +538,30 @@ def calc_alpha(ev_count, dt, per_max):
     sp : 1D array
         Multi-taper spectrum of the event count auto-correlation.
     per : 1D array
-        Periods associated at which the amplitude spectrum is computed.
+        Periods at which the amplitude spectrum is computed.
     alpha : float
         The log-log slope of the spectrum of event count auto-correlation,
         along period, not frequency.
 
+    References
+    ----------
+    .. [1] Lowen, S. B., & Teich, M. C. (2005). Fractal-Based Point Processes
+       (Vol. 366). John Wiley and Sons, Inc.
     """
-    # Compute un-bias autocorrelation
-    # -------------------------------
+    # >> Compute un-bias autocorrelation
     a_corr, _ = crosscorr(ev_count, ev_count, dt, norm=True, no_bias=True)
 
-    # Compute its spectrum
-    # --------------------
+    # >> Compute its spectrum
     sp, fq = mtspec(a_corr, dt, time_bandwidth=3.5, number_of_tapers=5)
     sp = np.sqrt(sp) * len(sp)  # convert PSD into amplitude
 
-    # --> Get rid of 0 frequency
+    # -> Get rid of 0 frequency
     sp = sp[fq > 0]
     fq = fq[fq > 0]
 
     per = 1/fq
 
-    # Compute slope of spectrum
-    # -------------------------
+    # >> Compute slope of spectrum
     log_per = np.log10(per[per < per_max])
     log_sp = np.log10(sp[per < per_max])
 
@@ -567,10 +573,14 @@ def calc_alpha(ev_count, dt, per_max):
 #-------------------------------------------------------------------------------
 
 def detect_period(ev_count, dt):
-    """
-    Detect a periodicity in the activity autocorrelation. The period
-    corresponds to the lag of the first peak that falls above the 99.99%
-    confidence interval for a white noise.
+    """Detect a periodicity in an event count signal (or activity rate time
+    series).
+
+    The period is computed using the autocorrelation of the event count signal
+    (smoothed over 0.01 scaled units).
+    It corresponds to the lag of the first peak (more than 1 ponit) that is above
+    the 99.99% confidence interval (null hypothesis: autocorrelation is
+    autocorrelation of white noise).
 
     Parameters
     ----------
@@ -582,15 +592,22 @@ def detect_period(ev_count, dt):
     Returns
     -------
     period : float
-        Period detected with the autocorrelation.
+        Period detected with the autocorrelation. If no period is detected,
+        returns `None`.
     validity : float
-        Estimation of the validity of the estimated period. It corresponds to a
-        correlation coefficient between the count autocorrelation and a the
-        autocorrelation of a sine (with the same period as the detected one).
-        The lower (closer to 0) the validity is, the more the detected period
-        can only be interpreted as a correlation time-scale. The higher (closer
-        to 1), the more it corresponds to an actual periodicity.
+        Homemade estimation of the validity of the detected period. Low
+        confidence 0, high confidence 1. See notes for more.
 
+    Notes
+    -----
+    `validity` corresponds to a correlation coefficient between the count
+    autocorrelation and a the autocorrelation of a sine (with the same period
+    as the detected one). The lower (closer to 0) the validity is, the more
+    the detected period can only be interpreted as a correlation time-scale.
+    The higher (closer to 1), the more it corresponds to an actual
+    periodicity (there are other bumps).
+
+    Please note that this is not an perfectly robust function.
     """
     # Compute un-bias autocorrelation
     # -------------------------------
@@ -603,7 +620,7 @@ def detect_period(ev_count, dt):
 
     # Compute confidence interval
     # ---------------------------
-    lvl = 1 - 1e-3
+    lvl = 1 - 1e-3  #
     conf = erfinv(lvl) * np.sqrt(2) / np.sqrt(len(ev_count))
 
     # Detect period
@@ -658,11 +675,12 @@ def detect_period(ev_count, dt):
 
     return period, validity
 
-
 #-------------------------------------------------------------------------------
 
 def poisson_adequation(ev_count, alpha):
-    """
+    """Tests if event count signal can be considered to emerge from a Poisson
+    process.
+
     Performs a chi-square test to try to refute the null hypothesis: "the event
     count follows a Poisson distribution".
 
@@ -670,22 +688,26 @@ def poisson_adequation(ev_count, alpha):
     ----------
     ev_count : 1D array
         Array containing the binned event count.
-    alpha : float, lower than 1
-        Risk level taken in the refutation of the null hypothesis. 1 - alpha
-        corresponds to the confidence interval with which it can be refuted.
+    alpha : float
+        Risk level taken in the refutation of the null hypothesis (should be
+        lower than 1). `1 - alpha` corresponds to the confidence interval with
+        which it can be refuted.
 
     Returns
     -------
     adequation : bool
-        Answer of the test. If True, the null hypothesis cannot be refuted, the
+        Answer of the test. If `True`, the null hypothesis cannot be refuted, the
         event count could very well be explained by a Poisson distribution. If
         False, the null hypothesis can be refuted with a level of confidence of
         1 - alpha.
     p_value : float
         p-value of test, corresponds to the probability of obtaining the test
         statistic, under realisation of the null hypothesis. Output of
-        scipy.stats.chisquare().
+        `scipy.stats.chisquare()`.
 
+    See also
+    --------
+    scipy.stats.chisquare() : performs a chi-square test.
     """
     # Build frequencies of observed count values for observed counts
     # --------------------------------------------------------------
@@ -701,8 +723,6 @@ def poisson_adequation(ev_count, alpha):
     # Perform test
     # ------------
     T, p_value = chisquare(f, f_th, 1)
-#    print("chi_square_adequation -- T = {:.2e}, v = {:.2e}".format(T, \
-        #                                       chi2.ppf(1 - alpha, (len(f) - 1) - 1)))
 
     if T > chi2.ppf(1 - alpha, (len(f) - 1) - 1):
         adequation = False
