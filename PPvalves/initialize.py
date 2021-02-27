@@ -216,7 +216,7 @@ def init_cond(VALVES, PARAM, q0=1, dp0=None, states_override=None):
     VALVES : dict.
         Valves dictionnary updated with input initial states.
     PARAM : dict.
-        Physical parameters dictionnary, with permeability $k$ updated.
+        Physical parameters dictionnary, with permeability `k` updated.
     """
     # Compute permeability
     # --------------------
@@ -310,28 +310,32 @@ def test_init_cond(option, init_param, PARAM):
 def build_sys(PARAM):
     r"""Builds the matrix system for a given permeability structure in space.
 
-    The problem is expressed as the linear system
-    $$\mat{A} . \vec{p_{n+1}} = \mat{B} . \vec{p_n} + \vec{b_{n+1}} + \vec{b_n}$$
-    this function builds $\mat{A}$, $\mat{B}$, and
-    $\vec{b} = \vec{b_{n+1} + \vec{b_n}$, and returns a storage efficient
-    structure only keeping the three diagonal vectors of the tridiagonal
-    matrices.
+    Diffusion of pore pressure in time is obtained by solving the linear
+    system: `A . p_n+1 = B . p_n + b_n+1 + b_n`. This function builds `A`, `B`,
+    and `b = b_n+1 + b_n`, and returns a storage efficient structure only
+    keeping the three diagonal vectors of the tridiagonal matrices.
 
     Parameters
     ----------
     PARAM : dictionnary
-        Physical parameters dictionnary. Recquired keys: 'h_' (scaled space
-        step), 'dt_' (scaled time step), 'k' (vector of permeability in space),
-        'beta' (matrix-fluid compressibility), 'mu' (fluid viscosity), 'phi'
-        (porosity), 'T_scale' and 'X_scale' (time and space scales).
+        Physical parameters dictionnary. Recquired keys: `'h_'` (scaled space
+        step), `'dt_'` (scaled time step), `'k'` (vector of permeability in
+        space), `'beta'` (matrix-fluid compressibility), 'mu' (fluid
+        viscosity), `'phi'`.  (porosity), `'T_scale'` and `'X_scale'` (time and
+        space scales).
 
     Returns
     -------
     A, B : lists
-        List for of $\mat{A}$ and $\mat{B}$ matrices: (a, b, c), where b is
-        diagonal, a and b lower and upper diagonals.
+        List for of `A` and `B` matrices: `[a, b, c]`, where `b` is
+        diagonal, `a` and `b` lower and upper diagonals, all as arrays.
     b : 1D array
-        Vector $\vec{b}$.
+        Vector `b`.
+
+    Notes
+    -----
+        - When using `[a, b, c]` to represent a tridiagonal matrix, by convention:
+        `len(a) = len(b) = len(c)`, `a[0] = 0`, `c[-1] = 0`.
     """
     # Unpack physical parameters
     h = PARAM['h_']
@@ -382,7 +386,7 @@ def sys_boundary(A, B, PARAM):
     Parameters
     ----------
         A, B : lists
-            A and B matrices in the form of a list of their three
+            `A` and `B` matrices in the form of a list of their three
             diagonal vectors (lower diagonal, diagonal, upper diagonal).
         PARAM : dictionnary
             Physical parameters of the system. Boundary conditions
@@ -393,23 +397,24 @@ def sys_boundary(A, B, PARAM):
                 - if `PARAM['qin_'] (resp `PARAM['qout_']) is NaN and
                   `PARAM['p0_']` (resp `PARAM['pL_']`) is not, then apply
                 Dirichlet boundary conditions in matrices.
-                - if both `PARAM['qout_']` and `PARAM['pL_']` are NaN, then
-                  apply "stable flux" ($\partial_x q(x=L) = 0$) boundary
-                  conditions to matrices.
+
     Returns
     -------
         A, B, : lists
-            A and B matrices in the form of a list of their three
+            `A` and `B` matrices in the form of a list of their three
             diagonal vectors (lower diagonal, diagonal, upper diagonal), with
             updated boundary conditions.
         b : 1D array
-            Vector b, with updated boundary conditions.
+            Vector `b`, with updated boundary conditions.
 
     Notes
     -----
-        You can determine the depth of the boundary `PARAM['hb_']`, that is, the
+        - You can determine the depth of the boundary `PARAM['hb_']`, that is, the
         distance between first/last points and fictive points at which boundary
         conditions are fixed.
+
+        - When using `[a, b, c]` to represent a tridiagonal matrix, by convention:
+        `len(a) = len(b) = len(c)`, `a[0] = 0`, `c[-1] = 0`.
     """
     # >> Unpack PARAM
     # --> boundary conditions
@@ -497,16 +502,6 @@ def sys_boundary(A, B, PARAM):
 
     	# --> constant terms (b_n = b_n+1, hence the 2)
     	b[-1] = 2. * pL * D*dt / (hb * (h+hb)) * T_scale/X_scale**2 # * P_scale/P_scale
-
-    # --> "stable flux", dq/dx(xL) = 0 <=> dp/dt_(xL) = 0
-    elif (np.isnan(qout)) & (np.isnan(pL)):
-    	# --> factors of pL_
-    	A[1][-1] = 1.
-    	B[1][-1] = 1.
-    	## factors of p(L-h)
-    	A[0][-1] = 0.
-    	B[0][-1] = 0.
-    	# --> constant terms (b_n = b_n+1, hence the 2): None
 
     else:
     	raise ValueError("sys_boundary -- /!\\ x = L boundary conditions wrongly set")
