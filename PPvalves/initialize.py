@@ -1,5 +1,8 @@
-""" Initialize a PPvalve run: initial conditions, boundary conditions, and
-building the system to solve. """
+"""Functions to initialize a PPvalve run.
+
+Manages initial conditions, boundary conditions, and building the matricial
+system to solve.
+"""
 
 # Imports
 # =======
@@ -13,32 +16,31 @@ import PPvalves.utility as util
 # ====
 
 def read_input(input_args, verbose=False):
-    """
-    Parses input arguments and processes them into the PARAM dictionnary
-    (physical and numerical parameters).  When a certain parameter is not
-    specified, its default value is used.
+    """Reads input of PPv and assigns default values.
+
+    Parses the string of input arguments and processes them into the `PARAM`
+    dictionnary (physical and numerical parameters). When a parameter
+    is not specified, its default value is used.
 
     Parameters
     ----------
     input_args : list
         List of strings of characters, that will be parsed and interpreted.
-        Example: to choose the value 6.8e-6 for parameter Xi, "Xi=6.8e-6" must
+        To choose the value 6.8e-6 for parameter Xi, "Xi=6.8e-6" must
         be present in the list. Any parameter for which no value is specified
         will be set to default.
-    verbose : bool (default `False`)
-        Option to make it speak to you.
+    verbose : bool, optional
+        Option to have the function print what it's doing.
 
     Returns
     -------
     PARAM : dictionnary
-        Numerical and physical parameters dictionnary. Full description in
-        README.
+        Numerical and physical parameters dictionnary.
     """
     # Default parameters
     # ------------------
     # NB: here, only the parameters that do not depend on others. With those,
     # scales, numerical parameters etc are defined.
-
     PARAM = {
         'g' : 9.81,  # gravity acceleration (m.s-2)
         'rho' : 1000, 'rho_r' : 2850,  # fluid and rock density (kg.m-3)
@@ -64,7 +66,6 @@ def read_input(input_args, verbose=False):
 
         'vdist' : 'first'  # valve distribution, either a file _name_,
                            # or 'first' for the first distribution we tested
-
         }
 
     for arg_str in input_args:
@@ -86,7 +87,7 @@ def read_input(input_args, verbose=False):
 
     PARAM['D'] = PARAM['k_bg'] / PARAM['phi']/PARAM['mu']/PARAM['beta']
 
-    # (ii) Dimensions
+    # (ii) Scales
     PARAM['X_scale'] = PARAM['Xtop'] - PARAM['X0']
     PARAM['Z_scale'] = PARAM['X_scale'] * np.sin(PARAM['alpha'])
     PARAM['T_scale'] = PARAM['X_scale']**2 / PARAM['D']
@@ -103,7 +104,6 @@ def read_input(input_args, verbose=False):
     PARAM['dt_'] = 0.5 * PARAM['h_']**2
     PARAM['Nt'] = int(np.ceil(PARAM['Ttot_']/PARAM['dt_']))
 
-
     # Set up boundary conditions
     # --------------------------
     PARAM = boundary(PARAM['bound'], PARAM['bound_value'], PARAM)
@@ -113,42 +113,36 @@ def read_input(input_args, verbose=False):
 # ----------------------------------------------------------------------------
 
 def boundary(bound, bound_value, PARAM, verbose=False):
-    """
-    Set up the boundary condition parameters depending on the option you
-    choose.
+    """Sets boundary conditions.
 
     Parameters
     ----------
     bound : str
-        Boundary option: 'PP', 'QP', 'QQ' implemented for now. First letter
+        Boundary option: 'PP', 'QP' implemented for now. First letter
         represent downdip boundary, second letter updip boundary. 'P' is for
-        fixed pore pressure (lithostatic value at corresponding depth), 'Q' is
-        for fixed flux (flux maintaining lithostatic gradient without
-        valves).
+        fixed pore pressure, 'Q' is for fixed flux.
     bound_value : float
-        Boundary condition value. Value of imposed dP if bound is 'PP', q if
-        bound is 'QP'.
+        Boundary condition value. Value of imposed input pressure if bound is
+        'PP', and imposed input flux if bound is 'QP'. Output pressure is fixed
+        to 0.
     PARAM : dictionnary
-        Dictionnary of the system parameters
-    verbose : boolean (default verbose=False)
-        Make the function talk.
+        Physical parameters dictionnary.
+    verbose : boolean, optional
+        Have the function print what it's doing.
 
     Returns
     -------
     PARAM : dictionnary
-        Updated dictionnary of the system parameters
+        Updated dictionnary of the system's parameters.
 
     Note:
     -----
     For now, only implemented to manage adimensionnalized variables.
-
     """
 
     # Fix boundary condition
     # ----------------------
     if bound == 'PP':
-        # p0_ = 1 + PARAM['hb_']
-        # pL_ = 0 - PARAM['hb_']
         p0_ = bound_value
         pL_ = 0
         qin_ = np.nan
@@ -188,48 +182,41 @@ def boundary(bound, bound_value, PARAM, verbose=False):
 # ----------------------------------------------------------------------------
 
 def init_cond(VALVES, PARAM, q0=1, dp0=None, states_override=None):
-    """
-    Sets up initial conditions of pore pressure, permeability and valve states.
-    The initial conditions correspond to the state of a given valve system at
-    equilibrium, under a flux q0 or a cross-system pressure differential dp0.
-    The valve opening/closing state is either given by VALVES['open'] or by the
-    states_override option.
+    r"""Sets up default initial conditions of fluid pressure, permeability and
+    valve states.
+
+    The default initial conditions correspond to the state of the input valve
+    system at equilibrium, under a the given input flux or a cross-system pressure
+    differential.
 
     Parameters
     ----------
     VALVES : dict.
-        Valves paramaters dictionnary. If states_override is not used,
-        VALVES['open'] is used to define the states of valves.
+        Valves paramaters dictionnary. If `states_override` is not used,
+        `VALVES['open']` is used to define the states of valves.
     PARAM : dictionnary
-        Parameters dictionnary.
-    q0 : float (default q0 = 1, lithostatic flux)
+        Physical parameters dictionnary.
+    q0 : float (default `q0 = 1`, lithostatic flux)
         The flux the whole system should witness in its initial condition.
-        Only q0 or dp0 should be defined, the other is set to None.
-    dp0 : float (default dp0 = None)
+        Only one of `q0` or `dp0` should be defined at a time, the other is set
+        to `None`.
+    dp0 : float (default `dp0 = None`)
         The cross-system pore pressure differential the system should witness
-        in its initial condition. Only q0 or dp0 should be defined, the other
-        is set to None.
-    states_override : 1D array (default=None)
+        in its initial condition. Only `q0` or `dp0` should be defined, the other
+        is set to `None`.
+    states_override : 1D array (default : `None`)
         Valve states for which to set initial conditions, overriding the valve
-        states in VALVES['open']. True (or 1) is open, False (or 0) is closed,
-        dimension of N_valves.
+        states in `VALVES['open']`. `True` (or `1`) is open, `False` (or `0`)
+        is closed, dimension N_valves.
 
     Returns
     -------
     P : 1d array
-        Pore pressure initial state, dimension PARAM['Nx'] + 1
+        Pore pressure initial state, dimension `PARAM['Nx'] + 1`.
     VALVES : dict.
-        Valves dictionnary with input initial states.
+        Valves dictionnary updated with input initial states.
     PARAM : dict.
-        Physical parameters dictionnary, with k updated.
-
-    Examples
-    --------
-    - For a flat lithostatic pressure: input dp0=None, q0=1 and all valves
-      open.
-    - For a flat hydrostatic pressure: input dp0=None, q0=0 and all valves
-      open.
-
+        Physical parameters dictionnary, with permeability $k$ updated.
     """
     # Compute permeability
     # --------------------
@@ -265,29 +252,33 @@ def init_cond(VALVES, PARAM, q0=1, dp0=None, states_override=None):
 # -----------------------------------------------------------------------------
 
 def test_init_cond(option, init_param, PARAM):
-    """
-    Set up initial conditions of reduced pore pressure for testing.
+    """Set up initial conditions test situations.
+
+    Sets up cosinusoidal pressure, or a pressure ramp like the one in closed
+    valves at equilibrium. It can be used to test the numerical convergence and
+    accuracy of the fluid pressure diffusion.
 
     Parameters
     ----------
     option : float
-        Initial condition option
-    		- option=1 : Initial conditions are set to a ramp function.
-              init_params must contain x1 and x2, the first point of the ramp,
-              x2 the last point. It is a linear ramp step from the region
-              before x1 at 1, to the region after x2 at 0.
-    		- option=2 : Initial conditions are set to a cosine function.
-              init_params must contain n_wv and amp, number of wavelengths and
+        Initial condition option:
+    		- `option=1` : Initial conditions are set to a ramp function.
+               `init_params` must be `(x1, x2)`, the first point of the ramp,
+              `x2` the last point. It is a linear ramp step of pressure from
+              the region before `x1` at 1, to the region after `x2` at 0.
+    		- `option=2` : Initial conditions are set to a cosine function.
+              `init_params` must be  `(n_wv, amp)`, number of wavelengths and
               amplitude.
     init_param : tuple
-        Initial conditions parameters. See above for details.
+        Initial conditions parameters. See above for details on option specific
+        input.
     PARAM : dictionnary
         Dictionnary of the system's physical parameters.
 
     Returns
     -------
     p0 : ndarray
-        Initialized vector of pore-pressures.
+        Initialized vector of pore-pressure in space.
 
     """
     X = np.linspace(0, 1, num=PARAM['Nx']+1)
@@ -317,26 +308,31 @@ def test_init_cond(option, init_param, PARAM):
 # ----------------------------------------------------------------------------
 
 def build_sys(PARAM):
+    r"""Builds the matrix system for a given permeability structure in space.
+
+    The problem is expressed as the linear system
+    $$\mat{A} . \vec{p_{n+1}} = \mat{B} . \vec{p_n} + \vec{b_{n+1}} + \vec{b_n}$$
+    this function builds $\mat{A}$, $\mat{B}$, and
+    $\vec{b} = \vec{b_{n+1} + \vec{b_n}$, and returns a storage efficient
+    structure only keeping the three diagonal vectors of the tridiagonal
+    matrices.
+
+    Parameters
+    ----------
+    PARAM : dictionnary
+        Physical parameters dictionnary. Recquired keys: 'h_' (scaled space
+        step), 'dt_' (scaled time step), 'k' (vector of permeability in space),
+        'beta' (matrix-fluid compressibility), 'mu' (fluid viscosity), 'phi'
+        (porosity), 'T_scale' and 'X_scale' (time and space scales).
+
+    Returns
+    -------
+    A, B : lists
+        List for of $\mat{A}$ and $\mat{B}$ matrices: (a, b, c), where b is
+        diagonal, a and b lower and upper diagonals.
+    b : 1D array
+        Vector $\vec{b}$.
     """
-    This function sets up the elements for the numerical resolution of
-    a diffusion problem, with Crank Nicolson method.
-
-    The problem is expressed as the linear system A . p_n+1 = B . p_n + b_n+1 + b_n,
-    this function builds A, B, and b matrices, and returns a storage efficient
-    structure only keeping the three diagonal vectors of the tridiagonal matrices.
-
-    - Parameters
-            + :param PARAM: dictionnary description of the physical and
-            numerical variables of the system. k(x), beta, mu, phi, h, dt_ must
-            figure in it.
-    - Outputs
-            + :return: matrix A and B, in the form of 2 lists of their three diagonal
-            vectors.
-            + :return: vector b, as a 1D np.array.
-
-
-    """
-
     # Unpack physical parameters
     h = PARAM['h_']
     dt = PARAM['dt_']
@@ -348,27 +344,32 @@ def build_sys(PARAM):
     T_scale = PARAM['T_scale']
     X_scale = PARAM['X_scale']
 
-
-    # Build A and B core structure
+    # >> Build A and B core structure
     delta_minus = k[:-1]/phi/mu/beta * dt/2./h**2 * T_scale/X_scale**2
     delta_plus = k[1:]/phi/mu/beta * dt/2./h**2 * T_scale/X_scale**2
 
+    # > A lower diag
     aa = np.zeros(len(delta_minus))
     aa[1:] = -1. * delta_minus[1:]
+    # > A diag
     ab = 1. + delta_plus + delta_minus
+    # > A upper diag
     ac = np.zeros(len(delta_plus))
     ac[:-1] = -1. * delta_plus[:-1]
 
+    # > A lower diag
     ba = np.zeros(len(delta_minus))
     ba[1:] = delta_minus[1:]
+    # > A diag
     bb = 1. - delta_plus - delta_minus
+    # > A upper diag
     bc = np.zeros(len(delta_plus))
     bc[:-1] = delta_plus[:-1]
 
     A = [aa, ab, ac]
     B = [ba, bb, bc]
 
-    # Apply boundary conditions to A and B and create b
+    # >> Apply boundary conditions to A and B and create b
     A, B, b = sys_boundary(A, B, PARAM)
 
     return A, B, b
@@ -376,41 +377,52 @@ def build_sys(PARAM):
 #-----------------------------------------------------------------------------
 
 def sys_boundary(A, B, PARAM):
-    """
-    Apply limit conditions to the system equations, but you can determine
-    the depth of the boundary hb_, that is, the distance between first/last
-    points and fictive points.
+    """Apply limit conditions to the system equations.
 
-    - Parameters
-        + :param A,B: A and B matrices in the form of a list of their three
-        diagonal vectors.
-        + :param PARAM: dictionnary description of the physical and
-        numerical variables of the system. k(x), beta, mu, phi, rho, h_,
-        hb_, dt_, and
-        boundary conditions (adim) specifications must figure in it:
-            - if p0_ (resp pL_) is NaN and qin_ (resp qout_) is not, then apply
-            Neuman boundary conditions to A, B, b
-            - if qin_ (resp qout_) is NaN and p0_ (resp pL_) is not, then apply
-            Dirichlet boundary conditions to A, B, b
-            - if both qout_ and pL_ are NaN, then apply "stable flux"
-            (dq/dx = 0) boundary conditions to A, B, b
-    - Outputs
-        + :return: matrix A and B, in the form of 2 lists of their three diagonal
-        vectors, with applied boundary conditions.
-        + :return: vector b, as a 1D np.array, with applied boundary conditions.
+    Parameters
+    ----------
+        A, B : lists
+            A and B matrices in the form of a list of their three
+            diagonal vectors (lower diagonal, diagonal, upper diagonal).
+        PARAM : dictionnary
+            Physical parameters of the system. Boundary conditions
+            specifications must figure in it:
+                - if `PARAM['p0_']` (resp `PARAM['pL_']`) is NaN and
+                `PARAM['qin_']` (resp `PARAM['qout_']) is not, then apply
+                Neuman boundary conditions in matrices.
+                - if `PARAM['qin_'] (resp `PARAM['qout_']) is NaN and
+                  `PARAM['p0_']` (resp `PARAM['pL_']`) is not, then apply
+                Dirichlet boundary conditions in matrices.
+                - if both `PARAM['qout_']` and `PARAM['pL_']` are NaN, then
+                  apply "stable flux" ($\partial_x q(x=L) = 0$) boundary
+                  conditions to matrices.
+    Returns
+    -------
+        A, B, : lists
+            A and B matrices in the form of a list of their three
+            diagonal vectors (lower diagonal, diagonal, upper diagonal), with
+            updated boundary conditions.
+        b : 1D array
+            Vector b, with updated boundary conditions.
 
+    Notes
+    -----
+        You can determine the depth of the boundary `PARAM['hb_']`, that is, the
+        distance between first/last points and fictive points at which boundary
+        conditions are fixed.
     """
-    # Unpack PARAM
-    ## boundary conditions
+    # >> Unpack PARAM
+    # --> boundary conditions
     p0 = PARAM['p0_']  # already adim
     pL = PARAM['pL_']  # already adim
     qin = PARAM['qin_']  # already adim
     qout = PARAM['qout_']  # already adim
-    ## physical and numerical parameters
+    # --> numerical parameters
     h = PARAM['h_']  # already adim
     hb = PARAM['hb_']  # already adim
     dt = PARAM['dt_']  # already adim
 
+    # --> physical parameters
     k = PARAM['k']
     beta = PARAM['beta']
     mu = PARAM['mu']
@@ -418,86 +430,83 @@ def sys_boundary(A, B, PARAM):
     rho = PARAM['rho']
     alpha = PARAM['alpha']
     g = PARAM['g']
-    ## scales
+    # --> scales
     X_scale = PARAM['X_scale']
     T_scale = PARAM['T_scale']
     P_scale = PARAM['P_scale']
     q_scale = PARAM['q_scale']
 
 
-    # Initialize b and deltas
+    # >> Initialize b and deltas
     D = k[0]/phi/mu/beta # permeability should be the same at -1, 0, N and N+1
     b = np.zeros(len(A[1]))
 
-    # x = 0 boundary
-    ## Neuman
+    # >> x = 0 boundary
+    # --> Neuman : fixing flux
     if (np.isnan(p0)) & (not np.isnan(qin)):
-    	#print('Neuman in 0: qin_ = {:}'.format(qin_))
-    	## factors of p0_ : Ab[0] and Bb[0]
+    	# --> factors of p0_ : Ab[0] and Bb[0]
     	A[1][0] = 1. + D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
     	B[1][0] = 1. - D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
 
-    	## factors of p1_ : Ac[0] and Bc[0]
+    	# --> factors of p1_ : Ac[0] and Bc[0]
     	A[2][0] = - 1.* D * dt / (h * (hb+h)) * T_scale/X_scale**2
     	B[2][0] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
 
-    	## constant terms (b = b_n - b_n+1)
+    	# --> constant terms (b = b_n - b_n+1)
     	b[0] = 2. * D * dt / (h + hb) * T_scale/X_scale**2 *(mu/rho/k[0] * qin * q_scale) * X_scale/P_scale
 
-    ## Dirichlet
+    # --> Dirichlet : fixing pressure
     elif (np.isnan(qin)) & (not np.isnan(p0)):
-    	#print('Dirichlet in 0, p0_={:.2f}'.format(p0_))
-    	## factors of p0_ : Ab[0] and Bb[0]
+    	# --> factors of p0_ : Ab[0] and Bb[0]
     	A[1][0] = 1. + D*dt/h/hb * T_scale/X_scale**2
     	B[1][0] = 1. - D*dt/h/hb * T_scale/X_scale**2
 
-    	## factors of p1_ : Ac[0] and Bc[0]
+    	# -->  factors of p1_ : Ac[0] and Bc[0]
     	A[2][0] =  -1. *  D*dt / (h * (h + hb)) * T_scale/X_scale**2
     	B[2][0] = D*dt / (h * (h + hb)) * T_scale/X_scale**2
-    	## constant terms (b_n = b_n+1, hence the 2)
+
+    	# --> constant terms (b_n = b_n+1, hence the 2)
     	b[0] = 2. * p0 * D*dt / (hb * (h + hb)) * T_scale/X_scale**2 # * P_scale/P_scale
 
     else:
     	raise ValueError("boundary -- /!\\ x = 0 boundary conditions wrongly set")
 
-    # x = L boundary
-    ## Neuman
+    # >> x = L boundary
+    # -->  Neuman : fixing flux
     if (np.isnan(pL)) & (not np.isnan(qout)):
-    	#print('Neuman in L: qout_ = {:}'.format(qout_))
-    	## factors of pN_: Ab[-1] and Bb[-1]
+    	# --> factors of pN_: Ab[-1] and Bb[-1]
     	A[1][-1] = 1. + D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
     	B[1][-1] = 1. - D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
 
-    	## factors of pN-1_: Aa[-1] and Ba[-1]
+    	# --> factors of pN-1_: Aa[-1] and Ba[-1]
     	A[0][-1] = -1. * D * dt / (h * (hb+h)) * T_scale/X_scale**2
     	B[0][-1] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
 
-    	## constant terms (b_n = b_n+1, hence the 2)
+    	# --> constant terms (b_n = b_n+1, hence the 2)
     	b[-1] = -2. * D * dt / (h + hb) * T_scale/X_scale**2 *(mu/rho/k[-1] * qout * q_scale) * X_scale/P_scale
 
-    ## Dirichlet
+    # --> Dirichlet : fixing pressure
     elif (np.isnan(qout)) & (not np.isnan(pL)):
-    	#print('Dirichlet in L, pL_={:.2f}'.format(pL_))
-    	## factors of pN_: Ab[-1] and Bb[-1]
+    	# --> factors of pN_: Ab[-1] and Bb[-1]
     	A[1][-1] = 1. + D * dt / hb / h * T_scale/X_scale**2
     	B[1][-1] = 1. - D * dt / hb / h * T_scale/X_scale**2
 
-    	## factors of pN-1_: Aa[-1] and Ba[-1]
+    	# --> factors of pN-1_: Aa[-1] and Ba[-1]
     	A[0][-1] = -1. * D * dt / (h * (hb+h)) * T_scale/X_scale**2
     	B[0][-1] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
-    	## constant terms (b_n = b_n+1, hence the 2)
+
+    	# --> constant terms (b_n = b_n+1, hence the 2)
     	b[-1] = 2. * pL * D*dt / (hb * (h+hb)) * T_scale/X_scale**2 # * P_scale/P_scale
 
-    ## "stable flux", dq/dx(xL) = 0 <=> dp/dt_(xL) = 0
+    # --> "stable flux", dq/dx(xL) = 0 <=> dp/dt_(xL) = 0
     elif (np.isnan(qout)) & (np.isnan(pL)):
-    	#print('Stable flux in L')
-    	## factors of pL_
+    	# --> factors of pL_
     	A[1][-1] = 1.
     	B[1][-1] = 1.
     	## factors of p(L-h)
     	A[0][-1] = 0.
     	B[0][-1] = 0.
-    	## constant terms (b_n = b_n+1, hence the 2): None
+    	# --> constant terms (b_n = b_n+1, hence the 2): None
 
     else:
     	raise ValueError("sys_boundary -- /!\\ x = L boundary conditions wrongly set")
