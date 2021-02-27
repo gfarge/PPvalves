@@ -1,6 +1,6 @@
-"""
-Module used to produce and analyze activity catalogs, adapted to analyse
-the results of PPv runs but also of real catalogs.
+r"""Module used to produce and analyze activity catalogs.
+`PPvalves.catalog` is adapted to analyse the results of PPv runs but also of
+real catalogs $(t_i, x_i)$.
 """
 # >> Imports
 import numpy as np

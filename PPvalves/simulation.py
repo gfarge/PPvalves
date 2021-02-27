@@ -1,13 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+"""Module to run PPvalves in different ways, and save the results.
 
-""" pp_valves solves for the pore pressure diffusion in time, and handles valves
-opening and closing. Set up is handled by  setup.py. Matrix computations are handled
-by matmath.py."""
+Solves for the pore pressure diffusion in time, and communicates with
+`PPvalves.mat_math`, `PPvalves.valves` and `PPvalves.initialize` to handle
+initializing the numerical system, valve evolution, and inversion of the
+matrix.
+"""
 
 
-## Imports
+## >> Imports
 import copy
 import time
 import numpy as np
@@ -20,70 +23,87 @@ import PPvalves.utility as util
 
 
 def run_nov(P, PARAM, verbose=True):
+    """Solves fluid pressure diffusion without valves.
+
+    Propagates an initial state of the pore-pressure in time. Permeability can
+    be heterogeneous, but will not be dynamic.
+
+    Parameters
+    ----------
+    P : 2D array
+        Initialized pore pressure array `P[0, :] = P0`. First dimension should
+        be time, second is space.
+    PARAM : dict
+        Physical parameters dictionnary. Permeability in space can be input as
+        an array in `PARAM['k']` --- as it is defined in between and around
+        pressure points, its space dimension is 1 element longer than that of
+        the pore pressure array.
+    verbose : bool, optional
+        Option to have the function print what it's doing.
+
+    Returns
+    -------
+    P : 2D array
+        Pore pressure evolution in time and space (same dimension as input).
     """
-    Propagates an initial state of the pore-pressure in time. valves but no
-    dynamic valves.
-    valves.
-    """
-    # Unpack
+    # >> Unpack
     Nt = PARAM['Nt']
 
-    # Set up initial system
+    # >> Set up initial system
     if verbose: print('simulation.run_nov -- sytsem setup...')
     A, B, b = init.build_sys(PARAM)
-#    print(np.shape(A))
-#    print(np.shape(B))
-#    print(np.shape(b))
 
-    # Go through time
+    # >> Loop through time
     if verbose: print('simulation.run_nov -- starting run...')
     for tt in range(Nt):
         d = mat.product(B, P[tt,:]) + b  # compact form of knowns
-        P[tt+1,:] = mat.TDMAsolver(A,d)  # solving the system
+        P[tt+1,:] = mat.TDMAsolver(A,d)  # solving the system for t+1
 
-    if verbose: print('simulation.run_nov -- Done !')
+    if verbose: print('simulation.run_nov -- Done !'
     return P
 
 #---------------------------------------------------------------------------------
 
 def run_light(P0, PARAM, VALVES, verbose=True):
-    """
-    Runs PPV, solving diffusion equation and actionning valves. Does not store
-    pressure history, simply previous and next times. If pressure is fixed
-    downdip, returns in-flux, if flux is fixed, returns entry pressure. This
-    serves as an effective diagnostic of the system.
+    r"""Runs PPv, without saving the full pressure history.
+
+    Solves diffusion equation and actions valves. Does not store
+    pressure history, simply previous and next times. Used to deal with memory
+    issues.
 
     Parameters
     ----------
-    P0 : 1d array
-        Initial state of pore pressure in the system. Dimension PARAM['Nx'] +
-        1.
-    VALVES : dict.
+    P0 : 1D array
+        Initial state of pore pressure in the system, dimension
+        `PARAM['Nx'] + 1`.
+    VALVES : dict
         Valves parameters dictionnary.
     PARAM : dict.
         Dictionnary of physical parameters describing the system.
-    verbose : bool (default = True)
-        If True, prints stage of run.
+    verbose : bool, optional
+        Have the function print what it's doing.
 
     Returns
     -------
-    Plast : 1d array
-        Last state of pore pressure across the domain, dimension PARAM['Nx']+1.
-    bounds_in_t : 2d array
-        Flux (resp. pressure) at in- and output fictive points in time, dimension
-        (PARAM['Nt'] + 1) * 2.
-    v_activity : 3d array
-        Indicators of valve state and pressure differential witnessed at all
-        times. Used to compute catalogs of events. Dimensions : PARAM['Nt'] + 1
-        * 2 * N_valves. First column: states (True or 1 is open, False or 0 is
-        closed), second column: dP across valve (taken at pressure points
-        right outside low permeability zone).
+    Plast : 1D array
+        Last state of pore pressure across the domain, dimension
+        `PARAM['Nx'] + 1`.
+    bounds_in_t : 2D array
+        Free bound variable (*e.g.* flux if pressure is fixed) at in- and
+        output fictive points in time, dimension (`PARAM['Nt'] + 1`, 2).
+    v_activity : 3D array
+        Valve state and pressure differential for each valves, at all times.
+        Dimensions : (`PARAM['Nt'] + 1`, 2, Nvalves). First column:
+        valve states in time (`True` or `1` is open, `False` or `0` is closed),
+        second column: $\delta p$ across valve (taken at pressure points
+        right outside low permeability zone). Used to compute catalogs of
+        events.
     trun : dict.
         Dictionnary with the details of the time spent on computing the product
-        (trun['prod']), the time spent on solving for next state of pressure
-        (trun['solve']), the time spent on actionning valves (trun['valve']).
-        The sum of all three is the complete runtime.
-
+        for the knowns (`trun['prod']`), the time spent on solving for next
+        state of pressure (`trun['solve']`), the time spent on actionning
+        valves (`trun['valve']`).  The sum of all three is the complete
+        runtime.
     """
     if verbose: print('simulation.run_light -- initialization...')
     # Create variables for useful values
@@ -164,15 +184,16 @@ def run_light(P0, PARAM, VALVES, verbose=True):
 # ----------------------------------------------------------------------------
 
 def run(P, PARAM, VALVES, verbose=True):
-    """
-    Runs PPV, solving diffusion equation and actionning valves. Stores and
-    returns pressure history.
+    """Runs PPv.
+
+    Solves diffusion equation and actions valves. Stores and returns full
+    pressure history.
 
     Parameters
     ----------
-    P : 2d array
-        Initialized matrix of pore pressures. Dimensions PARAM['Nt'] + 1 *
-        PARAM['Nx'] + 1.
+    P : 2D array
+        Initialized matrix of pore pressures. Dimensions (`PARAM['Nt'] + 1`,
+        `PARAM['Nx'] + 1`).
     VALVES : dict.
         Valves parameters dictionnary.
     PARAM : dict.
@@ -182,12 +203,13 @@ def run(P, PARAM, VALVES, verbose=True):
     -------
     P : 2d array
         Pore pressure history, same shape as input P.
-    v_activity : 3d array
-        Indicators of valve state and pressure differential witnessed at all
-        times. Used to compute catalogs of events. Dimensions : PARAM['Nt'] + 1
-        * 2 * N_valves. First column: states (True or 1 is open, False or 0 is
-        closed), second column: dP across valve (taken at pressure points
-        right outside low permeability zone).
+    v_activity : 3D array
+        Valve state and pressure differential for each valves, at all times.
+        Dimensions : (`PARAM['Nt'] + 1`, 2, Nvalves). First column:
+        valve states in time (`True` or `1` is open, `False` or `0` is closed),
+        second column: $\delta p$ across valve (taken at pressure points
+        right outside low permeability zone). Used to compute catalogs of
+        events.
     trun : dict.
         Dictionnary with the details of the time spent on computing the product
         (trun['prod']), the time spent on solving for next state of pressure
@@ -259,49 +281,59 @@ def run(P, PARAM, VALVES, verbose=True):
 #---------------------------------------------------------------------------------
 
 def run_time(PARAM):
+    r"""Rough estimation of PPv run time for given physical parameters.
+
+    This gives a rough, slightly overestimated approximation. It does not
+    account for the specificity of valve distribution and characteristics.
+
+    Parameters
+    ----------
+    PARAM : dict
+        Physical parameters dictionnary.
+
+    Returns
+    -------
+    trun : float
+        Estimated time in second taken for a run with such parameters.
+
+    Notes
+    -----
+    `trun` is proportionnal to $N_x$ (because of the computation of matrix and
+    product) and to $N_t$, which is itself proportionnal to $N_x^2$ and `Ttot`,
+    the total physical run time. Then, `trun` $\sim N_x^3$ x `Ttot`.
+    Experimentally, the proportionnality constant is around 8e-6.
+
     """
-    Calculation of PPV run time. Trun is proportionnal to Nx (inverse
-    and product) and to Nt, which is itself proportionnal to Nx**2 and to
-    Ttot. So: Trun ~ Nx**3 * Ttot. From a few experiments, the
-    proportionnality constant is around 8e-6.
-
-    - Parameters:
-    	+ :param PARAM: parameters dictionnary
-    - Outputs:
-    	+ :return trun: float, time in second taken by run with those
-    	parameters.
-
-    """
-
-    # Unpack
+    # >> Unpack
     Nx = PARAM['Nx']
     Nt = PARAM['Nt']
     Ttot_ = PARAM['dt_']*Nt
-    A = 8.e-6  # proportionnality constant
+    A = 8.e-6  # empirical proportionnality constant
 
-    # Compute
+    # >> Compute
     trun = A * Nx**3 * Ttot_
 
-    print('simulation.run_time -- This run should be approximately {:} seconds long'.format(trun))
+    print('simulation.run_time -- This run should be approximately {:.2e} seconds long'.format(trun))
     return trun
 
 # -----------------------------------------------------------------------------
 
 def save(path, dic, verbose=True):
-    """
-    Save the output of a simulation. It should be packaged in a dictionnary
-    first. It is then saved using the pickle package.
+    """Saves the output of a simulation.
+
+    Output should be packaged in a dictionnary first. It is then saved using the
+    pickle package. Simple wrapper function.
 
     Parameters
     ----------
     path : str
        Path and filename where to save the file. No extension needed.
     dic : dictionnary
-        Dictionnary packaging all output to be saved. Careful to use
+        Dictionnary packaging all output to be saved. Be careful to use
         stereotypical names for the keys: 'PARAM', 'VALVES', 'v_activity',
         'P0', 'Plast', 'bounds', 't_ev', 'x_ev', 'k_eq'...
-    verbose : bool (default=`True`)
-        Option to have the function print what it's doing, succinctly.
+    verbose : bool, optional
+        Option to have the function print what it's doing.
 
     """
     if path[-4:] != '.pkl':
