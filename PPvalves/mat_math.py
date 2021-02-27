@@ -2,28 +2,38 @@
 # -*- coding: utf-8 -*-
 
 
-""" matmath handles tridiagonal matrix inversion and multiplications """
-
+"""mat_math handles tridiagonal matrix inversion and multiplications used in
+solving pore pressure evolution in time.
+"""
 
 ## Imports
 import numpy as np
 
-
 ## Core
-
 #--------------------------------------------------------------------------------
-def product(M, v):
-    """
-    Calculates the dot product M.v where M is a tridiagonal square matrix, and v
-    a vector.
-    - Parameters
-    	+ :param M: matrix M tridiagonal square, as a list of its diagonal
-    	vectors a,b,c, themselves as arrays, len(a) = len(b) = len(c), a1=0,
-    	cn=0
-    	+ :param v: vector v, as a np.array.
-    - Outputs
-    	+ :return: p : M.v product as a numpy array.
 
+def product(M, v):
+    r"""Tridiagonal product.
+
+    Calculates the dot product `p = M . v` where
+    `M` is a tridiagonal square matrix, and `v` a vector.
+
+    Parameters
+    ----------
+    M : list
+         Matrix `M` tridiagonal square, as a list of its diagonals
+         vectors `(a, b,c)`, themselves as arrays.
+    v : 1D array
+        Vector `v`.
+    Returns
+    -------
+    p : 1D array
+        Product `p = M . v` as a numpy array.
+
+    Notes
+    -----
+    When using `[a, b, c]` to represent a tridiagonal matrix, by convention:
+    `len(a) = len(b) = len(c)`, `a[0] = 0`, `c[-1] = 0`.
     """
     # Initialize
     p = np.zeros(len(v))
@@ -42,17 +52,23 @@ def product(M, v):
 #--------------------------------------------------------------------------------
 
 def ma2TD(A):
-    """
-    Converts a tridiagonal matrix to TD representation: 3 lists representing
-    the 3 diagonals.
-    a,b,c : len(a) = len(b) = len(c), a0=0, cn=0
+    """Converts a tridiagonal matrix to tridiagonal representation.
 
-    - Parameters:
-    	+ :param A: 2D, square, tridiagonal matrix.
-    - Outputs:
-    	+ :return: M, a list of 3 arrays a,b,c representing the three
-    	diagonals of the matrix.
+    Parameters
+    ----------
+    A : 2D array
+        Square, tridiagonal matrix.
 
+    Returns
+    -------
+    M : list
+        List of three arrays `(a, b, c)`, representing the lower diagonal, the
+        diagonal and the upper diagonal of the tridiagonal matrix.
+
+    Notes
+    -----
+    When using `[a, b, c]` to represent a tridiagonal matrix, by convention:
+    `len(a) = len(b) = len(c)`, `a[0] = 0`, `c[-1] = 0`.
     """
     # Initialize
     a = np.zeros(np.shape(A)[0])
@@ -72,16 +88,24 @@ def ma2TD(A):
 #--------------------------------------------------------------------------------
 
 def TD2ma(A):
-    """
-    Converts a tridiagonal matrix A in a,b,c form to a numpy 2D array M.
-    a,b,c : len(a) = len(b) = len(c), a0 = 0, cn = 0
+    """Converts a tridiagonal matrix A in simplified form to a numpy 2D array
+    M.
 
-    - Parameters
-    	+ :param A: list of 3 lists or numpy arrays a,b,c representing the
-    	three diagonals of the matrix representing the system.
-    - Outputs
-    	+ :return: M, 2D numpy array
+    Parameters
+    ----------
+    A : 2D array
+        List of three arrays `(a, b, c)`, representing the lower diagonal, the
+        diagonal and the upper diagonal of the tridiagonal matrix.
 
+    Returns
+    -------
+    M : list
+        Square, tridiagonal matrix.
+
+    Notes
+    -----
+    When using `[a, b, c]` to represent a tridiagonal matrix, by convention:
+    `len(a) = len(b) = len(c)`, `a[0] = 0`, `c[-1] = 0`.
     """
     a, b, c = A
     M = np.zeros((len(b), len(b)))
@@ -98,25 +122,29 @@ def TD2ma(A):
 #--------------------------------------------------------------------------------
 
 def TDMAsolver(A, d):
-    """
-    Tri diagonal system solver refer to
-    http://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
-    and to
-    http://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)
+    """Tri diagonal system `d = A.X` solver. refer to
 
-    - Parameters
-    	+ :param A: list of 3 lists a,b,c or numpy arrays representing the
-    	three diagonals
-    	of the matrix representing the system. len(a) = len(b) =
-    	len(c), cn = a0 = 0
-    	+ :param d: list or numpy array representing the "knowns" side of the
-    	system
-    - Outputs
-    	+ :return: xc : numpy array of the solved unknowns.
+    Parameters
+    ----------
+    A : list
+        List of arrays `(a, b, c)` representing the three diagonals
+    	of the tridiagonal matrix of the linear system.
+    d : array_like
+        Vector of the knowns.
 
-    /////////////////////////////
-    source: https://gist.github.com/cbellei/8ab3ab8551b8dfc8b081c518ccd9ada9
+    Returns
+    -------
+    xc : 1D array
+        Solution of the system.
 
+    Notes
+    -----
+    To learn more on the tridiagonal matrix algorithm (or Thomas algorithm):
+    `wikipedia <http://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm>`_ or
+    `here
+    <http://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)>`_.
+    This functions was copied from this bit of code:
+    `code <https://gist.github.com/cbellei/8ab3ab8551b8dfc8b081c518ccd9ada9>`_.
     """
     a, b, c = A
     nf = len(d) # number of equations
@@ -132,125 +160,3 @@ def TDMAsolver(A, d):
     for il in range(nf-2, -1, -1):
         xc[il] = (dc[il]-cc[il]*xc[il+1])/bc[il]
     return xc
-
-#--------------------------------------------------------------------------------
-#def product0(M,v):
-#    """
-#    Calculates the dot product M.v where M is a tridiagonal square matrix, and v
-#    a vector.
-#    - Parameters
-#    	+ :param M: matrix M tridiagonal square, as a list of its diagonal
-#    	vectors a,b,c, themselves as arrays, len(a) = len(b) - 1 = len(c)
-#    	+ :param v: vector v, as a np.array.
-#    - Outputs
-#    	+ :return: p : M.v product as a numpy array.
-#
-#    """
-#    p = np.zeros(len(v))
-#    a,b,c = M
-#    # Core elements
-#    for ii in range(1,len(v)-1):
-#    	p[ii] = a[ii-1]*v[ii-1] + b[ii]*v[ii] + c[ii]*v[ii+1]
-#
-#    # Boundaries
-#    p[0] = b[0]*v[0] + c[0]*v[1]
-#    p[-1] = a[-1]*v[-2] + b[-1]*v[-1]
-#
-#    return p
-#
-###--------------------------------------------------------------------------------
-#
-#def TDMAsolver0(A,d):
-#	"""
-#	Tri diagonal system solver refer to
-#	http://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
-#	and to
-#	http://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)
-#
-#	- Parameters
-#		+ :param A: list of 3 lists a,b,c or numpy arrays representing the
-#		three diagonals
-#		of the matrix representing the system. len(a) = len(b) - 1 =
-#		len(c).
-#		+ :param d: list or numpy array representing the "knowns" side of the
-#		system
-#	- Outputs
-#		+ :return: xc : numpy array of the solved unknowns.
-#
-#	/////////////////////////////
-#	source: https://gist.github.com/cbellei/8ab3ab8551b8dfc8b081c518ccd9ada9
-#
-#	"""
-#	a, b, c = A
-#	nf = len(d) # number of equations
-#	ac, bc, cc, dc = map(np.array, (a, b, c, d)) # copy arrays
-#	for it in range(1, nf):
-#		mc = ac[it-1]/bc[it-1]
-#		bc[it] = bc[it] - mc*cc[it-1]
-#		dc[it] = dc[it] - mc*dc[it-1]
-#
-#	xc = bc
-#	xc[-1] = dc[-1]/bc[-1]
-#
-#	for il in range(nf-2, -1, -1):
-#		xc[il] = (dc[il]-cc[il]*xc[il+1])/bc[il]
-#	return xc
-#
-#
-##--------------------------------------------------------------------------------
-#
-#def TD2ma0(A):
-#	"""
-#	Converts a tridiagonal matrix A in a,b,c form to a numpy 2D array M.
-#	a,b,c : len(a) = len(b) - 1 = len(c)
-#
-#	- Parameters
-#		+ :param A: list of 3 lists or numpy arrays a,b,c representing the
-#		three diagonals of the matrix representing the system.
-#	- Outputs
-#		+ :return: M, 2D numpy array
-#
-#	"""
-#	a, b, c = A
-#	M = np.zeros((len(b),len(b)))
-#	# Run through lines of the matrix
-#	for ii in range(len(b)):
-#		M[ii,ii] = b[ii]
-#		if ii<len(b)-1:
-#			M[ii,ii+1] = c[ii]
-#		if ii>0:
-#			M[ii,ii-1] = a[ii-1]
-#	return M
-#
-#
-##--------------------------------------------------------------------------------
-#
-#def ma2TD0(A):
-#	"""
-#	Converts a tridiagonal matrix to TD representation: 3 lists representing
-#	the 3 diagonals.
-#	a,b,c : len(a) = len(b) - 1 = len(c)
-#
-#	- Parameters:
-#		+ :param A: 2D, square, tridiagonal matrix.
-#	- Outputs:
-#		+ :return: M, a list of 3 arrays a,b,c representing the three
-#		diagonals of the matrix.
-#
-#	"""
-#	# Initialize
-#	a = np.zeros(np.shape(A)[0]-1)
-#	b = np.zeros(np.shape(A)[0])
-#	c = np.zeros(np.shape(A)[0]-1)
-#
-#	# Run through the lines of the matrix
-#	for ii in range(np.shape(A)[0]):
-#		b[ii] = A[ii,ii]
-#		if ii < (np.shape(A)[0]-1):
-#			c[ii] = A[ii,ii+1]
-#		if ii > 0:
-#			a[ii-1] = A[ii,ii-1]
-#	M = [a,b,c]
-#	return M
-#
-##--------------------------------------------------------------------------------
