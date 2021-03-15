@@ -59,7 +59,7 @@ def run_nov(P, PARAM, verbose=True):
         d = mat.product(B, P[tt,:]) + b  # compact form of knowns
         P[tt+1,:] = mat.TDMAsolver(A,d)  # solving the system for t+1
 
-    if verbose: print('simulation.run_nov -- Done !'
+    if verbose: print('simulation.run_nov -- Done !')
     return P
 
 #---------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         Valve state and pressure differential for each valves, at all times.
         Dimensions : (`PARAM['Nt'] + 1`, 2, Nvalves). First column:
         valve states in time (`True` or `1` is open, `False` or `0` is closed),
-        second column: $\delta p$ across valve (taken at pressure points
+        second column: :math:`\delta p` across valve (taken at pressure points
         right outside low permeability zone). Used to compute catalogs of
         events.
     trun : dict.
@@ -207,7 +207,7 @@ def run(P, PARAM, VALVES, verbose=True):
         Valve state and pressure differential for each valves, at all times.
         Dimensions : (`PARAM['Nt'] + 1`, 2, Nvalves). First column:
         valve states in time (`True` or `1` is open, `False` or `0` is closed),
-        second column: $\delta p$ across valve (taken at pressure points
+        second column: :math:`\delta p` across valve (taken at pressure points
         right outside low permeability zone). Used to compute catalogs of
         events.
     trun : dict.
@@ -298,9 +298,9 @@ def run_time(PARAM):
 
     Notes
     -----
-    `trun` is proportionnal to $N_x$ (because of the computation of matrix and
-    product) and to $N_t$, which is itself proportionnal to $N_x^2$ and `Ttot`,
-    the total physical run time. Then, `trun` $\sim N_x^3$ x `Ttot`.
+    `trun` is proportionnal to `N_x` (because of the computation of matrix and
+    product) and to `N_t`, which is itself proportionnal to `N_x^2` and `Ttot`,
+    the total physical run time. Then, `trun` `\sim N_x^3` x `Ttot`.
     Experimentally, the proportionnality constant is around 8e-6.
 
     """
