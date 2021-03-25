@@ -146,8 +146,8 @@ def TDMAsolver(A, d):
     This functions was copied from this bit of code:
     `code <https://gist.github.com/cbellei/8ab3ab8551b8dfc8b081c518ccd9ada9>`_.
     """
-    a, b, c = A
     nf = len(d) # number of equations
+    a, b, c = A
     ac, bc, cc, dc = map(np.array, (a, b, c, d)) # copy arrays
     for it in range(1, nf):
         mc = ac[it]/bc[it-1]
