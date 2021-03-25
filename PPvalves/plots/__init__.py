@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-""" PPvalves packs up functions to set up and solve for a diffusion problem
-with valves """
+""" Modules to plot useful figures to analyse PPvalves results """
 
 
 ## Imports
