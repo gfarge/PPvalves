@@ -16,10 +16,10 @@ import time
 import numpy as np
 import pickle
 
-import PPvalves.mat_math as mat
 import PPvalves.initialize as init
 import PPvalves.valves as valv
 import PPvalves.utility as util
+import PPvalves.trid_math.trid_math as tm
 
 
 def run_nov(P, PARAM, verbose=True):
@@ -56,8 +56,8 @@ def run_nov(P, PARAM, verbose=True):
     # >> Loop through time
     if verbose: print('simulation.run_nov -- starting run...')
     for tt in range(Nt):
-        d = mat.product(B, P[tt,:]) + b  # compact form of knowns
-        P[tt+1,:] = mat.TDMAsolver(A,d)  # solving the system for t+1
+        d = tm.prod(B[0], B[1], B[2], P[tt,:], len(B[0])) + b  # compact form of knowns
+        P[tt+1,:] = tm.solve(A[0], A[1], A[2], d, len(d))  # solving the system for t+1
 
     if verbose: print('simulation.run_nov -- Done !')
     return P
@@ -113,7 +113,7 @@ def run_light(P0, PARAM, VALVES, verbose=True):
 
     # Initialization steps
     # ====================
-    trun = {'prod' : 0, 'solve' : 0, 'valve' : 0}  # runtime dictionnary
+    trun = {'total' : -time.time(), 'prod' : 0, 'solve' : 0, 'valve' : 0}  # runtime dictionnary
 
     # --> Locate valves, initialize valve activity
     v_activity = np.zeros((Nt+1,2, len(VALVES['idx'])))
@@ -146,25 +146,23 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         # Compute knowns (context)
         # ------------------------
         tprod0 = time.time()  # start timer for product
-
-        r = mat.product(B, Pprev) + b # calc knowns (right hand side)
-
+        r = tm.prod(B[0], B[1], B[2], Pprev, len(Pprev)) + b # calc knowns (right hand side)
         trun['prod'] = trun['prod'] + time.time() - tprod0  # add elapsed t
 
         # Solve for next time
         # -------------------
         tsolve0 = time.time()  # start timer for solver
+        Pnext = tm.solve(A[0], A[1], A[2], r, len(r)) # solve system
+        trun['solve'] = trun['solve'] + time.time() - tsolve0 # add elapsed t
 
-        Pnext = mat.TDMAsolver(A,r) # solve system
         bounds_in_t[tt+1, 0] = util.calc_bound_0(Pnext[0], PARAM)  # get bound 0
         bounds_in_t[tt+1, 1] = util.calc_bound_L(Pnext[-1], PARAM) # get bound L
-
-        trun['solve'] = trun['solve'] + time.time() - tsolve0 # add elapsed t
 
         # Manage valve evolution
         # ----------------------
         tvalve0 = time.time()  # start timer for valves
 
+#        VALVES, active_valves = valv.evolve(Pnext, h, VALVES)
         VALVES, active_valves = valv.evolve(Pnext, h, VALVES)
 
         #--> Build new system according to new valve states
@@ -172,12 +170,15 @@ def run_light(P0, PARAM, VALVES, verbose=True):
             PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
             A, B, b = init.build_sys(PARAM) # update system with new permeab.
         trun['valve'] = trun['valve'] + time.time() - tvalve0  # add elapsed t
+
         # --> Update v_activity
         v_activity[tt+1, 0, :] = VALVES['open']
         v_activity[tt+1, 1, :] = VALVES['dP']
+
     if verbose: print('simulation.run_light -- Done!')
 
     Plast = Pnext
+    trun['total'] += time.time()
 
     return Plast, bounds_in_t, v_activity, trun
 
@@ -247,17 +248,13 @@ def run(P, PARAM, VALVES, verbose=True):
         # Compute knowns (context)
         # ------------------------
         tprod0 = time.time()  # start timer for product
-
-        r = mat.product(B, P[tt, :]) + b # calc knowns (right hand side)
-
+        r = tm.prod(B[0], B[1], B[2], P[tt, :], len(B[0])) + b # calc knowns (right hand side)
         trun['prod'] = trun['prod'] + time.time() - tprod0  # add elapsed t
 
         # Solve for next time
         # -------------------
         tsolve0 = time.time()  # start timer for solver
-
-        P[tt+1, :] = mat.TDMAsolver(A, r) # solve system
-
+        P[tt+1, :] = tm.solve(A[0], A[1], A[2], r, len(r)) # solve system
         trun['solve'] = trun['solve'] + time.time() - tsolve0 # add elapsed t
 
         # Manage valve evolution
@@ -271,6 +268,7 @@ def run(P, PARAM, VALVES, verbose=True):
             PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
             A, B, b = init.build_sys(PARAM) # update system with new permeab.
         trun['valve'] = trun['valve'] + time.time() - tvalve0  # add elapsed t
+
         # --> Update v_activity
         v_activity[tt+1, 0, :] = VALVES['open']
         v_activity[tt+1, 1, :] = VALVES['dP']

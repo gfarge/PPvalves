@@ -9,7 +9,7 @@ with valves """
 ## Imports
 
 import PPvalves.utility
-import PPvalves.mat_math
+#import PPvalves.trid_math
 import PPvalves.valves
 import PPvalves.simulation
 import PPvalves.catalog
