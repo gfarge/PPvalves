@@ -106,7 +106,7 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         runtime.
     """
     trun = {'total' : -time.time(), 'prod' : 0, 'solve' : 0,
-            'valve' : 0}  # runtime dictionnary
+            'valves_inner' : 0, 'valves' : 0}  # runtime dictionnary
 
     if verbose: print('simulation.run_light -- initialization...')
     # Create variables for useful values
@@ -155,8 +155,9 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         # -------------------
         tsolve0 = time.time()  # start timer for solver
         Pnext = tm.solve(A[0], A[1], A[2], r, len(r)) # solve system
-        trun['solve'] = trun['solve'] + time.time() - tsolve0 # add elapsed t
+        trun['solve'] += time.time() - tsolve0 # add elapsed t
 
+        # this takes time also
         bounds_in_t[tt+1, 0] = util.calc_bound_0(Pnext[0], PARAM)  # get bound 0
         bounds_in_t[tt+1, 1] = util.calc_bound_L(Pnext[-1], PARAM) # get bound L
 
@@ -168,10 +169,13 @@ def run_light(P0, PARAM, VALVES, verbose=True):
 
         #--> Build new system according to new valve states
         if np.any(active_valves):  # (much more efficient to do it only when
-                                   #  needed)
+                                   #  needed, but should be optimized...)
+            tin0 = time.time()
             PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
             A, B, b = init.build_sys(PARAM) # update system with new permeab.
-        trun['valve'] = trun['valve'] + time.time() - tvalve0  # add elapsed t
+            trun['valves_inner'] += time.time() - tin0  # add elapsed t
+
+        trun['valves'] += time.time() - tvalve0  # add elapsed t
 
         # --> Update v_activity
         v_activity[tt+1, 0, :] = VALVES['open']
@@ -227,7 +231,7 @@ def run(P, PARAM, VALVES, verbose=True):
 
     # Initialization steps
     # ====================
-    trun = {'prod' : 0, 'solve' : 0, 'valve' : 0}  # runtime dictionnary
+    trun = {'total': -time.time(), 'prod' : 0, 'solve' : 0, 'valves' : 0}  # runtime dictionnary
 
     # --> Locate valves, initialize valve activity
     v_activity = np.zeros((Nt+1,2, len(VALVES['idx'])))
@@ -251,13 +255,13 @@ def run(P, PARAM, VALVES, verbose=True):
         # ------------------------
         tprod0 = time.time()  # start timer for product
         r = tm.prod(B[0], B[1], B[2], P[tt, :], len(B[0])) + b # calc knowns (right hand side)
-        trun['prod'] = trun['prod'] + time.time() - tprod0  # add elapsed t
+        trun['prod'] += time.time() - tprod0  # add elapsed t
 
         # Solve for next time
         # -------------------
         tsolve0 = time.time()  # start timer for solver
         P[tt+1, :] = tm.solve(A[0], A[1], A[2], r, len(r)) # solve system
-        trun['solve'] = trun['solve'] + time.time() - tsolve0 # add elapsed t
+        trun['solve'] += time.time() - tsolve0 # add elapsed t
 
         # Manage valve evolution
         # ----------------------
@@ -269,7 +273,7 @@ def run(P, PARAM, VALVES, verbose=True):
         if np.any(active_valves):
             PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
             A, B, b = init.build_sys(PARAM) # update system with new permeab.
-        trun['valve'] = trun['valve'] + time.time() - tvalve0  # add elapsed t
+        trun['valves'] += time.time() - tvalve0  # add elapsed t
 
         # --> Update v_activity
         v_activity[tt+1, 0, :] = VALVES['open']
@@ -281,7 +285,8 @@ def run(P, PARAM, VALVES, verbose=True):
 #---------------------------------------------------------------------------------
 
 def run_time(PARAM):
-    r"""Rough estimation of PPv run time for given physical parameters.
+    r""" DEPRECATED : worked for previous versions.
+    Rough estimation of PPv run time for given physical parameters.
 
     This gives a rough, slightly overestimated approximation. It does not
     account for the specificity of valve distribution and characteristics.
