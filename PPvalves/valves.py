@@ -219,38 +219,62 @@ def evolve(P, h, VALVES):
     - Output:
     	+ :return: VALVES, as input, but open and dP evolved to be
     	consistent with input P at time t.
-    	+ :return: active_v: boolean, True if OPEN or CLOSE activity.
+    	+ :return: activeity: boolean, True if OPEN or CLOSE activity.
     	Used to check if we have to modify the permeability profile.
 
     """
-    # Visit every valve
-    #--> Initialize valve activity: no activity a priori
-    active_v = np.zeros(len(VALVES['idx'])).astype(bool)
+    # >> Update pressure differential
+    VALVES['dP'] = P[VALVES['idx']] - P[(VALVES['idx']+VALVES['width']/h).astype(int)]
 
-    for iv, (idx, wv) in enumerate(zip(VALVES['idx'], VALVES['width'])):
-        #--> Upddate pressure diff
-        VALVES['dP'][iv] = P[idx] - P[int(idx+wv/h)]
+    # >> Compute boolean for above/below opening/closing criteria
+    above_dpop = VALVES['dP'] > VALVES['dPhi']
+    below_dpcl = VALVES['dP'] < VALVES['dPlo']
 
-        #--> Open or Close?
-        if (VALVES['dP'][iv] > VALVES['dPhi'][iv]) & \
-         (not VALVES['open'][iv]):
-        #-->> if valve is closed, and dP above thr: OPEN
-            VALVES['open'][iv] = True
-            active_v[iv] = True
+    # >> Compute new states
+    # opening
+    opening = ~VALVES['open'] & above_dpop
+    VALVES['open'] = VALVES['open'] | above_dpop
 
-        elif (VALVES['dP'][iv] < VALVES['dPlo'][iv]) &\
-         (VALVES['open'][iv]):
-        #-->> if valve is open, and dP below thr: CLOSE
-            VALVES['open'][iv] = False
-            active_v[iv] = True
+    # closing
+    closing = VALVES['open'] & below_dpcl
+    VALVES['open'] = VALVES['open'] & ~below_dpcl
 
-    return VALVES, active_v
+    # NB : condition to update state is different than opening (resp. closing) detector
+    # because the first one accounts for when an open valve stays open (resp. a
+    # closed valve stays closed) and not the latter.
+
+    activity = np.any(opening) and np.any(closing)
+
+#    # Visit every valve
+#    #--> Initialize valve activity: no activity a priori
+#    active_v = np.zeros(len(VALVES['idx'])).astype(bool)
+#
+#    for iv, (idx, wv) in enumerate(zip(VALVES['idx'], VALVES['width'])):
+#        #--> Upddate pressure diff
+#        VALVES['dP'][iv] = P[idx] - P[int(idx+wv/h)]
+#
+#        #--> Open or Close?
+#        if (VALVES['dP'][iv] > VALVES['dPhi'][iv]) & \
+#         (not VALVES['open'][iv]):
+#        #-->> if valve is closed, and dP above thr: OPEN
+#            VALVES['open'][iv] = True
+#            active_v[iv] = True
+#
+#        elif (VALVES['dP'][iv] < VALVES['dPlo'][iv]) &\
+#         (VALVES['open'][iv]):
+#        #-->> if valve is open, and dP below thr: CLOSE
+#            VALVES['open'][iv] = False
+#            active_v[iv] = True
+
+#    return VALVES, active_v
+    return VALVES, activity
 
 #---------------------------------------------------------------------------------
 
-def update_k(VALVES, active_v, PARAM):
+def update_k(VALVES, PARAM):
     """ Computes permeability profile according to valve distribution and
     choice of background/valve permeability."""
+
 
     # Unpack
     h = PARAM['h_']
