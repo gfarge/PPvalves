@@ -376,7 +376,11 @@ def build_sys(PARAM):
     # >> Apply boundary conditions to A and B and create b
     A, B, b = sys_boundary(A, B, PARAM)
 
-    return np.asfortranarray(A),  np.asfortranarray(B), np.asfortranarray(b)
+    A = [np.asfortranarray(d) for d in A]
+    B = [np.asfortranarray(d) for d in B]
+    b = np.asfortranarray(b)
+
+    return A, B, b
 
 #-----------------------------------------------------------------------------
 

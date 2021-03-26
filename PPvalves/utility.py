@@ -101,6 +101,13 @@ def calc_bound_0(P0, PARAM):
 
     """
     # In the case where input pressure is fixed: bound_0 = q0
+#    bound_0 = False * PARAM['k_bg']*PARAM['rho']/PARAM['mu'] \
+#                 * (PARAM['p0_'] - P0)/PARAM['hb_'] \
+#                 * PARAM['P_scale']/PARAM['X_scale']/PARAM['q_scale'] \
+#             + True * (P0 + PARAM['qin_'] * PARAM['hb_'] \
+#                  * PARAM['mu']/PARAM['rho']/PARAM['k_bg'] \
+#                  * PARAM['q_scale']*PARAM['X_scale']/PARAM['P_scale'])
+
     if np.isnan(PARAM['qin_']):
         bound_0 = PARAM['k_bg']*PARAM['rho']/PARAM['mu'] \
                  * (PARAM['p0_'] - P0)/PARAM['hb_'] \

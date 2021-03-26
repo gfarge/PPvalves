@@ -105,6 +105,9 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         valves (`trun['valve']`).  The sum of all three is the complete
         runtime.
     """
+    trun = {'total' : -time.time(), 'prod' : 0, 'solve' : 0,
+            'valve' : 0}  # runtime dictionnary
+
     if verbose: print('simulation.run_light -- initialization...')
     # Create variables for useful values
     # ==================================
@@ -113,7 +116,6 @@ def run_light(P0, PARAM, VALVES, verbose=True):
 
     # Initialization steps
     # ====================
-    trun = {'total' : -time.time(), 'prod' : 0, 'solve' : 0, 'valve' : 0}  # runtime dictionnary
 
     # --> Locate valves, initialize valve activity
     v_activity = np.zeros((Nt+1,2, len(VALVES['idx'])))
@@ -147,7 +149,7 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         # ------------------------
         tprod0 = time.time()  # start timer for product
         r = tm.prod(B[0], B[1], B[2], Pprev, len(Pprev)) + b # calc knowns (right hand side)
-        trun['prod'] = trun['prod'] + time.time() - tprod0  # add elapsed t
+        trun['prod'] += time.time() - tprod0  # add elapsed t
 
         # Solve for next time
         # -------------------
@@ -162,11 +164,11 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         # ----------------------
         tvalve0 = time.time()  # start timer for valves
 
-#        VALVES, active_valves = valv.evolve(Pnext, h, VALVES)
         VALVES, active_valves = valv.evolve(Pnext, h, VALVES)
 
         #--> Build new system according to new valve states
-        if np.any(active_valves):
+        if np.any(active_valves):  # (much more efficient to do it only when
+                                   #  needed)
             PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
             A, B, b = init.build_sys(PARAM) # update system with new permeab.
         trun['valve'] = trun['valve'] + time.time() - tvalve0  # add elapsed t

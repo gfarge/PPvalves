@@ -243,7 +243,7 @@ def evolve(P, h, VALVES):
     # because the first one accounts for when an open valve stays open (resp. a
     # closed valve stays closed) and not the latter.
 
-    activity = np.any(opening) and np.any(closing)
+    active_valves = opening | closing
 
 #    # Visit every valve
 #    #--> Initialize valve activity: no activity a priori
@@ -267,30 +267,46 @@ def evolve(P, h, VALVES):
 #            active_v[iv] = True
 
 #    return VALVES, active_v
-    return VALVES, activity
+    return VALVES, active_valves
 
 #---------------------------------------------------------------------------------
 
-def update_k(VALVES, PARAM):
+def update_k(VALVES, active_valves, PARAM):
     """ Computes permeability profile according to valve distribution and
     choice of background/valve permeability."""
 
 
-    # Unpack
+    # >> Unpack
     h = PARAM['h_']
     k = PARAM['k']
     k_bg = k[0] # ensure that your k is always k_bg at the 2 1st and 2 last pts
 
+
     # Visit every valve that was active and change its permeability to its
     #  updated value
-    v_iterable = zip(VALVES['open'][active_v], VALVES['idx'][active_v],\
-     VALVES['width'][active_v], VALVES['klo'][active_v])
+    v_iterable = zip(VALVES['open'][active_valves], VALVES['idx'][active_valves],\
+            VALVES['width'][active_valves], VALVES['klo'][active_valves])
 
     for v_is_open, idx, w, klo in v_iterable:
-        if v_is_open:
-        #--> if valve is open: background permeability
-            k[idx+1 : int(idx+w/h+1)] = k_bg
-        else:
-        #--> if valve is closed: lower permeability
-            k[idx+1 : int(idx+w/h+1)] = klo
+        k[idx+1 : int(idx+w/h+1)] = k_bg*v_is_open + ~v_is_open*klo
+
     return k
+
+# Alternate, to avoid to loop, but not really more efficient at first sight,
+# maybe when more valves ?
+#     >> Make slices of space domain to isolate their permeability
+#    slices = [np.arange(VALVES['idx'][active_valves][ii]+1,
+#              int(VALVES['idx'][active_valves][ii]+VALVES['width'][active_valves][ii]/h) + 1)
+#              for ii in range(len(VALVES['idx'][active_valves]))]
+#
+#    # >> For each valve, associate its new permeability to its state
+#    kval = [slices[ii]*0 +
+#            ~VALVES['open'][active_valves][ii]*VALVES['klo'][active_valves][ii] +
+#            VALVES['open'][active_valves][ii]*k_bg
+#            for ii in range(len(VALVES['idx'][active_valves]))]
+#
+#    # >> Update permeability domain using slices and permeability in slices
+#    kval = np.concatenate(kval)
+#    slices = np.concatenate(slices)
+#    k[slices] = kval
+
