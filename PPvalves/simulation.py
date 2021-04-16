@@ -64,6 +64,48 @@ def run_nov(P, PARAM, verbose=True):
 
 #---------------------------------------------------------------------------------
 
+def run_nov_light(P, PARAM, verbose=True):
+    """Solves fluid pressure diffusion without valves, light memory version.
+
+    Propagates an initial state of the pore-pressure in time. Permeability can
+    be heterogeneous, but will not be dynamic.
+
+    Parameters
+    ----------
+    P : 2D array
+        Initialized pore pressure array `P[0, :] = P0`. First dimension should
+        be time, second is space.
+    PARAM : dict
+        Physical parameters dictionnary. Permeability in space can be input as
+        an array in `PARAM['k']` --- as it is defined in between and around
+        pressure points, its space dimension is 1 element longer than that of
+        the pore pressure array.
+    verbose : bool, optional
+        Option to have the function print what it's doing.
+
+    Returns
+    -------
+    Plast : 2D array
+        Final pore pressure state.
+    """
+    # >> Unpack
+    Nt = PARAM['Nt']
+
+    # >> Set up initial system
+    if verbose: print('simulation.run_nov -- sytsem setup...')
+    A, B, b = init.build_sys(PARAM)
+
+    # >> Loop through time
+    if verbose: print('simulation.run_nov -- starting run...')
+    for tt in range(Nt):
+        d = tm.prod(B[0], B[1], B[2], P[tt,:], len(B[0])) + b  # compact form of knowns
+        P[tt+1,:] = tm.solve(A[0], A[1], A[2], d, len(d))  # solving the system for t+1
+
+    if verbose: print('simulation.run_nov -- Done !')
+    return P
+
+#---------------------------------------------------------------------------------
+
 def run_light(P0, PARAM, VALVES, verbose=True):
     r"""Runs PPv, without saving the full pressure history.
 
