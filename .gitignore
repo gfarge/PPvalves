@@ -5,6 +5,7 @@
 .*.swp
 */.ipynb_checkpoints/*
 */__pycache__/*
+*cpython*
 
 # -- Development
 .to_do
