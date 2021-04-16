@@ -7,7 +7,6 @@
 
 ## Imports
 
-#import PPvalves.utility
 import PPvalves.plots.utility
 import PPvalves.plots.elements
 import PPvalves.plots.figures
