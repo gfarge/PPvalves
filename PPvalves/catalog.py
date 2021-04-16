@@ -250,6 +250,105 @@ def recurrence(event_time):
 
     return time_before_next
 
+#------------------------------------------------------------------------------
+
+def open_duration(states, time):
+    """open_times computes the duration a valve spends open each time it
+    closes.
+
+    Parameters
+    ----------
+    states : 1D array
+        Valve states in time. Can start at 0, or at anytime.
+    time : 1D array
+        Time array.
+
+    Returns
+    -------
+    durations : 1D array
+        Time spent open for each time the valve is closed. Returns an empty
+        array when there are no events.
+
+    """
+    # >> In cases when there are no events, just return empty array
+    if (not np.any(states)) or np.all(states):
+        return np.array([])
+
+    t_op = open_count(states, time)
+    t_cl = close_count(states, time)
+
+    # >> If first event is opening :
+    # --> first t_op is before t_cl, well ordered
+    if t_op[0] < t_cl[0]:
+        icl0 = 0
+    # >> If first event is closing :
+    # --> first t_cl should not be taken into account
+    else:
+        icl0 = 1
+
+    # >> If last event is closing :
+    # --> no problem of ordering : last t_op is before last t_cl
+    if t_op[-1] < t_cl[-1]:
+        iopN = len(t_cl)
+    # >> If last event is opening :
+    # --> do not count last opening
+    else:
+        iopN = -1
+
+    durations = t_cl[icl0:] - t_op[:iopN]
+
+    return durations
+
+#------------------------------------------------------------------------------
+
+def closed_duration(states, time):
+    """closed_times computes the duration a valve spends closed each time it
+    closes.
+
+    Parameters
+    ----------
+    states : 1D array
+        Valve states in time. Can start at 0, or at anytime.
+    time : 1D array
+        Time array.
+
+    Returns
+    -------
+    durations : 1D array
+        Time spent closed for each time the valve is closed. Returns an empty
+        array when there are no events.
+
+    """
+    # >> In cases when there are no events, just return empty array
+    if (not np.any(states)) or np.all(states):
+        return np.array([])
+
+    t_op = open_count(states, time)
+    t_cl = close_count(states, time)
+
+    # >> If first event is closing :
+    # --> first t_cl and t_op are well ordered
+    if t_op[0] > t_cl[0]:
+        iop0 = 0
+    # >> If first event is opening :
+    # --> first t_op is before t_cl, do not take it into account
+    else:
+        iop0 = 1
+
+    # >> If last event is opening :
+    # --> no problem of ordering : last t_cl is before last t_op
+    if t_op[-1] > t_cl[-1]:
+        iclN = len(t_cl)
+    # >> If last event is closing :
+    # --> do not count last closing
+    else:
+        iclN = -1
+
+    durations = t_op[iop0:] - t_cl[:iclN]
+
+    return durations
+
+
 #-------------------------------------------------------------------------------
 
 def event_count_signal(event_time, dt, t0=0., tn=None):
