@@ -9,7 +9,12 @@ with valves """
 ## Imports
 
 import PPvalves.utility
-#import PPvalves.trid_math
+import PPvalves.trid_math
 import PPvalves.valves
 import PPvalves.simulation
 import PPvalves.catalog
+import PPvalves.mass_balance
+import PPvalves.equilibrium
+import PPvalves.reduced
+import PPvalves.theory
+import PPvalves.initialize
