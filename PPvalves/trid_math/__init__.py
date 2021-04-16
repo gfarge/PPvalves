@@ -5,5 +5,5 @@
 """Module to deal with tridiagonal matrix computations"""
 
 ## Imports
-import PPvalves.trid_math.trid_math
-import PPvalves.trid_math.trid_shape
+import PPvalves.trid_math.tmath
+import PPvalves.trid_math.shape

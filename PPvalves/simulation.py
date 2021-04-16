@@ -19,7 +19,7 @@ import pickle
 import PPvalves.initialize as init
 import PPvalves.valves as valv
 import PPvalves.utility as util
-import PPvalves.trid_math.trid_math as tm
+import PPvalves.trid_math.tmath as tm
 
 
 def run_nov(P, PARAM, verbose=True):
