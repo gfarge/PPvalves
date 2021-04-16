@@ -8,13 +8,16 @@ with valves """
 
 ## Imports
 
-import PPvalves.utility
-import PPvalves.trid_math
-import PPvalves.valves
-import PPvalves.simulation
-import PPvalves.catalog
-import PPvalves.mass_balance
-import PPvalves.equilibrium
-import PPvalves.reduced
-import PPvalves.theory
-import PPvalves.initialize
+from .trid_math import tmath
+from .trid_math import shape
+
+from . import equilibrium
+from . import utility
+from . import initialize
+from . import valves
+from . import simulation
+from . import catalog
+from . import mass_balance
+from . import reduced
+from . import theory
+from . import initialize
