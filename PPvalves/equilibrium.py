@@ -507,7 +507,7 @@ def calc_k_eff(bounds_eff, PARAM):
 
     # For now, length scale is going to be 1, no boundary depth taken into
     # account
-    L = 1  # perhaps better if 1 + 2 * PARAM['hb_'] ?
+    L = (1 + 2*PARAM['hb_'])
 
     # Compute effective permeability
     k_eff = PARAM['mu'] / PARAM['rho'] * L / delta_p * q_in \
