@@ -9,15 +9,21 @@ import numpy as np
 # ====
 
 def Pred2P(Pr, PARAM):
-    """
-    Computes the real pore pressure, using the reduced pore pressure profile.
-    Input and output variables are either all adim or all dim.
+    """From reduced pore pressure, computes real pore pressure.
 
-    - Parameters:
-    	+ :param Pr: nd array 1D, reduced pore pressure.
-    	+ :param PARAM: dictionnary of parameters.
-    - Outputs:
-    	+ :return: P, nd array 1D, same shape as Pr, real pore pressure.
+    Variables can either be dimensional or scaled.
+
+    Parameters
+    ----------
+    Pr : 1D array
+        Reduced pore pressure.
+    PARAM : dict
+        Dictionnary of parameters.
+
+    Outputs
+    -------
+    P : 1D array
+        Real pore pressure, same shape as `Pr`.
 
     """
     # Unpack
@@ -31,7 +37,6 @@ def Pred2P(Pr, PARAM):
     Z_scale = PARAM['Z_scale']
     P_scale = PARAM['P_scale']
 
-
     X = np.linspace(0, Nx*h, num=Nx+1) #* X_scale/X_scale
     Xref = Z0/np.sin(alpha) * Z_scale/X_scale
 
@@ -42,15 +47,21 @@ def Pred2P(Pr, PARAM):
 #---------------------------------------------------------------------------------
 
 def P2Pred(P, PARAM):
-    """
-    Computes the reduced pore pressure, using the real pore pressure profile.
+    """Computes the reduced pore pressure, using the real pore pressure profile.
+
     Input and output variables are either all adim or all dim.
 
-    - Parameters:
-    	+ :param P: nd array 1D, real pore pressure.
-    	+ :param PARAM: dictionnary of parameters.
-    - Outputs:
-    	+ :return: Pr, nd array 1D, same shape as P, reduced pore pressure.
+    Parameters
+    ----------
+    P : 1D array
+        Real pore pressure, same shape as `Pr`.
+    PARAM : dict
+        Dictionnary of parameters.
+
+    Outputs
+    -------
+    Pr : 1D array
+        Reduced pore pressure.
 
     """
     # Unpack
