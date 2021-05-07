@@ -147,26 +147,27 @@ def patch_scatter(patch, scale, v_wid, PARAM):
 # ----------------------------------------------------------------------------
 
 def make(idx, dPhi, dPlo, width, klo, PARAM, verbose=True):
-    """
-    Makes VALVES dictionnary, describing the state of all valves at one
-    moment in time. Used in propagation.
+    """Creates valve distribution based on input parameters
 
-    - Parameters:
-    	+ :param idx: 1D array, index of P(x) just before valve.
-    	 A valve has to start at 1 at least, and it has to end before
-    	 the end of the domain: idx < Nx+2
-    	+ :param dPhi, dPlo: 1D array, same length as idx, value of dP
-    	 for opening/closing the corresponding valve.
-    	+ :param width: width of each valve, in unit or non dim.
-    	 Corresponds to width between P(x) point just before and just after
-    	 low k valve
-    	+ :param klo: 1D np.array, same length as idx, values are each
-    	 valve's permeability when closed.
+    Parameters
+    ----------
+    idx : 1D integer array
+        X indices just before valve. A valve has to start at 1 at least, and it
+        has to end before the end of the domain: idx < Nx+2.
+    dPhi, dPlo : 1D arrays
+        Threshold of `dP` for opening and closing. Same length as `idx`.
+    width : 1D array
+        Width of each valve, in units. Corresponds to width between X point
+        just before and just after low permeability domain. Same length as `idx`.
+    klo : 1D array
+    	Permeability of valves when closed. Same length as `idx`.
 
-    - Outputs:
-    	+ :return: VALVES: valves dictionnary description. Fields as
-    	 input,
-    	 all closed initially.
+    Returns
+    -------
+    VALVES : dictionnary
+        Valves dictionnary description. Fields are similar to input, additional
+        fields for storing valve state (closed initially) and dP.
+
     """
     # Unpack
     h = PARAM['h_']
@@ -214,24 +215,22 @@ def make(idx, dPhi, dPlo, width, klo, PARAM, verbose=True):
 # ----------------------------------------------------------------------------
 
 def X2idx(X, d):
+    """A function to calculate the valve index for a given x coordinate.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space vector.
+    d : float
+        `X` coordinate of the updip end of the valve, preferably closest to a
+        multiple of the spacing of X for no surprises...
+
+    Returns
+    -------
+    idx : integer
+        Indices of X corresponding to the input `d`.
     """
-    A function to calculate the valve index in X
-    for a given x coordinate, d.
-
-    - Parameters
-            + :param X: 1D array of regularly spaced space coordinates.
-            + :type X: ndarray of floats
-            + :param d: x coordinate of the valve, preferably closest to a multiple
-            of the spacing of X
-            + :type d: float
-
-    - Outputs
-            + :rtype: idx : integer
-            + :return: idx : index of X corresponding to
-            the input d.
-    """
-
-    # Get closest index to distance you set
+    # Get closest index to distance you set, what a function
     idx = np.argmin(np.abs(X-d))
 
     return idx
@@ -239,24 +238,26 @@ def X2idx(X, d):
 # ----------------------------------------------------------------------------
 
 def dist2idx(X, d, w):
-    """
-    A function to calculate the valve indices on each side of the mid point of X
-    for a given distance. In this second version, d is the distance between last point
+    """Compute valve indices for two valves at a given distance, centered in
+    the domain.
+In this second version, d is the distance between last point
 	of low_k of previous valve and first point of low_k of next.
 
-    - Parameters
-            + :param X: 1D array of regularly spaced space coordinates.
-            + :type X: ndarray of floats
-            + :param d: distance between the valves, preferably as a multiple of
-            the spacing of X
-            + :type d: float
-            + :param w: width of valves
-            + :type w: float
+    Parameters
+    ----------
+    X : 1D array
+        Space vector.
+    d : float
+        The distance between last point of low permeability of first valve and
+        first point of low permeability of next.
+    w : float
+        Valves' width
 
-    - Outputs
-        + :rtype: idx1,idx2 : tuple of integers.
-        + :return: idx1,idx2 : tuple of the indices in X corresponding to
-        the input d, indices are on each side of the mid-point of X.
+    Returns
+    -------
+    idx1, idx2 : integers.
+        Indices of `X` corresponding to the input `d`, indices are on each side
+        of the mid-point of `X`.
     """
 
     # Get space increment
@@ -277,20 +278,22 @@ def dist2idx(X, d, w):
 # -----------------------------------------------------------------------------
 
 def evolve(P, h, VALVES):
-    """
-    Checks the new pore pressure state at valves. Open/Close them accordingly.
-    Computes the new permeability profile associated.
+    """Checks the new pore pressure state at valves and opens/closes them
+    accordingly.
 
-    - Parameters:
-    	+ :param P: pore pressure profile at time t as a 1D np array.
-    	+ :param VALVES: VALVES dict. description at t-dt (before
-    	update)
+    Parameters
+    ----------
+    P : 1D array
+        Pore pressure profile that will define valve states.
+    VALVES : dict.
+        Valve parameters dictionnary.
 
-    - Output:
-    	+ :return: VALVES, as input, but open and dP evolved to be
-    	consistent with input P at time t.
-    	+ :return: activeity: boolean, True if OPEN or CLOSE activity.
-    	Used to check if we have to modify the permeability profile.
+    Returns
+    -------
+    VALVES : dict.
+        Updated valve parameters dictionnary: current `'dP'` and `'state'`.
+    active_valves : boolean array
+        Which valve has either opened or closed.
 
     """
     # >> Update pressure differential
@@ -315,37 +318,28 @@ def evolve(P, h, VALVES):
 
     active_valves = opening | closing
 
-#    # Visit every valve
-#    #--> Initialize valve activity: no activity a priori
-#    active_v = np.zeros(len(VALVES['idx'])).astype(bool)
-#
-#    for iv, (idx, wv) in enumerate(zip(VALVES['idx'], VALVES['width'])):
-#        #--> Upddate pressure diff
-#        VALVES['dP'][iv] = P[idx] - P[int(idx+wv/h)]
-#
-#        #--> Open or Close?
-#        if (VALVES['dP'][iv] > VALVES['dPhi'][iv]) & \
-#         (not VALVES['open'][iv]):
-#        #-->> if valve is closed, and dP above thr: OPEN
-#            VALVES['open'][iv] = True
-#            active_v[iv] = True
-#
-#        elif (VALVES['dP'][iv] < VALVES['dPlo'][iv]) &\
-#         (VALVES['open'][iv]):
-#        #-->> if valve is open, and dP below thr: CLOSE
-#            VALVES['open'][iv] = False
-#            active_v[iv] = True
-
-#    return VALVES, active_v
     return VALVES, active_valves
 
 #---------------------------------------------------------------------------------
 
 def update_k(VALVES, active_valves, PARAM):
-    """ Computes permeability profile according to valve distribution and
-    choice of background/valve permeability."""
+    """Computes permeability profile according to valve new valve states.
 
+    Parameters
+    ----------
+    VALVES : dictionnary
+        Valves dictionnary description. Fields are similar to input, additional
+    active_valves : boolean array
+        Which valve has either opened or closed.
+    PARAM : dict
+        Parameters dictionnary.
 
+    Returns
+    -------
+    k : 1D array
+        Updated permeability.
+
+    """
     # >> Unpack
     h = PARAM['h_']
     k = PARAM['k']
@@ -364,6 +358,7 @@ def update_k(VALVES, active_valves, PARAM):
 
 # Alternate, to avoid to loop, but not really more efficient at first sight,
 # maybe when more valves ?
+#
 #     >> Make slices of space domain to isolate their permeability
 #    slices = [np.arange(VALVES['idx'][active_valves][ii]+1,
 #              int(VALVES['idx'][active_valves][ii]+VALVES['width'][active_valves][ii]/h) + 1)
@@ -379,4 +374,3 @@ def update_k(VALVES, active_valves, PARAM):
 #    kval = np.concatenate(kval)
 #    slices = np.concatenate(slices)
 #    k[slices] = kval
-
