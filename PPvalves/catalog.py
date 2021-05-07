@@ -1,17 +1,20 @@
-r"""Module used to produce and analyze activity catalogs.
-`PPvalves.catalog` is adapted to analyse the results of PPv runs but also of
-real catalogs $(t_i, x_i)$.
+r"""Module used to produce and analyze synthetic activity catalogs.
+`PPvalves.catalog` is adapted to analyse the results of PPv mainly.
 """
 # >> Imports
 import numpy as np
 from mtspec import mtspec
 from scipy.special import erfinv
 from scipy.signal import savgol_filter
-from scipy.stats import chisquare, chi2, poisson
 
+import sys
+import os
+sys.path.append(os.path.abspath('../../my_modules/'))
+import stats as ms
 
 
 # >> Core
+
 #------------------------------------------------------------------------------
 
 def open_ratio(states):
@@ -391,137 +394,6 @@ def event_count_signal(event_time, dt, t0=0., tn=None):
 
     return ev_count, bin_edges
 
-#-------------------------------------------------------------------------------
-
-def crosscorr(sig1, sig2, dt, norm=True, no_bias=True):
-    """Homemade cross-correlation function.
-
-    Computes the cross-correlation time-series of two signals. Function was
-    designed for signals of same length. If signals of different sizes are
-    used, correlation lag might be strange, use at your own risk.
-
-    Parameters
-    ----------
-    sig1, sig2 : 1D arrays
-        Signals to cross-correlate, dimensions N and M. Use same discretization
-        lenght `dt` for best results.
-    dt : float
-        Time step used in both signals.
-    norm : bool, optional
-        By default, normalizes the signals before cross-correlating them. `norm
-        = False` turns it off.
-    no_bias : bool, optional
-        By default, removes the bias due to the variable number of points used
-        to compute the correlation at each lag. This option also removes one
-        fifth of the cross-correlation at each end, to get rid of edge effects
-        due to unbiasing.
-
-    Returns
-    -------
-    corr : 1D array
-        Cross-correlation of the input signals, dimension N + M - 1.
-    lag : 1D array
-        Time lag for each value of the cross-correlation, dimension N + M - 1.
-        Centering around 0 is only ensured if sig1 and sig2 are the same size.
-    """
-
-    # >> Normalize signals
-    if norm:
-        sig1 = (sig1 - np.mean(sig1)) / (np.std(sig1)*len(sig1))
-        sig2 = (sig2 - np.mean(sig2)) / np.std(sig2)
-
-    # >> Compute correlation
-    corr = np.correlate(sig1.astype(float), sig2.astype(float),'full')
-
-    # >> Normalize
-    if norm:
-        corr = corr.astype(float) / (np.linalg.norm(sig1)*np.linalg.norm(sig2))
-
-    # >> Remove bias due to number of points varying at each lag
-    if no_bias:
-        bias = crosscorr_bias(sig1, sig2)
-        corr = corr/bias
-
-    # >> Compute time lag of autocorrelation
-    lag = np.arange(0, len(sig1) + len(sig2) - 1) - (len(sig1) - 1)
-    lag = lag.astype(float) * dt
-
-    # >> Removes both ends of lag and correlation, to get rid of edge effects
-    # due to removing the bias
-    if no_bias:
-        valid = (abs(lag) < 4/5*max(lag))
-        lag = lag[valid]
-        corr = corr[valid]
-
-    return corr, lag
-
-
-#------------------------------------------------------------------------------
-
-def crosscorr_bias(sig1, sig2):
-    """Computes the bias of at each lag of the cross correlation.
-
-    Parameters
-    ----------
-    sig1, sig2 : 1D array
-        Signals to correlate, dimension N and M.
-
-    Returns
-    -------
-    bias : 1D array
-        The bias vector, corresponding to all values of lag (both negative and
-        positive), dimension N + M - 1.
-
-    """
-    N = len(sig1)
-    M = len(sig2)
-
-    # >> Bias for part where signals overlap entirely
-    bias_full = [1 for ii in range(max(M, N) - min(M, N) + 1)]
-
-    # >> Bias for part before full overlap
-    bias_bef = [ii/min(N, M) for ii in range(1, min(M, N))]
-
-    # >> Bias for part after full overlap
-    bias_aft = [ii/min(N, M) for ii in range(min(M, N) - 1, 0, -1)]
-
-    # >> Concatenate
-    bias = np.concatenate((bias_bef, bias_full, bias_aft))
-
-    return bias
-
-#------------------------------------------------------------------------------
-
-
-def corr_coeff(sig1, sig2, dt):
-    """Computes a correlation coefficient between two signals.
-
-    The correlation coefficient is taken as the maximum of the cross-correlation
-    of the two signals, the corresponding time lag is also returned.
-
-    Parameters
-    ----------
-    sig1, sig2 : 1D arrays
-        Signals to cross-correlate, dimensions N and M.
-    dt : float
-        Time step of signals.
-
-    Returns
-    -------
-    cc : float
-        Correlation coefficient.
-    cc_lag : 1D array
-        Time lag corresponding to correlation coefficient.
-    """
-    # >> Calculates the cross correlation
-    corr, corr_lag = crosscorr(sig1, sig2, dt, norm=True, no_bias=False)
-
-    # >> Get correlation coefficient and time lag
-    cc = max(abs(corr))
-    cc_lag = corr_lag[np.argmax(abs(corr))]
-
-    return cc, cc_lag
-
 #------------------------------------------------------------------------------
 
 
@@ -649,7 +521,7 @@ def calc_alpha(ev_count, dt, per_max):
        (Vol. 366). John Wiley and Sons, Inc.
     """
     # >> Compute un-bias autocorrelation
-    a_corr, _ = crosscorr(ev_count, ev_count, dt, norm=True, no_bias=True)
+    a_corr, _ = ms.cross_corr(ev_count, ev_count, dt, norm=True, no_bias=True)
 
     # >> Compute its spectrum
     sp, fq = mtspec(a_corr, dt, time_bandwidth=3.5, number_of_tapers=5)
@@ -711,7 +583,7 @@ def detect_period(ev_count, dt):
     """
     # Compute un-bias autocorrelation
     # -------------------------------
-    a_corr, lag = crosscorr(ev_count, ev_count, dt, norm=True, no_bias=False)
+    a_corr, lag = ms.cross_corr(ev_count, ev_count, dt, norm=True, no_bias=False)
 
     # Smooth it
     # ---------
@@ -754,8 +626,8 @@ def detect_period(ev_count, dt):
                 # --> estimate validity
                 count_time = np.arange(0, len(ev_count)*dt+1, dt)
                 sine = np.sin(2*np.pi/period * count_time)
-                sine_corr, _ = crosscorr(sine, sine, dt, no_bias=False)
-                validity, _ = corr_coeff(sine_corr, a_corr, dt)
+                sine_corr, _ = ms.cross_corr(sine, sine, dt, no_bias=False)
+                validity, _ = ms.corr_coeff(sine_corr, a_corr, dt)
 
                 # --> And we arrrre
                 done = True
@@ -777,56 +649,3 @@ def detect_period(ev_count, dt):
 
 #-------------------------------------------------------------------------------
 
-def poisson_adequation(ev_count, alpha):
-    """Tests if event count signal can be considered to emerge from a Poisson
-    process.
-
-    Performs a chi-square test to try to refute the null hypothesis: "the event
-    count follows a Poisson distribution".
-
-    Parameters
-    ----------
-    ev_count : 1D array
-        Array containing the binned event count.
-    alpha : float
-        Risk level taken in the refutation of the null hypothesis (should be
-        lower than 1). `1 - alpha` corresponds to the confidence interval with
-        which it can be refuted.
-
-    Returns
-    -------
-    adequation : bool
-        Answer of the test. If `True`, the null hypothesis cannot be refuted, the
-        event count could very well be explained by a Poisson distribution. If
-        False, the null hypothesis can be refuted with a level of confidence of
-        1 - alpha.
-    p_value : float
-        p-value of test, corresponds to the probability of obtaining the test
-        statistic, under realisation of the null hypothesis. Output of
-        `scipy.stats.chisquare()`.
-
-    See also
-    --------
-    scipy.stats.chisquare() : performs a chi-square test.
-    """
-    # Build frequencies of observed count values for observed counts
-    # --------------------------------------------------------------
-    bins = np.arange(-0.5, max(ev_count)+1, 1)
-    f, _ = np.histogram(ev_count, bins=bins)
-    f = f / len(ev_count)
-
-    # Build frequencies for a Poisson process
-    # ---------------------------------------
-    lambd = np.mean(ev_count)
-    f_th = poisson.pmf((bins[1:]+bins[:-1])/2, lambd)
-
-    # Perform test
-    # ------------
-    T, p_value = chisquare(f, f_th, 1)
-
-    if T > chi2.ppf(1 - alpha, (len(f) - 1) - 1):
-        adequation = False
-    else:
-        adequation = True
-
-    return adequation, p_value
