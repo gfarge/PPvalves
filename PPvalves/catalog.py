@@ -9,7 +9,7 @@ from scipy.signal import savgol_filter
 
 import sys
 import os
-sys.path.append(os.path.abspath('../../my_modules/'))
+sys.path.append('/Users/farge/work/py_modules/my_modules/')
 import stats as ms
 
 # >> Core
