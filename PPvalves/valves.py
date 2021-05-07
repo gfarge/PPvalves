@@ -37,6 +37,8 @@ def comb(dx, v_wid, PARAM):
 
     return v_idx
 
+# ----------------------------------------------------------------------------
+
 def scatter(scale, v_wid, PARAM):
     """
     Scatters valves on the domain, according to an exponential law for their
@@ -45,12 +47,20 @@ def scatter(scale, v_wid, PARAM):
     domain.
     valves all have a fixed width.
 
-    - Parameters:
-    	+ :param v_wid: width of the valve as a fraction of the total
-    	+ :param scale: mean distance between valves
-    	+ :param PARAM: parameters dictionnary
-    - Outputs:
-    	+ :return v_idx: width of the valve as a fraction of the total
+    Parameters
+    ----------
+    v_wid : float
+        Width of the valve in physical unit.
+    scale : float
+        Mean distance between valves (parameter of exponential law that dictate
+        inter-valve distances).
+    PARAM : dictionnary
+        Parameters dictionnary
+
+    Returns
+    -------
+    v_idx : 1D array
+        Array of the valves indices for the discretization used in `PARAM`.
     """
     # Unpack
     Nx = PARAM['Nx']
@@ -71,6 +81,66 @@ def scatter(scale, v_wid, PARAM):
         prev_end = v_id + v_wid/h_
 
     v_idx = np.array(v_idx[:-1]).astype(int)
+
+    return v_idx
+
+# ----------------------------------------------------------------------------
+
+def patch_scatter(patch, scale, v_wid, PARAM):
+    """
+    Scatters valves in the domain, but only in a patch.
+
+    Distributed according to an exponential law for their distance. End and
+    beginning of valves (in terms of k) have to be at least `h` apart. First
+    valve starts exactly where the patch starts, last valve finishes exactly
+    where the patch finishes. Valves all have a fixed width.
+
+    Parameters
+    ----------
+    patch : tuple
+        Extrema of the patch, in physical unit.
+    v_wid : float
+        Width of the valve in physical unit.
+    scale : float
+        Mean distance between valves (parameter of exponential law that dictate
+        inter-valve distances).
+    PARAM : dictionnary
+        Parameters dictionnary
+
+    Returns
+    -------
+    v_idx : 1D array
+        Array of the valves indices for the discretization used in `PARAM`.
+    """
+    # Unpack
+    Nx = PARAM['Nx']
+    h_ = PARAM['h_']
+    X = np.arange(0, 1+h_, h_)
+
+    pid1 = np.where(X == min(patch))[0][0] # x index where patch starts
+    pid2 = np.where(X == max(patch))[0][0] # x index where patch ends
+    print(pid1, X[pid1])
+    print(pid2, X[pid2])
+
+    # Initialization
+    v_id = pid1  # first valve starts the patch
+    v_idx = [v_id]
+    prev_end = v_id + v_wid/h_ # end index of the (first) previous valve
+
+    while v_id + 2*v_wid/h_ < pid2: # last valve must be before the closing valve
+        print(v_idx)
+        dist = np.random.exponential(scale)  # draw intervalve distance
+
+        v_id = np.floor(dist/h_) + prev_end  # add valve at dist from end of
+                                             # previous valve
+        v_idx.append(v_id)          # add a new valve to our list
+        prev_end = v_id + v_wid/h_  # change previous valve end to the new one
+
+    v_idx.remove(v_idx[-1]) # remove the last valve
+
+    last_v_id = pid2 - v_wid/h_
+    v_idx.append(last_v_id) # add the closing valve
+    v_idx = np.array(v_idx).astype(int)
 
     return v_idx
 
