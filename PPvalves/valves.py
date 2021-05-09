@@ -1,4 +1,4 @@
-#""" A module to manage valve creation, distribution and action """
+""" A module to manage valve creation, distribution and action """
 
 # Imports
 # =======
