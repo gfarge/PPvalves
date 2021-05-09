@@ -8,10 +8,26 @@ import numpy as np
 # ====
 
 def calc_k(VALVES, PARAM, states_override=None):
-    """
-    Computes k, according to bg k and valve distribution and state.
-    """
+    """Computes permeability k over the domain, according to valve distribution
+    and state.
 
+    Parameters
+    ----------
+    VALVES : dict.
+        Valves parameters dictionnary.
+    PARAM : dict.
+        Physical parameters dictionnary.
+    states_override : 1D array (default `states_override=None`)
+        Valve states for which to plot the pore pressure equilibrium profile,
+        overriding the valve states in `VALVES['open']`. `True` (or 1) is open,
+        `False` (or 0) is closed, dimension of N_valves.
+
+    Returns
+    -------
+    k : 1D array
+        Updated permeability in space. Dimension Nx + 1.
+
+    """
     # Unpack
     h = PARAM['h_']
     Nx = PARAM['Nx']
@@ -21,7 +37,7 @@ def calc_k(VALVES, PARAM, states_override=None):
     v_wid = VALVES['width']
     v_k = VALVES['klo']
 
-    if type(states_override) == type(None):
+    if states_override is None:
         v_open = VALVES['open']
     else:
         v_open = states_override.astype(bool)
@@ -30,27 +46,35 @@ def calc_k(VALVES, PARAM, states_override=None):
     #--> Init
     k = np.ones(Nx+2)*k_bg
 
-    #--> Loop
-    for iv in range(len(v_idx)):
-        if v_open[iv]:
-            pass
-        else:
-    	    k[ v_idx[iv]+1 : int(v_idx[iv] + v_wid[iv]/h + 1) ] = v_k[iv]
+    # Visit every valve that was active and change its permeability to its
+    #  updated value
+    v_iterable = zip(v_open, VALVES['idx'], VALVES['width'],\
+                     VALVES['klo'])
+
+    for v_is_open, idx, w, klo in v_iterable:
+        k[idx+1 : int(idx+w/h+1)] = k_bg*v_is_open + ~v_is_open*klo
 
     return k
 
 # ----------------------------------------------------------------------------
 
 def calc_Q(P, k, PARAM):
-    """
-    Calculates the massic flux in between the input P
-    - Parameters
-    	+ :param P: pore pressure
-    	+ :param k: permeability distribution
-    	+ :param PARAM: dictionnary of the system's characteristic parameters
-    - Outputs
-    	+ :return: Q: The flux calculated everywhere except at the boundaries,
-    	in between values of P.
+    """Calculates q the massic flux in the domain.
+
+    Parameters
+    ----------
+    P : 1D array
+        Pore pressure in the domain, dimension Nx.
+    k : 1D array
+        Permeability in the domain, dimension Nx + 1 (in between pressure
+        points).
+    PARAM : 1D array
+        Dictionnary of the system's physical parameters.
+
+    Returns
+    -------
+    Q : 1D array
+        Massic flux in space,  dimension Nx + 1 (in between pressure points).
 
     """
 
