@@ -1,0 +1,1036 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>PPvalves.mass_balance API documentation</title>
+<meta name="description" content="Compute mass balance in the system, different ways." />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PPvalves.mass_balance</code></h1>
+</header>
+<section id="section-intro">
+<p>Compute mass balance in the system, different ways.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34; Compute mass balance in the system, different ways.&#34;&#34;&#34;
+
+# - TODO -----------------------------------------------------------------
+# - Archive function dflux, simply use in for dm(x), dmdt(x)
+# ------------------------------------------------------------------------
+
+# Imports
+# =======
+
+import numpy as np
+from PPvalves.utility import calc_k, calc_Q
+
+# Core
+# ====
+
+def in_out(IN, PARAM, bounds=False, int_t=True, verbose=False):
+    r&#34;&#34;&#34;
+    Computes the time derivative of the total mass (per unit area) along the
+    domain, at time $t$.
+    \[
+    \frac{dM}{dt}(t) = q_{in}(t) - q_{out}(t).
+    \]
+
+    Parameters
+    ----------
+    IN : ndarray
+        Default : pore-pressure history, dimensions 2D : Nt,Nx. If
+        `bounds=True`, value of the free variable at each bound, dimensions 2D:
+        Nt, 2 (in, out).
+    PARAM : dict
+        Parameters dictionnary.
+    bounds : bool (default=`False`)
+        Option to input value of the free variable at each bound instead of
+        full pore pressure history.
+    int_t : bool, default = False
+        Set to True fo option to compute $\delta M(t)$ instead of
+        $\frac{dM}{dt}(t)$.
+    verbose : bool, default = False
+        Make this function verbose.
+
+    Returns
+    -------
+    deltaM : ndarray (default, for int_t=True)
+        Accumulation in time of total mass per unit area in domain,
+        dimensions: Nt
+    dMdt : ndarray (for int_t=False)
+        Mass accumulation rate in the system in
+        time, dimension : Nt
+
+    &#34;&#34;&#34;
+    # Unpack
+    # ------
+    # --&gt; A clearer name for P/bounds
+    if bounds:
+        bounds_in_t = IN
+    else:
+        P = IN
+    # --&gt; Boundary conditions
+    qin_ = PARAM[&#39;qin_&#39;]
+    qout_ = PARAM[&#39;qout_&#39;]
+    p0_ = PARAM[&#39;p0_&#39;]
+    pL_ = PARAM[&#39;pL_&#39;]
+    hb_ = PARAM[&#39;hb_&#39;]
+    dt_ = PARAM[&#39;dt_&#39;]
+    # --&gt; Physical parameters
+    rho = PARAM[&#39;rho&#39;]
+    mu = PARAM[&#39;mu&#39;]
+    k_bg = PARAM[&#39;k_bg&#39;]
+    # --&gt; Scales
+    X_scale = PARAM[&#39;X_scale&#39;]
+    P_scale = PARAM[&#39;P_scale&#39;]
+    q_scale = PARAM[&#39;q_scale&#39;]
+    T_scale = PARAM[&#39;T_scale&#39;]
+    M_scale = q_scale*T_scale
+
+    # According to boundary, compute in/out flux
+    # ------------------------------------------
+    if np.isnan(qin_) and (not np.isnan(p0_)):
+        # --&gt; Fixed pressure in 0
+        if bounds:
+            qin_ = bounds_in_t[:, 0]
+        else:
+            qin_ = rho*k_bg/mu * (p0_ - P[:, 0])/hb_ * P_scale/X_scale / q_scale
+    elif (not np.isnan(qin_)) and np.isnan(p0_):
+        # --&gt; Fixed flux in 0
+        pass
+    if np.isnan(qout_) and (not np.isnan(pL_)):
+        # --&gt; Fixed pressure in L
+        if bounds:
+            qout_ = bounds_in_t[:, -1]
+        else:
+            qout_ = rho*k_bg/mu * (P[:, -1] - pL_)/hb_ * P_scale/X_scale / q_scale
+    elif (not np.isnan(qout_)) and np.isnan(pL_):
+        # --&gt; Fixed flux in L
+        pass
+
+    # --&gt; dMdt
+    dMdt = (qin_ - qout_) * q_scale*T_scale/M_scale
+
+    if int_t:
+        # --&gt; Compute mass evolution history
+        deltaM = np.cumsum(dMdt*dt_, axis=0)
+        if verbose:
+            print(&#39;mb.in_out -- total mass accumulation in time, deltaM&#39;)
+        return deltaM
+
+    else:
+        # --&gt; Simply output mass derivative in time
+        if verbose:
+            print(&#39;mb.in_out -- total mass accumulation rate in time, dMdt&#39;)
+        return dMdt
+
+#---------------------------------------------------------------------------------
+
+def in_pores(P, PARAM, int_x=True, int_t=True, verbose=False):
+    r&#34;&#34;&#34;
+    Computes the time derivative of volumic mass over the space domain, at
+    time $t$, using:
+    \[
+    \frac{\partial m}{\partial t}(x,t) = \rho\beta\phi \frac{\partial p}{\partial t}(x,t).
+    \]
+
+    Parameters
+    ----------
+    P : ndarray
+        Pore-pressure history, dimensions 2D : Nt,Nx.
+    PARAM : dict
+        Parameters dictionnary.
+    int_x : bool (default=True)
+        Option to integrate over the space domain, to obtain
+        $\frac{dM}{dt}(t)$, the total mass derivative over the domain.
+        True activates it, False (default) deactivates it.
+    int_t : bool (default=True)
+        Option to integrate over the time domain, to obtain
+        $\delta m(x,t)$ (or $\delta M(t)$ if int_x is True),
+        the total mass accumulated from the initial time.
+        True activates it, False (default) deactivates it.
+    verbose : bool (default=False)
+        Option to have the function print which variable it is computing.
+
+    Returns
+    -------
+    deltaM : ndarray (default, for int_x=True,int_t=True)
+        Accumulation in time of total mass per unit area in domain,
+        dimensions: Nt
+    dMdt : ndarray (for int_x=True,int_t=False)
+        Variation in time of total mass per unit area in domain,
+        dimensions: Nt
+    deltam : ndarray (for int_x=False,int_t=True)
+        Accumulation of mass per unit area per unit length of space
+        domain, at each point of space domain, dimensions: Nt,Nx
+    dmdt : ndarray (for int_x=False,int_t=True)
+        Variation in time mass per unit area per unit length of space
+        domain, at each point of space domain, dimensions: Nt,Nx
+
+    &#34;&#34;&#34;
+    # --&gt; Unpack parameters
+    # --&gt;&gt; Physical parameters
+    phi = PARAM[&#39;phi&#39;]
+    rho = PARAM[&#39;rho&#39;]
+    beta = PARAM[&#39;beta&#39;]
+    # --&gt;&gt; Physical scales
+    P_scale = PARAM[&#39;P_scale&#39;]
+    X_scale = PARAM[&#39;X_scale&#39;]
+    T_scale = PARAM[&#39;T_scale&#39;]
+    q_scale = PARAM[&#39;q_scale&#39;]
+    M_scale = q_scale * T_scale
+    # --&gt;&gt; Numerical parameters
+    h_ = PARAM[&#39;h_&#39;]
+    hb_ = PARAM[&#39;hb_&#39;]
+    dt_ = PARAM[&#39;dt_&#39;]
+
+    # --&gt; Compute time derivative of pressure
+    dPdt = (P[1:, :] - P[:-1, :])/dt_
+
+    # --&gt; Compute mass
+    dmdt = rho * beta * phi * dPdt * P_scale/M_scale
+
+    if int_x:
+    # --&gt; Total over x-domain
+        x_steps = np.ones(len(P[0, :])) * h_
+        x_steps[0] = (h_ + hb_)/2
+        x_steps[-1] = (h_ + hb_)/2
+        dMdt = np.sum(dmdt*x_steps, axis=1) * X_scale
+        if int_t:
+        # --&gt;&gt; Total mass accumulation over domain
+            if verbose: print(&#39;mb.in_pores -- computing total mass accumulation in time, deltaM&#39;)
+            deltaM = np.cumsum(dMdt*dt_)
+            return deltaM
+        else:
+        # --&gt;&gt; Variation of total mass over the domain
+            if verbose: print(&#39;mb.in_pores -- computing total mass accumulation rate in time, dMdt&#39;)
+            return dMdt
+    else:
+    # --&gt; Mass x-profile
+        if int_t:
+        # --&gt;&gt; Mass accumulation per unit length for each x, at each t(.
+            if verbose: print(&#39;mb.in_pores -- computing mass accumulation in time, at each point of domain, deltam&#39;)
+            deltam = np.cumsum(dmdt*dt_, axis=0)
+            return deltam
+
+        else:
+        # --&gt;&gt; Variation of mass per unit length for each x, at each t.
+            if verbose: print(&#39;mb.in_pores -- computing mass accumulation rate in time, at each point of domain, dmdt&#39;)
+            return dmdt
+
+#---------------------------------------------------------------------------------
+
+def dflux(P, VALVES, states, PARAM, int_x=True, int_t=True, verbose=False):
+    r&#34;&#34;&#34;
+    Computes the surfacic mass history, using mass balance at each point of
+    the domain.
+
+    Parameters
+    ----------
+    P : ndarray
+        Pore-pressure history, dimensions 2D : Nt,Nx.
+    VALVES : dict
+        Valves dictionnary.
+    states : ndarray
+        Valves state in time, array with boolean-like values: True is
+        open False is closed, dimensions : Nt, Nvalves.
+    PARAM : dict
+        Parameters dictionnary.
+    int_x : bool (default=False)
+        Option to integrate over the space domain, to obtain
+        $\frac{dM}{dt}(t)$, the total mass derivative over the domain.
+        True activates it, False (default) deactivates it.
+    int_t : bool (default=False)
+        Option to integrate over the time domain, to obtain
+        $\delta m(x,t)$ (or $\delta M(t)$ if int_x is True),
+        the total mass accumulated from the initial time.
+        True activates it, False (default) deactivates it.
+    verbose : bool (default=False)
+        Option to have the function print which variable it is computing.
+
+    Returns
+    -------
+    deltaM : ndarray (default, for int_x=True, int_t=True)
+        Mass accumulation in time over the whole space domain,
+        dimensions 1D : Nt
+    dMdt : ndarray (default, for int_x=True, int_t=False)
+        Time derivative of total mass accumulation over the space
+        domain, in time, dimensions 1D : Nt
+    deltam : ndarray (for int_x=False, int_t=True)
+        Accumulation of mass per unit length in time at each point of the
+        domain, dimensions 2D : Nt,Nx
+    dmdt : ndarray (for int_x=False, int_t=False)
+        Time derivative of accumulation of mass per unit length in time
+        at each point of the domain, dimensions 2D : Nt,Nx
+
+    Note:
+    -----
+        This function gives a wrong result: there is a problem with how the
+        mass balance is actually calculated in our
+    &#34;&#34;&#34;
+    # --&gt; Unpack
+    dt_ = PARAM[&#39;dt_&#39;]
+    h_ = PARAM[&#39;h_&#39;]
+    hb_ = PARAM[&#39;h_&#39;]
+    X_scale = PARAM[&#39;X_scale&#39;]
+
+    # --&gt; Initialize
+    Nt = np.shape(P)[0]
+
+    # --&gt; Through time, compute mass increment
+    dmdt = np.zeros((Nt-1, np.shape(P)[1]))
+    for tt in range(Nt-1):
+        # --&gt;&gt; Compute permeability profile as a function of valves
+        #      state
+        k = calc_k(VALVES, PARAM, state_override=states[tt, :])
+
+        # --&gt;&gt; Compute mass increment
+        dmdt[tt,:] = calc_dmdt_dflux(P[tt], P[tt+1], k, PARAM)
+
+    if int_x:
+    # --&gt; Total over x-domain
+        x_steps = np.ones(len(P[0, :])) * h_
+        x_steps[0] = (h_ + hb_)/2
+        x_steps[-1] = (h_ + hb_)/2
+        dMdt = np.sum(dmdt*x_steps, axis=1) * X_scale
+        if int_t:
+        # --&gt;&gt; Total mass accumulation over domain
+            if verbose:
+                print(&#39;mb.dflux -- computing total mass accumulation in time, deltaM&#39;)
+            deltaM = np.cumsum(dMdt*dt_)
+            return deltaM
+        else:
+        # --&gt;&gt; Variation of total mass over the domain
+            if verbose:
+                print(&#39;mb.dflux -- computing total mass accumulation rate in time, dMdt&#39;)
+            return dMdt
+    else:
+    # --&gt; Mass x-profile
+        if int_t:
+        # --&gt;&gt; Mass accumulation per unit length for each x, at each t.
+            if verbose:
+                print(&#39;mb.dflux -- computing mass accumulation in time, at each point of domain, deltam&#39;)
+            deltam = np.cumsum(dmdt*dt_, axis=0)
+            return deltam
+
+        else:
+        # --&gt;&gt; Variation of mass per unit length for each x, at each t.
+            if verbose:
+                print(&#39;mb.dflux -- computing mass accumulation rate in time, at each point of domain, dmdt&#39;)
+            return dmdt
+
+
+#---------------------------------------------------------------------------------
+
+
+def calc_dmdt_dflux(Pprev, Pnext, k, PARAM):
+    r&#34;&#34;&#34;
+    Computes the time derivative of volumic mass over the space domain, at
+    time $t$, using:
+    \[
+    \frac{\partial m}{\partial t}(x,t) = \frac{\partial q}{\partial x}(x,t).
+    \]
+
+    Parameters
+    ----------
+    P : ndarray
+        Pore-pressure history, dimensions 2D : Nt,Nx.
+    k : ndarray
+        Permeability profile, dimension : Nx+1.
+    PARAM : dict
+        Parameters dictionnary.
+
+    Returns
+    -------
+    dmdt : ndarray
+        Time derivative of mass at time t, over the whole space domain,
+        dimension : Nx
+
+    Notes
+    -----
+        This method of computing the mass_balance is much more expensive than
+        the previous ones. It is more or less equivalent to re-run the
+        simulation, and should exactly be equal to the previous functions. Use
+        only for comparison purposes.
+        Implementation of boundary is approximative: only FCTS, not
+        Crank-Nicholson. Difference is marginal as there are no sudden
+        variations in time near boundaries.
+
+    &#34;&#34;&#34;
+    # Unpack parameters
+    # -----------------
+    # --&gt; Physical parameters
+    mu = PARAM[&#39;mu&#39;]
+    rho = PARAM[&#39;rho&#39;]
+    # --&gt; Boundary conditions
+    p0_ = PARAM[&#39;p0_&#39;]
+    pL_ = PARAM[&#39;pL_&#39;]
+    qin_ = PARAM[&#39;qin_&#39;]
+    qout_ = PARAM[&#39;qout_&#39;]
+    # --&gt;&gt; Physical scales
+    P_scale = PARAM[&#39;P_scale&#39;]
+    X_scale = PARAM[&#39;X_scale&#39;]
+    T_scale = PARAM[&#39;T_scale&#39;]
+    q_scale = PARAM[&#39;q_scale&#39;]
+    M_scale = q_scale * T_scale
+    # --&gt;&gt; Numerical parameters
+    h_ = PARAM[&#39;h_&#39;]
+    hb_ = PARAM[&#39;hb_&#39;]
+
+    # Compute dmdt over the domain
+    # ----------------------------
+    dmdt = np.zeros(len(Pnext))
+    # --&gt; Within the domain
+    Qprev = calc_Q(Pprev, k, PARAM)
+    Qnext = calc_Q(Pnext, k, PARAM)
+    Q = (Qnext + Qprev)/2
+    dmdt[1:-1] = (Q[:-1] - Q[1:])/h_ * q_scale/X_scale * T_scale/M_scale
+
+    # --&gt; At boundaries (pbs with variable space step)
+    # --&gt;&gt; Fixed flux in 0
+    if np.isnan(p0_) and (not np.isnan(qin_)):
+        p0_ = Pnext[0] + qin_ * hb_ * mu / rho / k[0] * q_scale*X_scale / P_scale
+        d2pdx2_0 = (h_*p0_ - (h_+hb_)*Pnext[0] + hb_*Pnext[1])\
+                / (h_*hb_ * (h_+hb_)/2)
+        dmdt[0] = d2pdx2_0 * k[0] * rho / mu\
+                  * P_scale/X_scale**2 * T_scale/M_scale
+
+    # --&gt;&gt; Fixed pressure in 0
+    elif (not np.isnan(p0_)) and (np.isnan(qin_)):
+        d2pdx2_0 = (h_*p0_ - (h_+hb_)*Pnext[0] + hb_*Pnext[1])\
+                / (h_*hb_ * (h_+hb_)/2)
+        dmdt[0] = d2pdx2_0 * k[0] * rho / mu\
+                  *P_scale/X_scale**2 * T_scale/M_scale
+
+    # --&gt;&gt; Fixed flux in L
+    if np.isnan(pL_) and (not np.isnan(qout_)):
+        pL_ = Pnext[-1] - qout_ * hb_ * mu / rho / k[-1] * q_scale*X_scale / P_scale
+        d2pdx2_L = (hb_*Pnext[-2] - (h_+hb_)*Pnext[-1] + h_*pL_)\
+                / (h_*hb_ * (h_+hb_)/2)
+        dmdt[-1] = d2pdx2_L * k[-1] * rho / mu\
+                  * P_scale/X_scale**2 * T_scale/M_scale
+    # --&gt;&gt; Fixed pressure in L
+    elif (not np.isnan(pL_)) and (np.isnan(qout_)):
+        d2pdx2_L = (hb_*Pnext[-2] - (h_+hb_)*Pnext[-1] + h_*pL_)\
+                / (h_*hb_ * (h_+hb_)/2)
+        dmdt[-1] = d2pdx2_L * k[-1] * rho / mu\
+                  * P_scale/X_scale**2 * T_scale/M_scale
+
+    return dmdt</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="PPvalves.mass_balance.calc_dmdt_dflux"><code class="name flex">
+<span>def <span class="ident">calc_dmdt_dflux</span></span>(<span>Pprev, Pnext, k, PARAM)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the time derivative of volumic mass over the space domain, at
+time $t$, using:
+[
+\frac{\partial m}{\partial t}(x,t) = \frac{\partial q}{\partial x}(x,t).
+]</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>P</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Pore-pressure history, dimensions 2D : Nt,Nx.</dd>
+<dt><strong><code>k</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Permeability profile, dimension : Nx+1.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Parameters dictionnary.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>dmdt</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Time derivative of mass at time t, over the whole space domain,
+dimension : Nx</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<pre><code>This method of computing the mass_balance is much more expensive than
+the previous ones. It is more or less equivalent to re-run the
+simulation, and should exactly be equal to the previous functions. Use
+only for comparison purposes.
+Implementation of boundary is approximative: only FCTS, not
+Crank-Nicholson. Difference is marginal as there are no sudden
+variations in time near boundaries.
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_dmdt_dflux(Pprev, Pnext, k, PARAM):
+    r&#34;&#34;&#34;
+    Computes the time derivative of volumic mass over the space domain, at
+    time $t$, using:
+    \[
+    \frac{\partial m}{\partial t}(x,t) = \frac{\partial q}{\partial x}(x,t).
+    \]
+
+    Parameters
+    ----------
+    P : ndarray
+        Pore-pressure history, dimensions 2D : Nt,Nx.
+    k : ndarray
+        Permeability profile, dimension : Nx+1.
+    PARAM : dict
+        Parameters dictionnary.
+
+    Returns
+    -------
+    dmdt : ndarray
+        Time derivative of mass at time t, over the whole space domain,
+        dimension : Nx
+
+    Notes
+    -----
+        This method of computing the mass_balance is much more expensive than
+        the previous ones. It is more or less equivalent to re-run the
+        simulation, and should exactly be equal to the previous functions. Use
+        only for comparison purposes.
+        Implementation of boundary is approximative: only FCTS, not
+        Crank-Nicholson. Difference is marginal as there are no sudden
+        variations in time near boundaries.
+
+    &#34;&#34;&#34;
+    # Unpack parameters
+    # -----------------
+    # --&gt; Physical parameters
+    mu = PARAM[&#39;mu&#39;]
+    rho = PARAM[&#39;rho&#39;]
+    # --&gt; Boundary conditions
+    p0_ = PARAM[&#39;p0_&#39;]
+    pL_ = PARAM[&#39;pL_&#39;]
+    qin_ = PARAM[&#39;qin_&#39;]
+    qout_ = PARAM[&#39;qout_&#39;]
+    # --&gt;&gt; Physical scales
+    P_scale = PARAM[&#39;P_scale&#39;]
+    X_scale = PARAM[&#39;X_scale&#39;]
+    T_scale = PARAM[&#39;T_scale&#39;]
+    q_scale = PARAM[&#39;q_scale&#39;]
+    M_scale = q_scale * T_scale
+    # --&gt;&gt; Numerical parameters
+    h_ = PARAM[&#39;h_&#39;]
+    hb_ = PARAM[&#39;hb_&#39;]
+
+    # Compute dmdt over the domain
+    # ----------------------------
+    dmdt = np.zeros(len(Pnext))
+    # --&gt; Within the domain
+    Qprev = calc_Q(Pprev, k, PARAM)
+    Qnext = calc_Q(Pnext, k, PARAM)
+    Q = (Qnext + Qprev)/2
+    dmdt[1:-1] = (Q[:-1] - Q[1:])/h_ * q_scale/X_scale * T_scale/M_scale
+
+    # --&gt; At boundaries (pbs with variable space step)
+    # --&gt;&gt; Fixed flux in 0
+    if np.isnan(p0_) and (not np.isnan(qin_)):
+        p0_ = Pnext[0] + qin_ * hb_ * mu / rho / k[0] * q_scale*X_scale / P_scale
+        d2pdx2_0 = (h_*p0_ - (h_+hb_)*Pnext[0] + hb_*Pnext[1])\
+                / (h_*hb_ * (h_+hb_)/2)
+        dmdt[0] = d2pdx2_0 * k[0] * rho / mu\
+                  * P_scale/X_scale**2 * T_scale/M_scale
+
+    # --&gt;&gt; Fixed pressure in 0
+    elif (not np.isnan(p0_)) and (np.isnan(qin_)):
+        d2pdx2_0 = (h_*p0_ - (h_+hb_)*Pnext[0] + hb_*Pnext[1])\
+                / (h_*hb_ * (h_+hb_)/2)
+        dmdt[0] = d2pdx2_0 * k[0] * rho / mu\
+                  *P_scale/X_scale**2 * T_scale/M_scale
+
+    # --&gt;&gt; Fixed flux in L
+    if np.isnan(pL_) and (not np.isnan(qout_)):
+        pL_ = Pnext[-1] - qout_ * hb_ * mu / rho / k[-1] * q_scale*X_scale / P_scale
+        d2pdx2_L = (hb_*Pnext[-2] - (h_+hb_)*Pnext[-1] + h_*pL_)\
+                / (h_*hb_ * (h_+hb_)/2)
+        dmdt[-1] = d2pdx2_L * k[-1] * rho / mu\
+                  * P_scale/X_scale**2 * T_scale/M_scale
+    # --&gt;&gt; Fixed pressure in L
+    elif (not np.isnan(pL_)) and (np.isnan(qout_)):
+        d2pdx2_L = (hb_*Pnext[-2] - (h_+hb_)*Pnext[-1] + h_*pL_)\
+                / (h_*hb_ * (h_+hb_)/2)
+        dmdt[-1] = d2pdx2_L * k[-1] * rho / mu\
+                  * P_scale/X_scale**2 * T_scale/M_scale
+
+    return dmdt</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.mass_balance.dflux"><code class="name flex">
+<span>def <span class="ident">dflux</span></span>(<span>P, VALVES, states, PARAM, int_x=True, int_t=True, verbose=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the surfacic mass history, using mass balance at each point of
+the domain.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>P</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Pore-pressure history, dimensions 2D : Nt,Nx.</dd>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Valves dictionnary.</dd>
+<dt><strong><code>states</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Valves state in time, array with boolean-like values: True is
+open False is closed, dimensions : Nt, Nvalves.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Parameters dictionnary.</dd>
+<dt><strong><code>int_x</code></strong> :&ensp;<code>bool (default=False)</code></dt>
+<dd>Option to integrate over the space domain, to obtain
+$\frac{dM}{dt}(t)$, the total mass derivative over the domain.
+True activates it, False (default) deactivates it.</dd>
+<dt><strong><code>int_t</code></strong> :&ensp;<code>bool (default=False)</code></dt>
+<dd>Option to integrate over the time domain, to obtain
+$\delta m(x,t)$ (or $\delta M(t)$ if int_x is True),
+the total mass accumulated from the initial time.
+True activates it, False (default) deactivates it.</dd>
+</dl>
+<p>verbose : bool (default=False)
+Option to have the function print which variable it is computing.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>deltaM</code></strong> :&ensp;<code>ndarray (default, for int_x=True, int_t=True)</code></dt>
+<dd>Mass accumulation in time over the whole space domain,
+dimensions 1D : Nt</dd>
+<dt><strong><code>dMdt</code></strong> :&ensp;<code>ndarray (default, for int_x=True, int_t=False)</code></dt>
+<dd>Time derivative of total mass accumulation over the space
+domain, in time, dimensions 1D : Nt</dd>
+<dt><strong><code>deltam</code></strong> :&ensp;<code>ndarray (for int_x=False, int_t=True)</code></dt>
+<dd>Accumulation of mass per unit length in time at each point of the
+domain, dimensions 2D : Nt,Nx</dd>
+<dt><strong><code>dmdt</code></strong> :&ensp;<code>ndarray (for int_x=False, int_t=False)</code></dt>
+<dd>Time derivative of accumulation of mass per unit length in time
+at each point of the domain, dimensions 2D : Nt,Nx</dd>
+</dl>
+<h2 id="note">Note:</h2>
+<pre><code>This function gives a wrong result: there is a problem with how the
+mass balance is actually calculated in our
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dflux(P, VALVES, states, PARAM, int_x=True, int_t=True, verbose=False):
+    r&#34;&#34;&#34;
+    Computes the surfacic mass history, using mass balance at each point of
+    the domain.
+
+    Parameters
+    ----------
+    P : ndarray
+        Pore-pressure history, dimensions 2D : Nt,Nx.
+    VALVES : dict
+        Valves dictionnary.
+    states : ndarray
+        Valves state in time, array with boolean-like values: True is
+        open False is closed, dimensions : Nt, Nvalves.
+    PARAM : dict
+        Parameters dictionnary.
+    int_x : bool (default=False)
+        Option to integrate over the space domain, to obtain
+        $\frac{dM}{dt}(t)$, the total mass derivative over the domain.
+        True activates it, False (default) deactivates it.
+    int_t : bool (default=False)
+        Option to integrate over the time domain, to obtain
+        $\delta m(x,t)$ (or $\delta M(t)$ if int_x is True),
+        the total mass accumulated from the initial time.
+        True activates it, False (default) deactivates it.
+    verbose : bool (default=False)
+        Option to have the function print which variable it is computing.
+
+    Returns
+    -------
+    deltaM : ndarray (default, for int_x=True, int_t=True)
+        Mass accumulation in time over the whole space domain,
+        dimensions 1D : Nt
+    dMdt : ndarray (default, for int_x=True, int_t=False)
+        Time derivative of total mass accumulation over the space
+        domain, in time, dimensions 1D : Nt
+    deltam : ndarray (for int_x=False, int_t=True)
+        Accumulation of mass per unit length in time at each point of the
+        domain, dimensions 2D : Nt,Nx
+    dmdt : ndarray (for int_x=False, int_t=False)
+        Time derivative of accumulation of mass per unit length in time
+        at each point of the domain, dimensions 2D : Nt,Nx
+
+    Note:
+    -----
+        This function gives a wrong result: there is a problem with how the
+        mass balance is actually calculated in our
+    &#34;&#34;&#34;
+    # --&gt; Unpack
+    dt_ = PARAM[&#39;dt_&#39;]
+    h_ = PARAM[&#39;h_&#39;]
+    hb_ = PARAM[&#39;h_&#39;]
+    X_scale = PARAM[&#39;X_scale&#39;]
+
+    # --&gt; Initialize
+    Nt = np.shape(P)[0]
+
+    # --&gt; Through time, compute mass increment
+    dmdt = np.zeros((Nt-1, np.shape(P)[1]))
+    for tt in range(Nt-1):
+        # --&gt;&gt; Compute permeability profile as a function of valves
+        #      state
+        k = calc_k(VALVES, PARAM, state_override=states[tt, :])
+
+        # --&gt;&gt; Compute mass increment
+        dmdt[tt,:] = calc_dmdt_dflux(P[tt], P[tt+1], k, PARAM)
+
+    if int_x:
+    # --&gt; Total over x-domain
+        x_steps = np.ones(len(P[0, :])) * h_
+        x_steps[0] = (h_ + hb_)/2
+        x_steps[-1] = (h_ + hb_)/2
+        dMdt = np.sum(dmdt*x_steps, axis=1) * X_scale
+        if int_t:
+        # --&gt;&gt; Total mass accumulation over domain
+            if verbose:
+                print(&#39;mb.dflux -- computing total mass accumulation in time, deltaM&#39;)
+            deltaM = np.cumsum(dMdt*dt_)
+            return deltaM
+        else:
+        # --&gt;&gt; Variation of total mass over the domain
+            if verbose:
+                print(&#39;mb.dflux -- computing total mass accumulation rate in time, dMdt&#39;)
+            return dMdt
+    else:
+    # --&gt; Mass x-profile
+        if int_t:
+        # --&gt;&gt; Mass accumulation per unit length for each x, at each t.
+            if verbose:
+                print(&#39;mb.dflux -- computing mass accumulation in time, at each point of domain, deltam&#39;)
+            deltam = np.cumsum(dmdt*dt_, axis=0)
+            return deltam
+
+        else:
+        # --&gt;&gt; Variation of mass per unit length for each x, at each t.
+            if verbose:
+                print(&#39;mb.dflux -- computing mass accumulation rate in time, at each point of domain, dmdt&#39;)
+            return dmdt</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.mass_balance.in_out"><code class="name flex">
+<span>def <span class="ident">in_out</span></span>(<span>IN, PARAM, bounds=False, int_t=True, verbose=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the time derivative of the total mass (per unit area) along the
+domain, at time $t$.
+[
+\frac{dM}{dt}(t) = q_{in}(t) - q_{out}(t).
+]</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>IN</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Default : pore-pressure history, dimensions 2D : Nt,Nx. If
+<code>bounds=True</code>, value of the free variable at each bound, dimensions 2D:
+Nt, 2 (in, out).</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Parameters dictionnary.</dd>
+<dt><strong><code>bounds</code></strong> :&ensp;<code>bool (default=</code>False<code>)</code></dt>
+<dd>Option to input value of the free variable at each bound instead of
+full pore pressure history.</dd>
+<dt><strong><code>int_t</code></strong> :&ensp;<code>bool</code>, default <code>= False</code></dt>
+<dd>Set to True fo option to compute $\delta M(t)$ instead of
+$\frac{dM}{dt}(t)$.</dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>bool</code>, default <code>= False</code></dt>
+<dd>Make this function verbose.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>deltaM</code></strong> :&ensp;<code>ndarray (default, for int_t=True)</code></dt>
+<dd>Accumulation in time of total mass per unit area in domain,
+dimensions: Nt</dd>
+<dt><strong><code>dMdt</code></strong> :&ensp;<code>ndarray (for int_t=False)</code></dt>
+<dd>Mass accumulation rate in the system in
+time, dimension : Nt</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def in_out(IN, PARAM, bounds=False, int_t=True, verbose=False):
+    r&#34;&#34;&#34;
+    Computes the time derivative of the total mass (per unit area) along the
+    domain, at time $t$.
+    \[
+    \frac{dM}{dt}(t) = q_{in}(t) - q_{out}(t).
+    \]
+
+    Parameters
+    ----------
+    IN : ndarray
+        Default : pore-pressure history, dimensions 2D : Nt,Nx. If
+        `bounds=True`, value of the free variable at each bound, dimensions 2D:
+        Nt, 2 (in, out).
+    PARAM : dict
+        Parameters dictionnary.
+    bounds : bool (default=`False`)
+        Option to input value of the free variable at each bound instead of
+        full pore pressure history.
+    int_t : bool, default = False
+        Set to True fo option to compute $\delta M(t)$ instead of
+        $\frac{dM}{dt}(t)$.
+    verbose : bool, default = False
+        Make this function verbose.
+
+    Returns
+    -------
+    deltaM : ndarray (default, for int_t=True)
+        Accumulation in time of total mass per unit area in domain,
+        dimensions: Nt
+    dMdt : ndarray (for int_t=False)
+        Mass accumulation rate in the system in
+        time, dimension : Nt
+
+    &#34;&#34;&#34;
+    # Unpack
+    # ------
+    # --&gt; A clearer name for P/bounds
+    if bounds:
+        bounds_in_t = IN
+    else:
+        P = IN
+    # --&gt; Boundary conditions
+    qin_ = PARAM[&#39;qin_&#39;]
+    qout_ = PARAM[&#39;qout_&#39;]
+    p0_ = PARAM[&#39;p0_&#39;]
+    pL_ = PARAM[&#39;pL_&#39;]
+    hb_ = PARAM[&#39;hb_&#39;]
+    dt_ = PARAM[&#39;dt_&#39;]
+    # --&gt; Physical parameters
+    rho = PARAM[&#39;rho&#39;]
+    mu = PARAM[&#39;mu&#39;]
+    k_bg = PARAM[&#39;k_bg&#39;]
+    # --&gt; Scales
+    X_scale = PARAM[&#39;X_scale&#39;]
+    P_scale = PARAM[&#39;P_scale&#39;]
+    q_scale = PARAM[&#39;q_scale&#39;]
+    T_scale = PARAM[&#39;T_scale&#39;]
+    M_scale = q_scale*T_scale
+
+    # According to boundary, compute in/out flux
+    # ------------------------------------------
+    if np.isnan(qin_) and (not np.isnan(p0_)):
+        # --&gt; Fixed pressure in 0
+        if bounds:
+            qin_ = bounds_in_t[:, 0]
+        else:
+            qin_ = rho*k_bg/mu * (p0_ - P[:, 0])/hb_ * P_scale/X_scale / q_scale
+    elif (not np.isnan(qin_)) and np.isnan(p0_):
+        # --&gt; Fixed flux in 0
+        pass
+    if np.isnan(qout_) and (not np.isnan(pL_)):
+        # --&gt; Fixed pressure in L
+        if bounds:
+            qout_ = bounds_in_t[:, -1]
+        else:
+            qout_ = rho*k_bg/mu * (P[:, -1] - pL_)/hb_ * P_scale/X_scale / q_scale
+    elif (not np.isnan(qout_)) and np.isnan(pL_):
+        # --&gt; Fixed flux in L
+        pass
+
+    # --&gt; dMdt
+    dMdt = (qin_ - qout_) * q_scale*T_scale/M_scale
+
+    if int_t:
+        # --&gt; Compute mass evolution history
+        deltaM = np.cumsum(dMdt*dt_, axis=0)
+        if verbose:
+            print(&#39;mb.in_out -- total mass accumulation in time, deltaM&#39;)
+        return deltaM
+
+    else:
+        # --&gt; Simply output mass derivative in time
+        if verbose:
+            print(&#39;mb.in_out -- total mass accumulation rate in time, dMdt&#39;)
+        return dMdt</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.mass_balance.in_pores"><code class="name flex">
+<span>def <span class="ident">in_pores</span></span>(<span>P, PARAM, int_x=True, int_t=True, verbose=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the time derivative of volumic mass over the space domain, at
+time $t$, using:
+[
+\frac{\partial m}{\partial t}(x,t) = \rho\beta\phi \frac{\partial p}{\partial t}(x,t).
+]</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>P</code></strong> :&ensp;<code>ndarray</code></dt>
+<dd>Pore-pressure history, dimensions 2D : Nt,Nx.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Parameters dictionnary.</dd>
+<dt><strong><code>int_x</code></strong> :&ensp;<code>bool (default=True)</code></dt>
+<dd>Option to integrate over the space domain, to obtain
+$\frac{dM}{dt}(t)$, the total mass derivative over the domain.
+True activates it, False (default) deactivates it.</dd>
+<dt><strong><code>int_t</code></strong> :&ensp;<code>bool (default=True)</code></dt>
+<dd>Option to integrate over the time domain, to obtain
+$\delta m(x,t)$ (or $\delta M(t)$ if int_x is True),
+the total mass accumulated from the initial time.
+True activates it, False (default) deactivates it.</dd>
+</dl>
+<p>verbose : bool (default=False)
+Option to have the function print which variable it is computing.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>deltaM</code></strong> :&ensp;<code>ndarray (default, for int_x=True,int_t=True)</code></dt>
+<dd>Accumulation in time of total mass per unit area in domain,
+dimensions: Nt</dd>
+<dt><strong><code>dMdt</code></strong> :&ensp;<code>ndarray (for int_x=True,int_t=False)</code></dt>
+<dd>Variation in time of total mass per unit area in domain,
+dimensions: Nt</dd>
+<dt><strong><code>deltam</code></strong> :&ensp;<code>ndarray (for int_x=False,int_t=True)</code></dt>
+<dd>Accumulation of mass per unit area per unit length of space
+domain, at each point of space domain, dimensions: Nt,Nx</dd>
+<dt><strong><code>dmdt</code></strong> :&ensp;<code>ndarray (for int_x=False,int_t=True)</code></dt>
+<dd>Variation in time mass per unit area per unit length of space
+domain, at each point of space domain, dimensions: Nt,Nx</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def in_pores(P, PARAM, int_x=True, int_t=True, verbose=False):
+    r&#34;&#34;&#34;
+    Computes the time derivative of volumic mass over the space domain, at
+    time $t$, using:
+    \[
+    \frac{\partial m}{\partial t}(x,t) = \rho\beta\phi \frac{\partial p}{\partial t}(x,t).
+    \]
+
+    Parameters
+    ----------
+    P : ndarray
+        Pore-pressure history, dimensions 2D : Nt,Nx.
+    PARAM : dict
+        Parameters dictionnary.
+    int_x : bool (default=True)
+        Option to integrate over the space domain, to obtain
+        $\frac{dM}{dt}(t)$, the total mass derivative over the domain.
+        True activates it, False (default) deactivates it.
+    int_t : bool (default=True)
+        Option to integrate over the time domain, to obtain
+        $\delta m(x,t)$ (or $\delta M(t)$ if int_x is True),
+        the total mass accumulated from the initial time.
+        True activates it, False (default) deactivates it.
+    verbose : bool (default=False)
+        Option to have the function print which variable it is computing.
+
+    Returns
+    -------
+    deltaM : ndarray (default, for int_x=True,int_t=True)
+        Accumulation in time of total mass per unit area in domain,
+        dimensions: Nt
+    dMdt : ndarray (for int_x=True,int_t=False)
+        Variation in time of total mass per unit area in domain,
+        dimensions: Nt
+    deltam : ndarray (for int_x=False,int_t=True)
+        Accumulation of mass per unit area per unit length of space
+        domain, at each point of space domain, dimensions: Nt,Nx
+    dmdt : ndarray (for int_x=False,int_t=True)
+        Variation in time mass per unit area per unit length of space
+        domain, at each point of space domain, dimensions: Nt,Nx
+
+    &#34;&#34;&#34;
+    # --&gt; Unpack parameters
+    # --&gt;&gt; Physical parameters
+    phi = PARAM[&#39;phi&#39;]
+    rho = PARAM[&#39;rho&#39;]
+    beta = PARAM[&#39;beta&#39;]
+    # --&gt;&gt; Physical scales
+    P_scale = PARAM[&#39;P_scale&#39;]
+    X_scale = PARAM[&#39;X_scale&#39;]
+    T_scale = PARAM[&#39;T_scale&#39;]
+    q_scale = PARAM[&#39;q_scale&#39;]
+    M_scale = q_scale * T_scale
+    # --&gt;&gt; Numerical parameters
+    h_ = PARAM[&#39;h_&#39;]
+    hb_ = PARAM[&#39;hb_&#39;]
+    dt_ = PARAM[&#39;dt_&#39;]
+
+    # --&gt; Compute time derivative of pressure
+    dPdt = (P[1:, :] - P[:-1, :])/dt_
+
+    # --&gt; Compute mass
+    dmdt = rho * beta * phi * dPdt * P_scale/M_scale
+
+    if int_x:
+    # --&gt; Total over x-domain
+        x_steps = np.ones(len(P[0, :])) * h_
+        x_steps[0] = (h_ + hb_)/2
+        x_steps[-1] = (h_ + hb_)/2
+        dMdt = np.sum(dmdt*x_steps, axis=1) * X_scale
+        if int_t:
+        # --&gt;&gt; Total mass accumulation over domain
+            if verbose: print(&#39;mb.in_pores -- computing total mass accumulation in time, deltaM&#39;)
+            deltaM = np.cumsum(dMdt*dt_)
+            return deltaM
+        else:
+        # --&gt;&gt; Variation of total mass over the domain
+            if verbose: print(&#39;mb.in_pores -- computing total mass accumulation rate in time, dMdt&#39;)
+            return dMdt
+    else:
+    # --&gt; Mass x-profile
+        if int_t:
+        # --&gt;&gt; Mass accumulation per unit length for each x, at each t(.
+            if verbose: print(&#39;mb.in_pores -- computing mass accumulation in time, at each point of domain, deltam&#39;)
+            deltam = np.cumsum(dmdt*dt_, axis=0)
+            return deltam
+
+        else:
+        # --&gt;&gt; Variation of mass per unit length for each x, at each t.
+            if verbose: print(&#39;mb.in_pores -- computing mass accumulation rate in time, at each point of domain, dmdt&#39;)
+            return dmdt</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PPvalves" href="index.html">PPvalves</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="PPvalves.mass_balance.calc_dmdt_dflux" href="#PPvalves.mass_balance.calc_dmdt_dflux">calc_dmdt_dflux</a></code></li>
+<li><code><a title="PPvalves.mass_balance.dflux" href="#PPvalves.mass_balance.dflux">dflux</a></code></li>
+<li><code><a title="PPvalves.mass_balance.in_out" href="#PPvalves.mass_balance.in_out">in_out</a></code></li>
+<li><code><a title="PPvalves.mass_balance.in_pores" href="#PPvalves.mass_balance.in_pores">in_pores</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

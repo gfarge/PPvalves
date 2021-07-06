@@ -1,0 +1,1295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>PPvalves.equilibrium API documentation</title>
+<meta name="description" content="&#39; Study a system with valves around equilibrium" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PPvalves.equilibrium</code></h1>
+</header>
+<section id="section-intro">
+<p>' Study a system with valves around equilibrium</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#39;&#34;&#34; Study a system with valves around equilibrium &#34;&#34;&#34;
+
+# Imports
+# =======
+import numpy as np
+
+# Core
+# ====
+
+# ------------------------------------------------------------------
+
+def calc_pp_inf(VALVES, PARAM, states_override=None):
+    &#34;&#34;&#34;
+    This functions calculates the equilibrium profile of reduced pore
+    pressure for a given boundary conditions and permeability distribution.
+
+    Parameters
+    ----------
+    PARAM : dictionnary
+        Parameters dictionnary.
+    VALVES : dictionnary
+        Valves dictionnary.
+    states_override : 1D array (default=None)
+        Valve states for which to plot the pore pressure equilibrium profile,
+        overriding the valve states in VALVES[&#39;open&#39;]. True (or 1) is open,
+        False (or 0) is closed, dimension of N_valves.
+    Returns
+    -------
+    P_eq : 1D array
+        Reduced pore pressure equilibrium profile, dimension=PARAM[&#39;Nx&#39;]+1
+
+    Note
+    ----
+    Not implemented yet: all valve open.
+
+    &#34;&#34;&#34;
+    # Unpack parameters
+    # -----------------
+    q_scale = PARAM[&#39;q_scale&#39;]  # massic flux characteristic scale
+    X_scale = PARAM[&#39;X_scale&#39;]  # characteristic length scale
+    P_scale = PARAM[&#39;P_scale&#39;]  # pore pressure characteristic scale
+
+    Nx = PARAM[&#39;Nx&#39;]  # Number of space steps in domain
+    h_ = PARAM[&#39;h_&#39;]  # space step within domain
+    hb_ = PARAM[&#39;hb_&#39;]  # space step between fict. pt. and domain
+    X_ = np.linspace(0, Nx*h_, Nx+1)
+
+    p0_ = PARAM[&#39;p0_&#39;]  # pore pressure in 0
+    pL_ = PARAM[&#39;pL_&#39;]  # pore pressure in L
+    qin_ = PARAM[&#39;qin_&#39;]  # input flux
+    qout_ = PARAM[&#39;qout_&#39;]  # output flux
+
+    k_bg = PARAM[&#39;k_bg&#39;]  # background channel permeability
+    mu = PARAM[&#39;mu&#39;]  # dynamic viscosity of fluid
+    rho = PARAM[&#39;rho&#39;]  # mass per unit volume of fluid
+
+    # Unpack valves
+    # -------------
+    if states_override is None:
+        closed_valves = np.bitwise_not(VALVES[&#39;open&#39;].astype(bool))
+    else:
+        closed_valves = np.bitwise_not(states_override.astype(bool))
+
+    # Deal with case where all valves are open
+    # ----------------------------------------
+    if not any(closed_valves):
+        if np.isnan(qin_) &amp; np.isnan(qout_):
+            dP_ = (p0_ - pL_)  # pressure diff across domain
+            L_ = 1. + 2 * hb_  # domain lenght
+            grad_bg = dP_ / L_  # pressure gradient without a valve
+
+            P_eq = p0_ - (X_+hb_) * grad_bg
+
+        elif np.isnan(p0_) &amp; np.isnan(qout_):
+            print(pL_)
+            L_ = 1. + 2 * hb_
+            dP_ = mu / rho / k_bg * qin_ * L_ * q_scale*X_scale/P_scale
+            p0_ = pL_ + dP_  # pore pressure in 0
+            grad_bg = qin_ * mu / rho / k_bg * q_scale*X_scale/P_scale
+
+            P_eq = p0_ - (X_+hb_)*grad_bg
+
+        return P_eq
+        # ------------------------------------
+
+    # Let&#39;s continue when some valves are closed
+    # ------------------------------------------
+    idx_v = VALVES[&#39;idx&#39;][closed_valves]  # array of valve space indices
+    wid_v = VALVES[&#39;width&#39;][closed_valves]  # array of valve width
+    k_v   = VALVES[&#39;klo&#39;][closed_valves]  # array of closed valve permeability
+    R_v = wid_v/k_v  # array of valve resistivity
+
+    # Compute pressure profile
+    # ------------------------
+    if np.isnan(p0_) &amp; np.isnan(qout_):
+    # --&gt; Flux boundary condition in 0
+    #     pressure boundary condition in L
+    #     --&gt;&gt; Define various parameters
+        L_ = 1. + 2 * hb_
+        dP_ = mu / rho * qin_ * ((L_ - np.sum(wid_v))/k_bg \
+              + np.sum(R_v)) * q_scale*X_scale/P_scale
+        p0_ = pL_ + dP_  # pore pressure in 0
+        grad_bg = qin_ * mu / rho / k_bg * q_scale*X_scale/P_scale
+
+        # --&gt;&gt; Initialize: fill the first empty segment of the domain
+        P_eq = np.zeros(Nx+1)
+        P_eq[:idx_v[0]+1] = p0_ - (X_[:idx_v[0]+1]+hb_) * grad_bg
+
+        for iv in range(len(idx_v)):
+        #       --&gt;&gt; Compute a few quantities
+            idx_v_0 = idx_v[iv] + 1  # first P pt in valve
+            idx_s_0 = int(idx_v[iv] + wid_v[iv]/h_)  # first P pt in next segment
+            if iv+1 &lt; len(idx_v):
+                idx_s_n = idx_v[iv+1]  # last P pt of segment
+            else:
+                idx_s_n = len(X_)-1  # or last point of domain
+
+            p0_ = P_eq[idx_v_0 - 1]
+            v_X_ = np.linspace(h_, wid_v[iv], int(wid_v[iv]/h_))
+            grad_v = qin_ * mu / rho / k_v[iv] * X_scale/P_scale*q_scale
+
+            s_X_ = np.linspace(h_, (idx_s_n - idx_s_0)*h_, idx_s_n - idx_s_0 )
+
+        # --&gt;&gt; Fill a valve
+            P_eq[ idx_v_0 : idx_s_0 + 1] = p0_ - grad_v * v_X_
+        # --&gt;&gt; Fill the following segment
+            p0_ = P_eq[idx_s_0]
+            P_eq[ idx_s_0 + 1 : idx_s_n + 1] = p0_ - grad_bg * s_X_
+
+    elif np.isnan(qin_) &amp; np.isnan(qout_):
+    # --&gt; Pressure boundary conditions
+    #   --&gt;&gt; Define various parameters
+        dP_ = (p0_ - pL_)
+        L_ = 1. + 2 * hb_
+        grad_bg = dP_ / ( (L_ - np.sum(wid_v)) + k_bg * np.sum(wid_v/k_v) )
+
+        # --&gt;&gt; Initialize: fill the first empty segment of the domain
+        P_eq = np.zeros(Nx+1)
+        P_eq[:idx_v[0]+1] = p0_ - (X_[:idx_v[0]+1]+hb_) * grad_bg
+
+        for iv in range(len(idx_v)):
+            # --&gt;&gt; Compute a few quantities
+            idx_v_0 = idx_v[iv] + 1  # first P pt in valve
+            idx_s_0 = int(idx_v[iv] + wid_v[iv]/h_)  # first P pt in next segment
+            if iv+1 &lt; len(idx_v): idx_s_n = idx_v[iv+1]  # last P pt of segment
+            else: idx_s_n = len(X_)-1  # or last point of domain
+
+            p0_ = P_eq[idx_v_0-1]
+            v_X_ = np.linspace(h_, wid_v[iv], int(wid_v[iv]/h_))
+            grad_v = dP_ / ( k_v[iv]/k_bg * (L_ - np.sum(wid_v)) +\
+            k_v[iv] * np.sum(wid_v/k_v) )
+
+            s_X_ = np.linspace(h_,(idx_s_n - idx_s_0)*h_,idx_s_n - idx_s_0 )
+
+            # --&gt;&gt; Fill a valve
+            P_eq[ idx_v_0 : idx_s_0 + 1] = p0_ - grad_v * v_X_
+            # --&gt;&gt; Fill the following segment
+            p0_ = P_eq[idx_s_0]
+            P_eq[ idx_s_0 + 1 : idx_s_n + 1] = p0_ - grad_bg * s_X_
+
+    return P_eq
+
+#---------------------------------------------------------------------------------
+
+def calc_k_eq(VALVES, PARAM, states_override=None, L=None):
+    &#34;&#34;&#34;
+    This function computes the equivalent permeability of a domain with
+    valves, based on the equivalent resistivity formula.
+
+    Parameters
+    ----------
+    VALVES : dictionnary
+        Valves dictionnary.
+    PARAM: dictionnary
+        Physical parameters dictionnary
+    states_override : ndarray, boolean (default=None)
+        Array of valves states: True is open,
+        False is closed. It overrides VALVES[&#39;open&#39;].
+        VALVES. States can be 1D (N_valves length), or 2D (N_time x
+        N_valves). For the latter case, k_eq will be an array of
+        length N_time.
+    L : float (default to `None`)
+        Length of the domain to consider. If not specified, the whole domain
+        length is taken.
+    Returns
+    -------
+    k_eq : float or 1D array
+        Value of equivalent permeability at given time, or in time, depending
+        on shape of states_override.
+    &#34;&#34;&#34;
+    # Unpack physical parameters
+    # --------------------------
+    k_bg = PARAM[&#39;k_bg&#39;]  # background channel permeability
+    if L is None:
+        L_ = 1. + 2*PARAM[&#39;hb_&#39;]  # valves widths and domain widths should have the
+                                  # same scale
+    else:
+        L_ = L
+
+    # Unpack valves parameters
+    # ------------------------
+    wid_v = VALVES[&#39;width&#39;]
+    R_v =  wid_v / VALVES[&#39;klo&#39;]  # hydraulic resistance of the valve
+
+    # Get states
+    # ----------
+    if states_override is None:
+        closed_valves = np.bitwise_not(VALVES[&#39;open&#39;].astype(bool))
+    else:
+        closed_valves = np.bitwise_not(states_override.astype(bool))
+
+    # Compute equivalent hydraulic resistance (sum of restistance of each
+    # segment and valve)
+    # -------------------------------------------------------------------
+    # --&gt; At N_times time steps
+    if len(np.shape(closed_valves)) &gt; 1:
+        N_times = np.shape(closed_valves)[0]
+
+        R_eq = [np.sum(R_v[closed_valves[tt, :]]) \
+                + (L_ - np.sum(wid_v[closed_valves[tt,:]])) / k_bg \
+                for tt in range(N_times)]
+        R_eq = np.array(R_eq)
+
+    # --&gt; For given time step
+    else:
+        R_eq = np.sum(R_v[closed_valves]) \
+              + (L_ - np.sum(wid_v[closed_valves])) / k_bg
+
+    keq = L_ / R_eq  # from equivalent resistance to equivalent permeability
+    return keq
+
+
+#---------------------------------------------------------------------------------
+
+def calc_dP_inf(VALVES, PARAM, states_override=None):
+    &#34;&#34;&#34;
+    Computes the differential of pore pressure between both ends of the domain,
+    at equilibrium in the given valve state.
+
+    Parameters
+    ----------
+    VALVES : dictionnary
+        Valves dictionnary.
+    PARAM: dictionnary
+        Physical parameters dictionnary
+    states_override : ndarray, boolean (default=None)
+        Array of valves states: True is open,
+        False is closed. It overrides VALVES[&#39;open&#39;].
+        VALVES. States can be 1D (N_valves length), or 2D (N_time x
+        N_valves). For the latter case, k_eq will be an array of
+        length N_time.
+    Returns
+    -------
+    dP_inf : float
+        Value of the differential of pore pressure at equilibrium in the input
+        system. Important to note that dP is measured at fictive points.
+    &#34;&#34;&#34;
+    # Unpack physical parameters
+    # --------------------------
+    p0_ = PARAM[&#39;p0_&#39;]  # pore pressure in 0
+    pL_ = PARAM[&#39;pL_&#39;]  # pore pressure in L
+    qin_ = PARAM[&#39;qin_&#39;]  # input flux
+    qout_ = PARAM[&#39;qout_&#39;]  # output flux
+
+    mu = PARAM[&#39;mu&#39;]  # dynamic viscosity of fluid
+    rho = PARAM[&#39;rho&#39;]  # mass per unit volume of fluid
+    k_bg = PARAM[&#39;k_bg&#39;]  # background channel permeability
+
+    hb_ = PARAM[&#39;hb_&#39;]  # space step between fict. pt. and domain
+
+    P_scale = PARAM[&#39;P_scale&#39;]  # pore pressure characteristic scale
+    q_scale = PARAM[&#39;q_scale&#39;]  # massic flux characteristic scale
+    X_scale = PARAM[&#39;X_scale&#39;]  # characteristic length scale
+
+    # Unpack valve parameters
+    # -----------------------
+    if states_override is None:
+        closed_valves = np.bitwise_not(VALVES[&#39;open&#39;].astype(bool))
+    else:
+        closed_valves = np.bitwise_not(states_override.astype(bool))
+
+    wid_v = VALVES[&#39;width&#39;][closed_valves]
+    R_v = wid_v/VALVES[&#39;klo&#39;][closed_valves]
+
+    # Compute dP_inf
+    # --------------
+    L_ = 1 + 2*hb_
+    # --&gt; For &#39;QP&#39; boundary
+    if np.isnan(p0_) &amp; np.isnan(qout_):
+        # --&gt;&gt; Equivalent hydraulic resistance of the system
+        R_eq = [L_ - np.sum(wid_v[closed_valves])/k_bg + np.sum(R_v[closed_valves])]
+        dP_inf = mu / rho * qin_ * R_eq * q_scale*X_scale/P_scale
+
+    # --&gt; For &#39;PP&#39; boundary
+    elif np.isnan(qin_) &amp; np.isnan(qout_):
+        dP_inf = p0_ - pL_
+
+    return dP_inf
+
+#---------------------------------------------------------------------------------
+
+def calc_q_inf(VALVES, PARAM, states_override=None):
+    &#34;&#34;&#34;
+    Computes the massic flux through the system at equilibrium in the given
+    valve state.
+
+    Parameters
+    ----------
+    VALVES : dictionnary
+        Valves dictionnary.
+    PARAM: dictionnary
+        Physical parameters dictionnary
+    states_override : ndarray, boolean (default=None)
+        Array of valves states: True is open,
+        False is closed. It overrides VALVES[&#39;open&#39;].
+        VALVES. States can be 1D (N_valves length), or 2D (N_time x
+        N_valves). For the latter case, k_eq will be an array of
+        length N_time.
+    Returns
+    -------
+    q_inf : float
+        Value of the flux at equilibrium in the input system.
+    &#34;&#34;&#34;
+    # Unpack physical parameters
+    # --------------------------
+    p0_ = PARAM[&#39;p0_&#39;]  # pore pressure in 0
+    pL_ = PARAM[&#39;pL_&#39;]  # pore pressure in L
+    qin_ = PARAM[&#39;qin_&#39;]  # input flux
+    qout_ = PARAM[&#39;qout_&#39;]  # output flux
+
+    mu = PARAM[&#39;mu&#39;]  # dynamic viscosity of fluid
+    rho = PARAM[&#39;rho&#39;]  # mass per unit volume of fluid
+    k_bg = PARAM[&#39;k_bg&#39;]  # background channel permeability
+
+    hb_ = PARAM[&#39;hb_&#39;]  # space step between fict. pt. and domain
+
+    P_scale = PARAM[&#39;P_scale&#39;]  # pore pressure characteristic scale
+    q_scale = PARAM[&#39;q_scale&#39;]  # massic flux characteristic scale
+    X_scale = PARAM[&#39;X_scale&#39;]  # characteristic length scale
+
+    # Unpack valve parameters
+    # -----------------------
+    if states_override is None:
+        closed_valves = np.bitwise_not(VALVES[&#39;open&#39;].astype(bool))
+    else:
+        closed_valves = np.bitwise_not(states_override.astype(bool))
+
+    wid_v = VALVES[&#39;width&#39;][closed_valves]
+    R_v = wid_v/VALVES[&#39;klo&#39;][closed_valves]
+
+    # Compute dP_inf
+    # --------------
+    L_ = 1 + 2*hb_
+    # --&gt; For &#39;QP&#39; boundary
+    if np.isnan(p0_) &amp; np.isnan(qout_):
+        # --&gt;&gt; Equivalent hydraulic resistance of the system
+        q_inf = qin_
+
+    # --&gt; For &#39;PP&#39; boundary
+    elif np.isnan(qin_) &amp; np.isnan(qout_):
+        dP_inf = p0_ - pL_
+        R_eq = ((L_ - np.sum(wid_v))/k_bg + np.sum(R_v)) * X_scale
+        q_inf = rho/mu * dP_inf / R_eq * P_scale/q_scale
+
+    return q_inf
+
+#---------------------------------------------------------------------------------
+
+def calc_dP_crit(idx_v0, VALVES, PARAM, event=&#39;opening&#39;):
+    &#34;&#34;&#34;
+    Computes the critical value of the equilibrium pressure differential across
+    a valve system (taken at fictive points) for which opening (resp. closing)
+    threshold of a given valve v0 is reached. For now, this function is only
+    implemented for event=&#39;opening&#39; when all other valves are closed, and
+    event=&#39;closing&#39; when all other valves are open.
+
+    Parameters
+    ----------
+    idx_v0 : int
+        Index of the valve (python index, from 0 to N valves -1, starting downdip,
+        growing updip).
+    VALVES : dictionnary
+        Valves dictionnary.
+    PARAM: dictionnary
+        Physical parameters dictionnary
+    event : str
+        Type of event for which to compute the critical pressure differential.
+        &#39;opening&#39; for opening event, &#39;closing&#39; for closing event.
+    Returns
+    -------
+    dP_crit : float
+        Critical value of the equilibrium pressure differential across the
+        domain for which opening (resp. closing) threshold is reached.
+    &#34;&#34;&#34;
+    # Unpack physical parameters
+    # --------------------------
+    k_bg = PARAM[&#39;k_bg&#39;]  # background channel permeability
+    L_ = 1 + 2*PARAM[&#39;hb_&#39;]
+
+    wid_v = VALVES[&#39;width&#39;]
+
+    if event == &#39;opening&#39;:
+        dP_thr_v0 = VALVES[&#39;dPhi&#39;][idx_v0]
+        R_v = wid_v/VALVES[&#39;klo&#39;]
+    elif event == &#39;closing&#39;:
+        dP_thr_v0 = VALVES[&#39;dPlo&#39;][idx_v0]
+        R_v = wid_v/k_bg
+
+    # --&gt; For the given valve v0
+    R_v0 = R_v[idx_v0]
+
+    # Actually compute it
+    # -------------------
+    R_bg = (L_ - np.sum(wid_v))/k_bg
+    R_eq = np.sum(R_v) + R_bg  # Equivalent hydraulic resistance
+    dP_crit = dP_thr_v0 * R_eq/R_v0
+
+    return dP_crit
+
+#---------------------------------------------------------------------------------
+
+def calc_q_crit(idx_v0, VALVES, PARAM, event=&#39;opening&#39;):
+    &#34;&#34;&#34;
+    Computes the critical value of the equilibrium flux in a valve system, for
+    which opening (resp.  closing) threshold of a given valve v0 is reached.
+
+    Parameters
+    ----------
+    idx_v0 : int
+        Index of given valve (python index, from 0 to N valves -1, starting
+        downdip, growing updip).
+    VALVES : dictionnary
+        Valves dictionnary.
+    PARAM: dictionnary
+        Physical parameters dictionnary
+    event : str (default=&#39;opening&#39;)
+        Type of event for which to compute the critical flux. &#39;opening&#39; for
+        opening event, &#39;closing&#39; for closing event.
+
+    Returns
+    -------
+    q_crit : float
+        Critical value of the equilibrium flux for which opening (resp.
+        closing) threshold is reached.
+    &#34;&#34;&#34;
+    # Unpack physical parameters
+    # --------------------------
+    q_scale = PARAM[&#39;q_scale&#39;]  # massic flux characteristic scale
+    X_scale = PARAM[&#39;X_scale&#39;]  # characteristic length scale
+    P_scale = PARAM[&#39;P_scale&#39;]  # pore pressure characteristic scale
+
+    rho = PARAM[&#39;rho&#39;]  # mass per unit volume of fluid
+    mu = PARAM[&#39;mu&#39;]  # dynamic viscosity of fluid
+
+
+    # Unpack given valve parameters
+    # -----------------------------
+    wid_v0 = VALVES[&#39;width&#39;][idx_v0]
+    k_v0 = VALVES[&#39;klo&#39;][idx_v0]
+
+    if event == &#39;opening&#39;:
+        dP_thr_v0 = VALVES[&#39;dPhi&#39;][idx_v0]
+        k_v0 = VALVES[&#39;klo&#39;][idx_v0]
+    elif event == &#39;closing&#39;:
+        dP_thr_v0 = VALVES[&#39;dPlo&#39;][idx_v0]
+        k_v0 = PARAM[&#39;k_bg&#39;]
+
+    # Actually compute it
+    # -------------------
+    q_crit = rho/mu * k_v0 / wid_v0 * dP_thr_v0 * P_scale/X_scale/q_scale
+
+    return q_crit
+
+#---------------------------------------------------------------------------------
+
+def calc_k_eff(bounds_eff, PARAM):
+    &#34;&#34;&#34;
+    Computes the effective permeability of the active system in permanent
+    regime.
+
+    Parameters
+    ----------
+    bounds_eff : list
+        Effective value of the free variable (e.g. pressure if flux is fixed,
+        and vice versa) at the input and output boundaries. First input then
+        output in the list.
+    PARAM : dictionnary
+        Parameters dictionnary.
+
+    Returns
+    -------
+    k_eff : float
+        Effective value of permeability.
+
+    Note
+    ----
+    For now, only &#39;QP&#39; and &#39;PP&#39; are implemented.
+    &#34;&#34;&#34;
+    # According to boundary conditions, get cross system delta_p, input flux
+    # and length between boundaries
+    if PARAM[&#39;bound&#39;][0] == &#39;Q&#39;:
+        q_in = PARAM[&#39;qin_&#39;]
+        delta_p = bounds_eff[0]
+    else:
+        q_in = bounds_eff[0]
+        delta_p = PARAM[&#39;p0_&#39;]
+
+    # For now, length scale is going to be 1, no boundary depth taken into
+    # account
+    L = (1 + 2*PARAM[&#39;hb_&#39;])
+
+    # Compute effective permeability
+    k_eff = PARAM[&#39;mu&#39;] / PARAM[&#39;rho&#39;] * L / delta_p * q_in \
+           * PARAM[&#39;X_scale&#39;] / PARAM[&#39;P_scale&#39;] * PARAM[&#39;q_scale&#39;]
+
+    return k_eff</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="PPvalves.equilibrium.calc_dP_crit"><code class="name flex">
+<span>def <span class="ident">calc_dP_crit</span></span>(<span>idx_v0, VALVES, PARAM, event='opening')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the critical value of the equilibrium pressure differential across
+a valve system (taken at fictive points) for which opening (resp. closing)
+threshold of a given valve v0 is reached. For now, this function is only
+implemented for event='opening' when all other valves are closed, and
+event='closing' when all other valves are open.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>idx_v0</code></strong> :&ensp;<code>int</code></dt>
+<dd>Index of the valve (python index, from 0 to N valves -1, starting downdip,
+growing updip).</dd>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valves dictionnary.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Physical parameters dictionnary</dd>
+</dl>
+<p>event : str
+Type of event for which to compute the critical pressure differential.
+'opening' for opening event, 'closing' for closing event.
+Returns</p>
+<hr>
+<dl>
+<dt><strong><code>dP_crit</code></strong> :&ensp;<code>float</code></dt>
+<dd>Critical value of the equilibrium pressure differential across the
+domain for which opening (resp. closing) threshold is reached.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_dP_crit(idx_v0, VALVES, PARAM, event=&#39;opening&#39;):
+    &#34;&#34;&#34;
+    Computes the critical value of the equilibrium pressure differential across
+    a valve system (taken at fictive points) for which opening (resp. closing)
+    threshold of a given valve v0 is reached. For now, this function is only
+    implemented for event=&#39;opening&#39; when all other valves are closed, and
+    event=&#39;closing&#39; when all other valves are open.
+
+    Parameters
+    ----------
+    idx_v0 : int
+        Index of the valve (python index, from 0 to N valves -1, starting downdip,
+        growing updip).
+    VALVES : dictionnary
+        Valves dictionnary.
+    PARAM: dictionnary
+        Physical parameters dictionnary
+    event : str
+        Type of event for which to compute the critical pressure differential.
+        &#39;opening&#39; for opening event, &#39;closing&#39; for closing event.
+    Returns
+    -------
+    dP_crit : float
+        Critical value of the equilibrium pressure differential across the
+        domain for which opening (resp. closing) threshold is reached.
+    &#34;&#34;&#34;
+    # Unpack physical parameters
+    # --------------------------
+    k_bg = PARAM[&#39;k_bg&#39;]  # background channel permeability
+    L_ = 1 + 2*PARAM[&#39;hb_&#39;]
+
+    wid_v = VALVES[&#39;width&#39;]
+
+    if event == &#39;opening&#39;:
+        dP_thr_v0 = VALVES[&#39;dPhi&#39;][idx_v0]
+        R_v = wid_v/VALVES[&#39;klo&#39;]
+    elif event == &#39;closing&#39;:
+        dP_thr_v0 = VALVES[&#39;dPlo&#39;][idx_v0]
+        R_v = wid_v/k_bg
+
+    # --&gt; For the given valve v0
+    R_v0 = R_v[idx_v0]
+
+    # Actually compute it
+    # -------------------
+    R_bg = (L_ - np.sum(wid_v))/k_bg
+    R_eq = np.sum(R_v) + R_bg  # Equivalent hydraulic resistance
+    dP_crit = dP_thr_v0 * R_eq/R_v0
+
+    return dP_crit</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.equilibrium.calc_dP_inf"><code class="name flex">
+<span>def <span class="ident">calc_dP_inf</span></span>(<span>VALVES, PARAM, states_override=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the differential of pore pressure between both ends of the domain,
+at equilibrium in the given valve state.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valves dictionnary.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Physical parameters dictionnary</dd>
+<dt><strong><code>states_override</code></strong> :&ensp;<code>ndarray, boolean (default=None)</code></dt>
+<dd>Array of valves states: True is open,
+False is closed. It overrides VALVES['open'].
+VALVES. States can be 1D (N_valves length), or 2D (N_time x
+N_valves). For the latter case, k_eq will be an array of
+length N_time.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>dP_inf</code></strong> :&ensp;<code>float</code></dt>
+<dd>Value of the differential of pore pressure at equilibrium in the input
+system. Important to note that dP is measured at fictive points.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_dP_inf(VALVES, PARAM, states_override=None):
+    &#34;&#34;&#34;
+    Computes the differential of pore pressure between both ends of the domain,
+    at equilibrium in the given valve state.
+
+    Parameters
+    ----------
+    VALVES : dictionnary
+        Valves dictionnary.
+    PARAM: dictionnary
+        Physical parameters dictionnary
+    states_override : ndarray, boolean (default=None)
+        Array of valves states: True is open,
+        False is closed. It overrides VALVES[&#39;open&#39;].
+        VALVES. States can be 1D (N_valves length), or 2D (N_time x
+        N_valves). For the latter case, k_eq will be an array of
+        length N_time.
+    Returns
+    -------
+    dP_inf : float
+        Value of the differential of pore pressure at equilibrium in the input
+        system. Important to note that dP is measured at fictive points.
+    &#34;&#34;&#34;
+    # Unpack physical parameters
+    # --------------------------
+    p0_ = PARAM[&#39;p0_&#39;]  # pore pressure in 0
+    pL_ = PARAM[&#39;pL_&#39;]  # pore pressure in L
+    qin_ = PARAM[&#39;qin_&#39;]  # input flux
+    qout_ = PARAM[&#39;qout_&#39;]  # output flux
+
+    mu = PARAM[&#39;mu&#39;]  # dynamic viscosity of fluid
+    rho = PARAM[&#39;rho&#39;]  # mass per unit volume of fluid
+    k_bg = PARAM[&#39;k_bg&#39;]  # background channel permeability
+
+    hb_ = PARAM[&#39;hb_&#39;]  # space step between fict. pt. and domain
+
+    P_scale = PARAM[&#39;P_scale&#39;]  # pore pressure characteristic scale
+    q_scale = PARAM[&#39;q_scale&#39;]  # massic flux characteristic scale
+    X_scale = PARAM[&#39;X_scale&#39;]  # characteristic length scale
+
+    # Unpack valve parameters
+    # -----------------------
+    if states_override is None:
+        closed_valves = np.bitwise_not(VALVES[&#39;open&#39;].astype(bool))
+    else:
+        closed_valves = np.bitwise_not(states_override.astype(bool))
+
+    wid_v = VALVES[&#39;width&#39;][closed_valves]
+    R_v = wid_v/VALVES[&#39;klo&#39;][closed_valves]
+
+    # Compute dP_inf
+    # --------------
+    L_ = 1 + 2*hb_
+    # --&gt; For &#39;QP&#39; boundary
+    if np.isnan(p0_) &amp; np.isnan(qout_):
+        # --&gt;&gt; Equivalent hydraulic resistance of the system
+        R_eq = [L_ - np.sum(wid_v[closed_valves])/k_bg + np.sum(R_v[closed_valves])]
+        dP_inf = mu / rho * qin_ * R_eq * q_scale*X_scale/P_scale
+
+    # --&gt; For &#39;PP&#39; boundary
+    elif np.isnan(qin_) &amp; np.isnan(qout_):
+        dP_inf = p0_ - pL_
+
+    return dP_inf</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.equilibrium.calc_k_eff"><code class="name flex">
+<span>def <span class="ident">calc_k_eff</span></span>(<span>bounds_eff, PARAM)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the effective permeability of the active system in permanent
+regime.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>bounds_eff</code></strong> :&ensp;<code>list</code></dt>
+<dd>Effective value of the free variable (e.g. pressure if flux is fixed,
+and vice versa) at the input and output boundaries. First input then
+output in the list.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Parameters dictionnary.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>k_eff</code></strong> :&ensp;<code>float</code></dt>
+<dd>Effective value of permeability.</dd>
+</dl>
+<h2 id="note">Note</h2>
+<p>For now, only 'QP' and 'PP' are implemented.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_k_eff(bounds_eff, PARAM):
+    &#34;&#34;&#34;
+    Computes the effective permeability of the active system in permanent
+    regime.
+
+    Parameters
+    ----------
+    bounds_eff : list
+        Effective value of the free variable (e.g. pressure if flux is fixed,
+        and vice versa) at the input and output boundaries. First input then
+        output in the list.
+    PARAM : dictionnary
+        Parameters dictionnary.
+
+    Returns
+    -------
+    k_eff : float
+        Effective value of permeability.
+
+    Note
+    ----
+    For now, only &#39;QP&#39; and &#39;PP&#39; are implemented.
+    &#34;&#34;&#34;
+    # According to boundary conditions, get cross system delta_p, input flux
+    # and length between boundaries
+    if PARAM[&#39;bound&#39;][0] == &#39;Q&#39;:
+        q_in = PARAM[&#39;qin_&#39;]
+        delta_p = bounds_eff[0]
+    else:
+        q_in = bounds_eff[0]
+        delta_p = PARAM[&#39;p0_&#39;]
+
+    # For now, length scale is going to be 1, no boundary depth taken into
+    # account
+    L = (1 + 2*PARAM[&#39;hb_&#39;])
+
+    # Compute effective permeability
+    k_eff = PARAM[&#39;mu&#39;] / PARAM[&#39;rho&#39;] * L / delta_p * q_in \
+           * PARAM[&#39;X_scale&#39;] / PARAM[&#39;P_scale&#39;] * PARAM[&#39;q_scale&#39;]
+
+    return k_eff</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.equilibrium.calc_k_eq"><code class="name flex">
+<span>def <span class="ident">calc_k_eq</span></span>(<span>VALVES, PARAM, states_override=None, L=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This function computes the equivalent permeability of a domain with
+valves, based on the equivalent resistivity formula.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valves dictionnary.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Physical parameters dictionnary</dd>
+<dt><strong><code>states_override</code></strong> :&ensp;<code>ndarray, boolean (default=None)</code></dt>
+<dd>Array of valves states: True is open,
+False is closed. It overrides VALVES['open'].
+VALVES. States can be 1D (N_valves length), or 2D (N_time x
+N_valves). For the latter case, k_eq will be an array of
+length N_time.</dd>
+<dt><strong><code>L</code></strong> :&ensp;<code>float (default to </code>None<code>)</code></dt>
+<dd>Length of the domain to consider. If not specified, the whole domain
+length is taken.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>k_eq</code></strong> :&ensp;<code>float</code> or <code>1D array</code></dt>
+<dd>Value of equivalent permeability at given time, or in time, depending
+on shape of states_override.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_k_eq(VALVES, PARAM, states_override=None, L=None):
+    &#34;&#34;&#34;
+    This function computes the equivalent permeability of a domain with
+    valves, based on the equivalent resistivity formula.
+
+    Parameters
+    ----------
+    VALVES : dictionnary
+        Valves dictionnary.
+    PARAM: dictionnary
+        Physical parameters dictionnary
+    states_override : ndarray, boolean (default=None)
+        Array of valves states: True is open,
+        False is closed. It overrides VALVES[&#39;open&#39;].
+        VALVES. States can be 1D (N_valves length), or 2D (N_time x
+        N_valves). For the latter case, k_eq will be an array of
+        length N_time.
+    L : float (default to `None`)
+        Length of the domain to consider. If not specified, the whole domain
+        length is taken.
+    Returns
+    -------
+    k_eq : float or 1D array
+        Value of equivalent permeability at given time, or in time, depending
+        on shape of states_override.
+    &#34;&#34;&#34;
+    # Unpack physical parameters
+    # --------------------------
+    k_bg = PARAM[&#39;k_bg&#39;]  # background channel permeability
+    if L is None:
+        L_ = 1. + 2*PARAM[&#39;hb_&#39;]  # valves widths and domain widths should have the
+                                  # same scale
+    else:
+        L_ = L
+
+    # Unpack valves parameters
+    # ------------------------
+    wid_v = VALVES[&#39;width&#39;]
+    R_v =  wid_v / VALVES[&#39;klo&#39;]  # hydraulic resistance of the valve
+
+    # Get states
+    # ----------
+    if states_override is None:
+        closed_valves = np.bitwise_not(VALVES[&#39;open&#39;].astype(bool))
+    else:
+        closed_valves = np.bitwise_not(states_override.astype(bool))
+
+    # Compute equivalent hydraulic resistance (sum of restistance of each
+    # segment and valve)
+    # -------------------------------------------------------------------
+    # --&gt; At N_times time steps
+    if len(np.shape(closed_valves)) &gt; 1:
+        N_times = np.shape(closed_valves)[0]
+
+        R_eq = [np.sum(R_v[closed_valves[tt, :]]) \
+                + (L_ - np.sum(wid_v[closed_valves[tt,:]])) / k_bg \
+                for tt in range(N_times)]
+        R_eq = np.array(R_eq)
+
+    # --&gt; For given time step
+    else:
+        R_eq = np.sum(R_v[closed_valves]) \
+              + (L_ - np.sum(wid_v[closed_valves])) / k_bg
+
+    keq = L_ / R_eq  # from equivalent resistance to equivalent permeability
+    return keq</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.equilibrium.calc_pp_inf"><code class="name flex">
+<span>def <span class="ident">calc_pp_inf</span></span>(<span>VALVES, PARAM, states_override=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This functions calculates the equilibrium profile of reduced pore
+pressure for a given boundary conditions and permeability distribution.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Parameters dictionnary.</dd>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valves dictionnary.</dd>
+<dt><strong><code>states_override</code></strong> :&ensp;<code>1D array (default=None)</code></dt>
+<dd>Valve states for which to plot the pore pressure equilibrium profile,
+overriding the valve states in VALVES['open']. True (or 1) is open,
+False (or 0) is closed, dimension of N_valves.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>P_eq : 1D array</code></dt>
+<dd>Reduced pore pressure equilibrium profile, dimension=PARAM['Nx']+1</dd>
+</dl>
+<h2 id="note">Note</h2>
+<p>Not implemented yet: all valve open.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_pp_inf(VALVES, PARAM, states_override=None):
+    &#34;&#34;&#34;
+    This functions calculates the equilibrium profile of reduced pore
+    pressure for a given boundary conditions and permeability distribution.
+
+    Parameters
+    ----------
+    PARAM : dictionnary
+        Parameters dictionnary.
+    VALVES : dictionnary
+        Valves dictionnary.
+    states_override : 1D array (default=None)
+        Valve states for which to plot the pore pressure equilibrium profile,
+        overriding the valve states in VALVES[&#39;open&#39;]. True (or 1) is open,
+        False (or 0) is closed, dimension of N_valves.
+    Returns
+    -------
+    P_eq : 1D array
+        Reduced pore pressure equilibrium profile, dimension=PARAM[&#39;Nx&#39;]+1
+
+    Note
+    ----
+    Not implemented yet: all valve open.
+
+    &#34;&#34;&#34;
+    # Unpack parameters
+    # -----------------
+    q_scale = PARAM[&#39;q_scale&#39;]  # massic flux characteristic scale
+    X_scale = PARAM[&#39;X_scale&#39;]  # characteristic length scale
+    P_scale = PARAM[&#39;P_scale&#39;]  # pore pressure characteristic scale
+
+    Nx = PARAM[&#39;Nx&#39;]  # Number of space steps in domain
+    h_ = PARAM[&#39;h_&#39;]  # space step within domain
+    hb_ = PARAM[&#39;hb_&#39;]  # space step between fict. pt. and domain
+    X_ = np.linspace(0, Nx*h_, Nx+1)
+
+    p0_ = PARAM[&#39;p0_&#39;]  # pore pressure in 0
+    pL_ = PARAM[&#39;pL_&#39;]  # pore pressure in L
+    qin_ = PARAM[&#39;qin_&#39;]  # input flux
+    qout_ = PARAM[&#39;qout_&#39;]  # output flux
+
+    k_bg = PARAM[&#39;k_bg&#39;]  # background channel permeability
+    mu = PARAM[&#39;mu&#39;]  # dynamic viscosity of fluid
+    rho = PARAM[&#39;rho&#39;]  # mass per unit volume of fluid
+
+    # Unpack valves
+    # -------------
+    if states_override is None:
+        closed_valves = np.bitwise_not(VALVES[&#39;open&#39;].astype(bool))
+    else:
+        closed_valves = np.bitwise_not(states_override.astype(bool))
+
+    # Deal with case where all valves are open
+    # ----------------------------------------
+    if not any(closed_valves):
+        if np.isnan(qin_) &amp; np.isnan(qout_):
+            dP_ = (p0_ - pL_)  # pressure diff across domain
+            L_ = 1. + 2 * hb_  # domain lenght
+            grad_bg = dP_ / L_  # pressure gradient without a valve
+
+            P_eq = p0_ - (X_+hb_) * grad_bg
+
+        elif np.isnan(p0_) &amp; np.isnan(qout_):
+            print(pL_)
+            L_ = 1. + 2 * hb_
+            dP_ = mu / rho / k_bg * qin_ * L_ * q_scale*X_scale/P_scale
+            p0_ = pL_ + dP_  # pore pressure in 0
+            grad_bg = qin_ * mu / rho / k_bg * q_scale*X_scale/P_scale
+
+            P_eq = p0_ - (X_+hb_)*grad_bg
+
+        return P_eq
+        # ------------------------------------
+
+    # Let&#39;s continue when some valves are closed
+    # ------------------------------------------
+    idx_v = VALVES[&#39;idx&#39;][closed_valves]  # array of valve space indices
+    wid_v = VALVES[&#39;width&#39;][closed_valves]  # array of valve width
+    k_v   = VALVES[&#39;klo&#39;][closed_valves]  # array of closed valve permeability
+    R_v = wid_v/k_v  # array of valve resistivity
+
+    # Compute pressure profile
+    # ------------------------
+    if np.isnan(p0_) &amp; np.isnan(qout_):
+    # --&gt; Flux boundary condition in 0
+    #     pressure boundary condition in L
+    #     --&gt;&gt; Define various parameters
+        L_ = 1. + 2 * hb_
+        dP_ = mu / rho * qin_ * ((L_ - np.sum(wid_v))/k_bg \
+              + np.sum(R_v)) * q_scale*X_scale/P_scale
+        p0_ = pL_ + dP_  # pore pressure in 0
+        grad_bg = qin_ * mu / rho / k_bg * q_scale*X_scale/P_scale
+
+        # --&gt;&gt; Initialize: fill the first empty segment of the domain
+        P_eq = np.zeros(Nx+1)
+        P_eq[:idx_v[0]+1] = p0_ - (X_[:idx_v[0]+1]+hb_) * grad_bg
+
+        for iv in range(len(idx_v)):
+        #       --&gt;&gt; Compute a few quantities
+            idx_v_0 = idx_v[iv] + 1  # first P pt in valve
+            idx_s_0 = int(idx_v[iv] + wid_v[iv]/h_)  # first P pt in next segment
+            if iv+1 &lt; len(idx_v):
+                idx_s_n = idx_v[iv+1]  # last P pt of segment
+            else:
+                idx_s_n = len(X_)-1  # or last point of domain
+
+            p0_ = P_eq[idx_v_0 - 1]
+            v_X_ = np.linspace(h_, wid_v[iv], int(wid_v[iv]/h_))
+            grad_v = qin_ * mu / rho / k_v[iv] * X_scale/P_scale*q_scale
+
+            s_X_ = np.linspace(h_, (idx_s_n - idx_s_0)*h_, idx_s_n - idx_s_0 )
+
+        # --&gt;&gt; Fill a valve
+            P_eq[ idx_v_0 : idx_s_0 + 1] = p0_ - grad_v * v_X_
+        # --&gt;&gt; Fill the following segment
+            p0_ = P_eq[idx_s_0]
+            P_eq[ idx_s_0 + 1 : idx_s_n + 1] = p0_ - grad_bg * s_X_
+
+    elif np.isnan(qin_) &amp; np.isnan(qout_):
+    # --&gt; Pressure boundary conditions
+    #   --&gt;&gt; Define various parameters
+        dP_ = (p0_ - pL_)
+        L_ = 1. + 2 * hb_
+        grad_bg = dP_ / ( (L_ - np.sum(wid_v)) + k_bg * np.sum(wid_v/k_v) )
+
+        # --&gt;&gt; Initialize: fill the first empty segment of the domain
+        P_eq = np.zeros(Nx+1)
+        P_eq[:idx_v[0]+1] = p0_ - (X_[:idx_v[0]+1]+hb_) * grad_bg
+
+        for iv in range(len(idx_v)):
+            # --&gt;&gt; Compute a few quantities
+            idx_v_0 = idx_v[iv] + 1  # first P pt in valve
+            idx_s_0 = int(idx_v[iv] + wid_v[iv]/h_)  # first P pt in next segment
+            if iv+1 &lt; len(idx_v): idx_s_n = idx_v[iv+1]  # last P pt of segment
+            else: idx_s_n = len(X_)-1  # or last point of domain
+
+            p0_ = P_eq[idx_v_0-1]
+            v_X_ = np.linspace(h_, wid_v[iv], int(wid_v[iv]/h_))
+            grad_v = dP_ / ( k_v[iv]/k_bg * (L_ - np.sum(wid_v)) +\
+            k_v[iv] * np.sum(wid_v/k_v) )
+
+            s_X_ = np.linspace(h_,(idx_s_n - idx_s_0)*h_,idx_s_n - idx_s_0 )
+
+            # --&gt;&gt; Fill a valve
+            P_eq[ idx_v_0 : idx_s_0 + 1] = p0_ - grad_v * v_X_
+            # --&gt;&gt; Fill the following segment
+            p0_ = P_eq[idx_s_0]
+            P_eq[ idx_s_0 + 1 : idx_s_n + 1] = p0_ - grad_bg * s_X_
+
+    return P_eq</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.equilibrium.calc_q_crit"><code class="name flex">
+<span>def <span class="ident">calc_q_crit</span></span>(<span>idx_v0, VALVES, PARAM, event='opening')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the critical value of the equilibrium flux in a valve system, for
+which opening (resp.
+closing) threshold of a given valve v0 is reached.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>idx_v0</code></strong> :&ensp;<code>int</code></dt>
+<dd>Index of given valve (python index, from 0 to N valves -1, starting
+downdip, growing updip).</dd>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valves dictionnary.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Physical parameters dictionnary</dd>
+</dl>
+<p>event : str (default='opening')
+Type of event for which to compute the critical flux. 'opening' for
+opening event, 'closing' for closing event.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>q_crit</code></strong> :&ensp;<code>float</code></dt>
+<dd>Critical value of the equilibrium flux for which opening (resp.
+closing) threshold is reached.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_q_crit(idx_v0, VALVES, PARAM, event=&#39;opening&#39;):
+    &#34;&#34;&#34;
+    Computes the critical value of the equilibrium flux in a valve system, for
+    which opening (resp.  closing) threshold of a given valve v0 is reached.
+
+    Parameters
+    ----------
+    idx_v0 : int
+        Index of given valve (python index, from 0 to N valves -1, starting
+        downdip, growing updip).
+    VALVES : dictionnary
+        Valves dictionnary.
+    PARAM: dictionnary
+        Physical parameters dictionnary
+    event : str (default=&#39;opening&#39;)
+        Type of event for which to compute the critical flux. &#39;opening&#39; for
+        opening event, &#39;closing&#39; for closing event.
+
+    Returns
+    -------
+    q_crit : float
+        Critical value of the equilibrium flux for which opening (resp.
+        closing) threshold is reached.
+    &#34;&#34;&#34;
+    # Unpack physical parameters
+    # --------------------------
+    q_scale = PARAM[&#39;q_scale&#39;]  # massic flux characteristic scale
+    X_scale = PARAM[&#39;X_scale&#39;]  # characteristic length scale
+    P_scale = PARAM[&#39;P_scale&#39;]  # pore pressure characteristic scale
+
+    rho = PARAM[&#39;rho&#39;]  # mass per unit volume of fluid
+    mu = PARAM[&#39;mu&#39;]  # dynamic viscosity of fluid
+
+
+    # Unpack given valve parameters
+    # -----------------------------
+    wid_v0 = VALVES[&#39;width&#39;][idx_v0]
+    k_v0 = VALVES[&#39;klo&#39;][idx_v0]
+
+    if event == &#39;opening&#39;:
+        dP_thr_v0 = VALVES[&#39;dPhi&#39;][idx_v0]
+        k_v0 = VALVES[&#39;klo&#39;][idx_v0]
+    elif event == &#39;closing&#39;:
+        dP_thr_v0 = VALVES[&#39;dPlo&#39;][idx_v0]
+        k_v0 = PARAM[&#39;k_bg&#39;]
+
+    # Actually compute it
+    # -------------------
+    q_crit = rho/mu * k_v0 / wid_v0 * dP_thr_v0 * P_scale/X_scale/q_scale
+
+    return q_crit</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.equilibrium.calc_q_inf"><code class="name flex">
+<span>def <span class="ident">calc_q_inf</span></span>(<span>VALVES, PARAM, states_override=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the massic flux through the system at equilibrium in the given
+valve state.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valves dictionnary.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Physical parameters dictionnary</dd>
+<dt><strong><code>states_override</code></strong> :&ensp;<code>ndarray, boolean (default=None)</code></dt>
+<dd>Array of valves states: True is open,
+False is closed. It overrides VALVES['open'].
+VALVES. States can be 1D (N_valves length), or 2D (N_time x
+N_valves). For the latter case, k_eq will be an array of
+length N_time.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>q_inf</code></strong> :&ensp;<code>float</code></dt>
+<dd>Value of the flux at equilibrium in the input system.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_q_inf(VALVES, PARAM, states_override=None):
+    &#34;&#34;&#34;
+    Computes the massic flux through the system at equilibrium in the given
+    valve state.
+
+    Parameters
+    ----------
+    VALVES : dictionnary
+        Valves dictionnary.
+    PARAM: dictionnary
+        Physical parameters dictionnary
+    states_override : ndarray, boolean (default=None)
+        Array of valves states: True is open,
+        False is closed. It overrides VALVES[&#39;open&#39;].
+        VALVES. States can be 1D (N_valves length), or 2D (N_time x
+        N_valves). For the latter case, k_eq will be an array of
+        length N_time.
+    Returns
+    -------
+    q_inf : float
+        Value of the flux at equilibrium in the input system.
+    &#34;&#34;&#34;
+    # Unpack physical parameters
+    # --------------------------
+    p0_ = PARAM[&#39;p0_&#39;]  # pore pressure in 0
+    pL_ = PARAM[&#39;pL_&#39;]  # pore pressure in L
+    qin_ = PARAM[&#39;qin_&#39;]  # input flux
+    qout_ = PARAM[&#39;qout_&#39;]  # output flux
+
+    mu = PARAM[&#39;mu&#39;]  # dynamic viscosity of fluid
+    rho = PARAM[&#39;rho&#39;]  # mass per unit volume of fluid
+    k_bg = PARAM[&#39;k_bg&#39;]  # background channel permeability
+
+    hb_ = PARAM[&#39;hb_&#39;]  # space step between fict. pt. and domain
+
+    P_scale = PARAM[&#39;P_scale&#39;]  # pore pressure characteristic scale
+    q_scale = PARAM[&#39;q_scale&#39;]  # massic flux characteristic scale
+    X_scale = PARAM[&#39;X_scale&#39;]  # characteristic length scale
+
+    # Unpack valve parameters
+    # -----------------------
+    if states_override is None:
+        closed_valves = np.bitwise_not(VALVES[&#39;open&#39;].astype(bool))
+    else:
+        closed_valves = np.bitwise_not(states_override.astype(bool))
+
+    wid_v = VALVES[&#39;width&#39;][closed_valves]
+    R_v = wid_v/VALVES[&#39;klo&#39;][closed_valves]
+
+    # Compute dP_inf
+    # --------------
+    L_ = 1 + 2*hb_
+    # --&gt; For &#39;QP&#39; boundary
+    if np.isnan(p0_) &amp; np.isnan(qout_):
+        # --&gt;&gt; Equivalent hydraulic resistance of the system
+        q_inf = qin_
+
+    # --&gt; For &#39;PP&#39; boundary
+    elif np.isnan(qin_) &amp; np.isnan(qout_):
+        dP_inf = p0_ - pL_
+        R_eq = ((L_ - np.sum(wid_v))/k_bg + np.sum(R_v)) * X_scale
+        q_inf = rho/mu * dP_inf / R_eq * P_scale/q_scale
+
+    return q_inf</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PPvalves" href="index.html">PPvalves</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="PPvalves.equilibrium.calc_dP_crit" href="#PPvalves.equilibrium.calc_dP_crit">calc_dP_crit</a></code></li>
+<li><code><a title="PPvalves.equilibrium.calc_dP_inf" href="#PPvalves.equilibrium.calc_dP_inf">calc_dP_inf</a></code></li>
+<li><code><a title="PPvalves.equilibrium.calc_k_eff" href="#PPvalves.equilibrium.calc_k_eff">calc_k_eff</a></code></li>
+<li><code><a title="PPvalves.equilibrium.calc_k_eq" href="#PPvalves.equilibrium.calc_k_eq">calc_k_eq</a></code></li>
+<li><code><a title="PPvalves.equilibrium.calc_pp_inf" href="#PPvalves.equilibrium.calc_pp_inf">calc_pp_inf</a></code></li>
+<li><code><a title="PPvalves.equilibrium.calc_q_crit" href="#PPvalves.equilibrium.calc_q_crit">calc_q_crit</a></code></li>
+<li><code><a title="PPvalves.equilibrium.calc_q_inf" href="#PPvalves.equilibrium.calc_q_inf">calc_q_inf</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

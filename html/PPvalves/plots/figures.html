@@ -1,0 +1,2437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>PPvalves.plots.figures API documentation</title>
+<meta name="description" content="Plot full figures" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PPvalves.plots.figures</code></h1>
+</header>
+<section id="section-intro">
+<p>Plot full figures</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34; Plot full figures &#34;&#34;&#34;
+
+# Imports
+# =======
+# Built-in packages
+# -----------------
+import numpy as np
+
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+from matplotlib import ticker
+from matplotlib.gridspec import GridSpec
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.colors import to_rgba
+from matplotlib import ticker as tk
+
+
+
+# My packages
+# -----------
+from PPvalves.plots.utility import set_plot_params
+from PPvalves.plots.elements import valves, q_profile, pp_profile, bounds, \
+                                    bound_gauge, recurrence, activity_dip, \
+                                    perm_eq, activity_rate, mass_balance, \
+                                    bound_in
+
+from PPvalves.utility import calc_k, calc_Q
+import PPvalves.equilibrium as equi
+import PPvalves.catalog as cat
+
+
+# Core
+# ====
+
+# ------------------------------------------------------------------
+
+def x_profile(X, P, PARAM, VALVES, states_override=None, plot_params={}, save_name=None):
+    &#34;&#34;&#34;
+    Plot profile of pore pressure, flux and valve states and positions at a
+    given time on an existing figure and axes.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space position array.
+    P : 1D array
+        Pore pressure in space array, at plot time, same dimension as X.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    VALVES : dictionnary
+        Valve parameters dictionnary. VALVES[&#39;open&#39;] is used for valve states
+        if states_override is not specified.
+    states_override : 1D array (default to None)
+        Boolean array overriding VALVE[&#39;open&#39;] to plot states. Each element is
+        the state of a valve, True is open, False is closed. Dimension Nvalves.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    plot_params : dictionnary (default is {}, empty dic.)
+        a dictionnary of plotting parameters for the pore pressure profile,
+        flux profile and valves. See pp_profile, q_profile, and valves
+        functions of this module for respective paramaters.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    g_objs : list
+        List of matplotlib objects corresponding to pore pressure profile line,
+        flux profile line and valves patch collection.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    fig, ax_q = plt.subplots(figsize=(8, 3.5))
+
+    # --&gt; Add another axis for p, and switch location of labels
+    ax_p = ax_q.twinx()
+    ax_p.tick_params(left=True, labelleft=True,
+                     right=False, labelright=False)
+    ax_q.tick_params(left=False, labelleft=False,
+                     right=True, labelright=True)
+    ax_p.yaxis.set_label_position(&#34;left&#34;)
+
+    # Plot pore pressure profile
+    # --------------------------
+    pp_line = pp_profile(X, P, fig=fig, ax=ax_p,
+                         plot_params=plot_params)
+
+    # Compute and plot flux profile
+    # -----------------------------
+    k = calc_k(VALVES, PARAM, states_override=states_override)
+    Q = calc_Q(P, k, PARAM)
+    q_line = q_profile(X, Q, fig=fig, ax=ax_q,
+                       plot_params=plot_params)
+    ax_q.yaxis.set_label_position(&#34;right&#34;)
+    ax_q.set_ylim((-.2, 1))
+
+    # Plot valves
+    # -----------
+    valves_pc, v_op_pc, v_cl_pc = valves(X, VALVES,
+                                         states_override=states_override,
+                                         fig=fig, ax=ax_q,
+                                         plot_params=plot_params)
+
+    #    ax_p.set_title(&#39;State of the system at t={:.2f}&#39;.format(t_plot))
+
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    axes = [ax_p, ax_q]
+    g_objs = [pp_line, q_line, valves_pc, v_op_pc, v_cl_pc]
+
+    return fig, axes, g_objs
+
+
+# ----------------------------------------------------------------------------
+
+def init(X, p0, states0, VALVES, PARAM, plot_params={}, save_name=None):
+    &#34;&#34;&#34;
+    Plot the initial and boundary conditions: pore pressure profile, boundary
+    conditions values, valve states at t=0 and gauge of input boundary value.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space array, dimension PARAM[&#39;Nx&#39;] + 1.
+    p0 : 1D array
+        Initial profile of pore pressure. Same dimension as X.
+    states0 : 1D array, boolean
+        Initial state of valves: True is open, False is closed. Dimension is
+        the number of valves.
+    VALVES : dictionnary
+        Valve parameters dictionnary.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : axes object from matplotlib.
+        The axes created in this function.
+    &#34;&#34;&#34;
+    # Initialize figure layout
+    # ------------------------
+    fig = plt.figure(figsize=(8, 3.5))
+    gs = GridSpec(1, 8, figure=fig)
+    fig.subplots_adjust(wspace=0.05)
+
+    ax_pp = fig.add_subplot(gs[:, :7])
+    ax_b = fig.add_subplot(gs[:, 7:])
+
+    ax_pp.set_title(&#39;Initial state and boundary conditions&#39;)
+
+
+    # Ticks and label parameters
+    # --------------------------
+    ax_b.tick_params(left=False, labelleft=False,
+                     right=True, labelright=True,
+                     bottom=False, labelbottom=False)
+
+    # Plot inital system state
+    # -------------------------
+    pp_profile(X, p0, fig=fig, ax=ax_pp)  # pore pressure profile
+
+    bounds(p0[0], PARAM, fig=fig, ax=ax_pp)
+
+    valves(X, VALVES, states_override=states0, fig=fig, ax=ax_pp,
+           plot_params=plot_params)  # valves
+
+    # Plot boundary condition gauge
+    # -----------------------------
+    if np.isnan(PARAM[&#39;qin_&#39;]):
+        in_bound = &#39;p&#39;
+    else:
+        in_bound = &#39;q&#39;
+
+    bound_gauge(in_bound, VALVES, PARAM, fig=fig, ax=ax_b)
+
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    axes = [ax_pp, ax_b]
+
+    return fig, axes
+
+# ------------------------------------------------------------------
+
+def recurrence_fig(event_t, rec, log=True, tlim=None, save_name=None):
+    &#34;&#34;&#34;
+    Plots events recurrence interval in time.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension is N_ev, the recurrence intervals are
+        counted at each events, for the next interval: last event is excluded.
+    rec : 1D array
+        Array of events recurrence interval, time before the next event.
+        Dimension is N_ev - 1
+    log : bool (default=`True`)
+        Option to have the y-axis (recurrence intervals) in log scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : axes object from matplotlib.
+        The axes created in this function.
+    &#34;&#34;&#34;
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = recurrence(event_t, rec, log=log, tlim=tlim,
+                                 fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs
+
+# ------------------------------------------------------------------
+
+def activity_dip_fig(event_t, event_x, tlim=None, save_name=None):
+    &#34;&#34;&#34;
+    Plots activity across dip in time.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension is N_event.
+    event_x : 1D array
+        Array of event locations, dimension is N_event.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : axes object from matplotlib.
+        The axes created in this function.
+    &#34;&#34;&#34;
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = activity_dip(event_t, event_x, tlim=tlim, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs
+
+
+# ------------------------------------------------------------------
+
+def activity_rate_fig(rate_time, rate, tlim=None, save_name=None):
+    &#34;&#34;&#34;
+    Plots activity rate in time.
+
+    Parameters
+    ----------
+    rate_time : 1D array
+        Array of times for which the activity rate is computed, dimension is
+        N_times.
+    rate : 1D array
+        Array of activity rate in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : axes object from matplotlib.
+        The axes created in this function.
+    &#34;&#34;&#34;
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = activity_rate(rate_time, rate, tlim=tlim, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def perm_eq_fig(T, k_eq, smoothed=None, k_ref=None, tlim=None, log=True, save_name=None):
+    &#34;&#34;&#34;
+    Plots equivalent permeability in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    k_eq : 1D array
+        Array of equivalent permeability in time, dimension is N_times.
+    k_ref : tuple (default `None`)
+        Option to plot background and fully closed equivalent permeability.
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    log : bool (default=`True`)
+        Option to have the y-axis (permeability) in log-scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = perm_eq(T, k_eq, k_ref=k_ref, smoothed=smoothed,
+                              tlim=tlim, log=log, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def mass_balance_fig(T, deltaM, tlim=None, save_name=None):
+    &#34;&#34;&#34;
+    Plots mass balance in system in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    deltaM : 1D array
+        Array of mass balance in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = mass_balance(T, deltaM, tlim=tlim, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def bound_in_fig(T, bound_0, PARAM, smoothed=None, v_eff=None, tlim=None, save_name=None):
+    &#34;&#34;&#34;
+    Plots values of pp/q the in bound in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    bound_0 : 1D array
+        Array of values taken by the in bound in time, dimension is N_times.
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    v_eff : float (default `None`)
+        Effective value of the input boundary variable. If specified it is
+        plotted and added as a text insert.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = bound_in(T, bound_0, PARAM, v_eff=v_eff,
+                               smoothed=smoothed, tlim=tlim, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def tseries_comp(T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, v_eff=None,\
+                 k_ref=None, ksmooth=None, bsmooth=None, tlim=None, show_T=None, save_name=None):
+    &#34;&#34;&#34;
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    rate_time : 1D array
+        Array of times for which the activity rate is computed, dimension is
+        N_rate_times.
+    bound_0 : 1D array
+        Array of values taken by the in bound in time, dimension is N_times.
+    deltaM : 1D array
+        Array of mass balance in time, dimension is N_times.
+    k_eq : 1D array
+        Array of equivalent permeability in time, dimension is N_times.
+    rate : 1D array
+        Array of activity rate in time, dimension is N_rate_times.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    v_eff : float (default `None`)
+        Effective value of the input boundary variable. If specified it is
+        plotted and added as a text insert.
+    k_ref : tuple (default `None`)
+        Option to plot background and fully closed equivalent permeability.
+    ksmooth : 1D array(default `None`)
+        Smoothed permeability variable, same size as the main variable.
+    bsmooth : 1D array(default `None`)
+        Smoothed inbound variable, same size as the main variable.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    show_T : list/tuple/array (default `None`)
+        Option to highlight some region. If specified as an array-like object
+        (2 elements long) the range in between each element will be
+        highlighted.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : list ax object from matplotlib.
+        The axes created in this function.
+    &#34;&#34;&#34;
+    def show_period(show_T, ax, with_txt=False):
+        &#34;&#34;&#34;
+        Function to show period span
+        &#34;&#34;&#34;
+        T = show_T[1] - show_T[0]
+        T1, T2 = show_T
+
+        ax.axvspan(T1, T2, fc=&#39;0.7&#39;, ec=&#39;0.7&#39;)
+
+        if with_txt:
+            ax.text(T1 + 0.1*T, ax.get_ylim()[0],
+                    r&#34;$T_{{cycle}} = {:.2e}$&#34;.format(T),
+                    ha = &#39;left&#39;, va=&#39;bottom&#39;,
+                    bbox={&#39;boxstyle&#39; : &#39;square, pad=0.1&#39;, &#39;alpha&#39; : 0.5,
+                          &#39;facecolor&#39; : &#39;w&#39;, &#39;edgecolor&#39; : &#39;w&#39;}, zorder=11)
+
+    # Set up figure
+    # -------------
+    fig, axes = plt.subplots(4, 1, sharex=True, figsize=(9, 7))
+
+    # Adjust plot setup
+    # -----------------
+    for ax, v in zip(axes, [bound_0, deltaM, k_eq, rate]):
+        ax.spines[&#39;top&#39;].set_visible(False)
+        ax.spines[&#39;right&#39;].set_visible(False)
+        ax.spines[&#39;bottom&#39;].set_visible(False)
+
+        ax.tick_params(bottom=True, labelbottom=False, direction=&#39;in&#39;,
+                       which=&#39;both&#39;)
+
+        ax.grid(lw=.5, axis=&#39;x&#39;)
+
+#        dy = max(v) - min(v)
+#        ylim = (0.95*min(v), max(v) + 0.01*dy)
+#        ax.set_ylim(ylim)
+
+    # Plot each subplot
+    # -----------------
+    # a/ In-bound
+    _ = bound_in(T, bound_0, PARAM, smoothed=bsmooth, v_eff=v_eff, tlim=tlim, fig=fig,
+                 ax=axes[0])
+    axes[0].set_xlabel(&#34;&#34;)
+    axes[0].set_title(&#34;&#34;)
+
+    if show_T is not None:
+        show_period(show_T, axes[0], with_txt=True)
+
+    # b/ Mass balance
+    _ = mass_balance(T, deltaM, tlim=tlim, fig=fig, ax=axes[1])
+    axes[1].set_xlabel(&#34;&#34;)
+    axes[1].set_title(&#34;&#34;)
+
+    if show_T is not None:
+        show_period(show_T, axes[1])
+
+    # c/ Equivalent permeability
+    _ = perm_eq(T, k_eq, k_ref=k_ref, smoothed=ksmooth, tlim=tlim, fig=fig, ax=axes[2])
+    axes[2].set_xlabel(&#34;&#34;)
+    axes[2].set_title(&#34;&#34;)
+
+    if show_T is not None:
+        show_period(show_T, axes[2])
+
+    # d/ Activity rate
+    _ = activity_rate(rate_time, rate, tlim=tlim, fig=fig, ax=axes[3])
+    axes[3].set_title(&#34;&#34;)
+    axes[3].tick_params(bottom=True, labelbottom=True)
+    axes[3].spines[&#39;bottom&#39;].set_visible(True)
+
+    if show_T is not None:
+        show_period(show_T, axes[3])
+
+    fig.subplots_adjust(hspace=0.02, bottom=0.1)
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, axes
+
+# ----------------------------------------------------------------------------
+
+def phase_diagram(T, variables, labels, scales=(&#39;linear&#39;,&#39;linear&#39;), tlim=None, \
+        cycle=None, plot_params={}, save_name=None):
+    &#34;&#34;&#34;
+    Plots the phase diagram of two variables in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Time array, both variables should be defined on the same time steps,
+        dimension N_times.
+    variables : list, tuple, array-like
+        Array of the two variables to plot against each other, as 1D arrays of
+        the same dimension, N_times.
+    labels : list, tuple
+        The variable labels, as strings of characters..
+    scales : list, tuple (default = `(&#39;linear&#39;, &#39;linear&#39;)`)
+        The scales used to plot the variables. Default is set to both linear
+        scale. `linear` for linear scale, `log` for logarithmic scale.
+    tlim : tuple (default = `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    cycle : float (default = `None`)
+        Use a cyclic colormap for time to highlight cycles, cycle is the period
+        of the cycle.
+    plot_params : dic (default=`{}`)
+        A dictionnary of plotting parameters.
+    save_name : str
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    &#34;&#34;&#34;
+    # Unpack
+    # ------
+    v_x, v_y = variables
+    l_x, l_y = labels
+    sc_x, sc_y = scales
+
+    period = (T &lt;= max(tlim)) &amp; (T &gt;= min(tlim))
+    T = T[period]
+    v_x = v_x[period]
+    v_y = v_y[period]
+
+    # Get defaults
+    # ------------
+    if cycle is None:
+        needed_params = [&#39;time_cmap&#39;]
+        plot_params = set_plot_params(plot_params, needed_params)
+        cmap = plot_params[&#39;time_cmap&#39;]
+    else:
+        needed_params = [&#39;cyclic_cmap&#39;]
+        plot_params = set_plot_params(plot_params, needed_params)
+        cmap = plot_params[&#39;cyclic_cmap&#39;]
+        T = T - T[0] # start T at 0
+        T = (T%cycle) * 2*np.pi / cycle  # transform T in phase
+
+    # Set up figure and axis
+    # ----------------------
+    fig, ax = plt.subplots(figsize=(5, 3.5))
+
+    # Plot the scatter
+    # ----------------
+    coll = ax.scatter(v_x, v_y, c=T, cmap=cmap, s=5, rasterized=True)
+
+    ax.set_xscale(sc_x)
+    ax.set_yscale(sc_y)
+
+    ax.set_xlabel(l_x)
+    ax.set_ylabel(l_y)
+
+    # &gt; set up limits
+    dx = .01 * (np.max(v_x) - np.min(v_x))
+    dy = .01 * (np.max(v_y) - np.min(v_y))
+    xlim = (np.min(v_x)-dx, np.max(v_x)+dx)
+    ylim = (np.min(v_y)-dy, np.max(v_y)+dy)
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+
+    # Set up colorbar
+    # ---------------
+    if cycle is None:
+        cb = plt.colorbar(coll, label=&#39;Time (scaled)&#39;)
+    else:
+        cb = plt.colorbar(coll, label=&#39;Cycle phase&#39;,
+                          ticks=[0, np.pi/2, np.pi, 3/2*np.pi, 2*np.pi],
+                          format=ticker.FixedFormatter([r&#39;$0$&#39;, r&#39;$\pi/2$&#39;,
+                                                        r&#39;$\pi$&#39;, r&#39;$3\pi/2$&#39;,
+                                                        r&#39;$2\pi$&#39;]))
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax
+
+# -----------------------------------------------------------------------------
+
+def corr_mats(reg_bounds, corr_mat, lag_mat, X_valves=None, txt=True, \
+              plot_params={}, save_name=None):
+    &#34;&#34;&#34;
+    Plots the correlation matrices: cross-correlation coefficient and
+    cross-correlation lag.
+
+    Parameters
+    ----------
+    reg_bounds : 1D array
+        Spatial bounds of the regions for which correlation and lag are
+        plotted, dimension N_reg + 1.
+    corr_mat : 2D array
+        Cross-correlation matrix for regional activity, dimension N_reg, N_reg.
+    lag_mat : 2D array
+        Cross-correlation lag matrix for regional activity, dimension N_reg,
+        N_reg.
+    X_valves : 1D array (optionnal)
+        Array of valve positions, dimension N_valves.
+    txt : bool (default to `True`)
+        Option to write the value of each cell in the cell.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters for the pore pressure profile,
+        flux profile and valves.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : mpl figure object
+        Our figure.
+    axes : list of mpl axes objects
+        Our axes.
+
+    &#34;&#34;&#34;
+    # Get defaults
+    # ============
+    needed_params = [&#39;lag_cmap&#39;, &#39;corr_cmap&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Start plotting
+    # ==============
+    fig, axes = plt.subplots(1, 2, figsize=(9, 5))
+
+    # Correlation matrix
+    # ------------------
+    ax = axes[0]
+    # --&gt; Matrix
+    pc = ax.pcolormesh(reg_bounds, reg_bounds, corr_mat,
+                       vmin=np.min(corr_mat),
+                       vmax=np.max(corr_mat[corr_mat&lt;0.99]),
+                       cmap=plot_params[&#39;corr_cmap&#39;])
+    # --&gt; Valves?
+    if X_valves is not None:
+        ax.plot(X_valves, X_valves, &#39;ks&#39;, label=&#39;Valves&#39;)
+        ax.legend(loc=&#39;lower right&#39;, bbox_to_anchor=(.99, .01))
+
+
+    # --&gt; Colorbar on top
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes(&#34;top&#34;, &#39;5%&#39;, pad=0.3)
+    plt.colorbar(pc, cax=cax, orientation=&#39;horizontal&#39;,
+                 label=&#39;Correlation coefficient&#39;)
+    cax.xaxis.set_label_position(&#39;top&#39;)
+
+    # --&gt; Text in half the cells?
+    if txt:
+        for ii in range(len(reg_bounds)-1):
+            for jj in range(ii + 1, len(reg_bounds)-1):
+                Xtxt = (reg_bounds[ii] + reg_bounds[ii + 1])/2
+                Ytxt = (reg_bounds[jj] + reg_bounds[jj + 1])/2
+                ax.text(Xtxt, Ytxt, &#39;{:.2f}&#39;.format(corr_mat[ii, jj]),
+                        fontname=&#39;Andale Mono&#39;, va=&#39;center&#39;, ha=&#39;center&#39;,
+                        c=&#39;w&#39;)
+    # --&gt; Labels
+    ax.set_xlabel(&#34;Along dip distance&#34;)
+    ax.set_ylabel(&#34;Along dip distance&#34;)
+
+    # Correlation lag matrix
+    # ----------------------
+    ax = axes[1]
+    # --&gt; Matrix
+    lag_mat = abs(lag_mat)
+    pc = ax.pcolormesh(reg_bounds, reg_bounds, lag_mat, cmap=&#39;BuPu&#39;,
+                       vmin=0,
+                       vmax=np.max(lag_mat[lag_mat != np.max(lag_mat)]))
+    # --&gt; Valves ?
+    if X_valves is not None:
+        ax.plot(X_valves, X_valves, &#39;ks&#39;)
+
+    # --&gt; Colorbar
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes(&#34;top&#34;, &#39;5%&#39;, pad=0.3 )
+    plt.colorbar(pc, cax=cax, orientation=&#39;horizontal&#39;,
+                 label=&#39;Correlation lag&#39;)
+    cax.xaxis.set_label_position(&#39;top&#39;)
+
+    # --&gt; Text in half the cells
+    if txt:
+        for ii in range(len(reg_bounds)-1):
+            for jj in range(ii+1, len(reg_bounds)-1):
+                Xtxt = (reg_bounds[ii] + reg_bounds[ii + 1])/2
+                Ytxt = (reg_bounds[jj] + reg_bounds[jj + 1])/2
+                ax.text(Xtxt, Ytxt, &#39;{:g}&#39;.format(abs(lag_mat[ii, jj])),
+                        fontname=&#39;Andale Mono&#39;, va=&#39;center&#39;, ha=&#39;center&#39;,
+                        c=&#39;k&#39;)
+    # --&gt; Labels
+    ax.set_xlabel(&#34;Along dip distance&#34;)
+    ax.set_ylabel(&#34;Along dip distance&#34;)
+
+    plt.tight_layout()
+    # Saving?
+    # =======
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, axes
+
+# -----------------------------------------------------------------------------
+def deltap_1v_fig(time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}, save_name=None):
+    &#34;&#34;&#34;
+    Plots the correlation matrices: cross-correlation coefficient and
+    cross-correlation lag.
+
+    Parameters
+    ----------
+    time : 1D array
+        Time array, dimension Nt.
+    deltap : 1D array
+        Pressure differential at valve array, dimension Nt.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    VALVES : dictionnary
+        Valve parameters dictionnary. VALVES[&#39;open&#39;] is used for valve states
+        if states_override is not specified.
+    states : 1D array, boolean
+        States of the valve in time, `True` is open, `False` is closed.
+        Dimension Nt.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters for the pore pressure profile,
+        flux profile and valves.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : mpl figure object
+        Our figure.
+    axes : list of mpl axes objects
+        Our axes.
+
+    &#34;&#34;&#34;
+    # Unpack a few things
+    # ===================
+    # &gt; thresholds
+    dphi = VALVES[&#39;dPhi&#39;][0]
+    dplo = VALVES[&#39;dPlo&#39;][0]
+
+    ddp = 0.05*(dphi - dplo)
+    dplim = (dplo-ddp, dphi+ddp)
+
+    # &gt; opening and closing times
+    t_cl = cat.close_count(states, time)
+    t_op = cat.open_count(states, time)
+
+    # &gt; Define c_op and c_cl
+    c_op = &#39;#9ad3bc&#39;
+    c_cl = &#39;#ec524b&#39;
+
+    # Manage time limits and rasterization
+    # ====================================
+    if tlim is not None:
+        t_win = (tlim[0] &lt; time) &amp; (time &lt; tlim[1])
+        time = time[t_win]
+        deltap = deltap[t_win]
+        t_op_win = (t_op &gt; tlim[0]) &amp; (t_op &lt; tlim[1])
+        t_cl_win = (t_cl &gt; tlim[0]) &amp; (t_cl &lt; tlim[1])
+        t_op = t_op[t_op_win]
+        t_cl = t_cl[t_cl_win]
+
+    else:
+        tlim=(0, np.max(time))
+
+    if len(time) &gt; 1e4:
+        rasterize=True
+    else:
+        rasterize=False
+
+    # Start plotting
+    # ==============
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    ax.plot(time, deltap, c=&#39;k&#39;, zorder=10)
+
+    ax.set_xlim(tlim)
+    ax.set_ylim(dplim)
+
+    ax.set_xlabel(&#39;Time (scaled)&#39;)
+    ax.set_ylabel(r&#39;$\delta p$ across valve (scaled)&#39;)
+
+    # --&gt; Thresholds
+    ax.axhline(dphi, ls=&#39;--&#39;, c=c_op, zorder=9)
+    ax.axhline(dplo, ls=&#39;--&#39;, c=c_cl, zorder=9)
+
+    # --&gt; Events
+    ax.plot(t_op, np.ones(len(t_op))*dphi, ls=&#39;&#39;, ms=7,
+                     marker=&#39;o&#39;, mec=&#39;k&#39;, mfc=&#39;w&#39;, mew=1.5, zorder=11)
+    ax.plot(t_op, np.ones(len(t_op))*dphi, ls=&#39;&#39;, ms=15, marker=&#39;o&#39;,
+            mec=&#39;.5&#39;, mfc=to_rgba(&#39;w&#39;, 0), mew=.5, zorder=11, clip_on=False)
+    ax.plot(t_op, np.ones(len(t_op))*dphi, ls=&#39;&#39;, ms=20, marker=&#39;o&#39;,
+            mec=&#39;.5&#39;, mfc=to_rgba(&#39;w&#39;, 0), mew=.5, zorder=11, clip_on=False)
+    ax.plot(t_op, np.ones(len(t_op))*dphi, ls=&#39;&#39;, ms=25, marker=&#39;o&#39;,
+            mec=&#39;.5&#39;, mfc=to_rgba(&#39;w&#39;, 0), mew=.5, zorder=11, clip_on=False)
+
+    ax.plot(t_cl, np.ones(len(t_cl))*dplo, ls=&#39;&#39;, ms=7,
+            marker=&#39;x&#39;, mec=&#39;k&#39;, mfc=&#39;w&#39;, lw=1, zorder=11)
+
+    # --&gt; Open/closed periods (only implementing starting with all closed for
+    # now)
+    bounds = np.sort(np.hstack([tlim, t_op, t_cl]))
+
+    if len(t_op)&gt;1 and len(t_cl)&gt;1:
+        if t_op[0] &gt; t_cl[0]:
+            # If first event is closing, the first state is open
+            c_cycle = [c_op, c_cl]
+            st_lab = [&#39;Closed&#39;, &#39;Open&#39;]
+            st_xy = ([(t_cl[0]+t_op[0])/2, dplo + 2*ddp],
+                     [(t_cl[1]+t_op[0])/2, dphi - 2*ddp])
+        else:
+            c_cycle = [c_cl, c_op]
+            st_lab = [&#39;Open&#39;, &#39;Closed&#39;]
+            st_xy = ([(t_cl[0]+t_op[0])/2, dphi - 2*ddp],
+                     [(t_cl[0]+t_op[1])/2, dplo + 2*ddp])
+
+        for ii in range(len(bounds)-1):
+            ax.axvspan(bounds[ii], bounds[ii+1],
+                    fc=to_rgba(c_cycle[ii%2], .3), ec=[0, 0, 0, 0])
+            if ii &lt;= 1:
+                  ax.text(st_xy[ii][0], st_xy[ii][1], st_lab[ii], fontname=&#39;Roboto Condensed&#39;,
+                          c=c_cycle[(ii+1)%2], va=&#39;center&#39;, ha=&#39;center&#39;, fontsize=9)
+
+    # --&gt; Better ticks
+    ax.yaxis.set_major_locator(tk.FixedLocator([dplo, dphi]))
+    ax.yaxis.set_major_formatter(tk.FixedFormatter([&#39;CLOSING&#39;, &#39;OPENING&#39;]))
+
+    ax.yaxis.set_minor_locator(tk.MultipleLocator(.005))
+    ax.yaxis.set_minor_formatter(tk.ScalarFormatter())
+
+    axes = ax
+    plt.tight_layout()
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, axes</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="PPvalves.plots.figures.activity_dip_fig"><code class="name flex">
+<span>def <span class="ident">activity_dip_fig</span></span>(<span>event_t, event_x, tlim=None, save_name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots activity across dip in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>event_t</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of event times, dimension is N_event.</dd>
+<dt><strong><code>event_x</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of event locations, dimension is N_event.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt><strong><code>save_name</code></strong> :&ensp;<code>str</code> or <code>None (default)</code></dt>
+<dd>Path for the figure to save.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>fig : figure object from matplotlib.
+The figure created in this function.
+axes : axes object from matplotlib.
+The axes created in this function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def activity_dip_fig(event_t, event_x, tlim=None, save_name=None):
+    &#34;&#34;&#34;
+    Plots activity across dip in time.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension is N_event.
+    event_x : 1D array
+        Array of event locations, dimension is N_event.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : axes object from matplotlib.
+        The axes created in this function.
+    &#34;&#34;&#34;
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = activity_dip(event_t, event_x, tlim=tlim, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.figures.activity_rate_fig"><code class="name flex">
+<span>def <span class="ident">activity_rate_fig</span></span>(<span>rate_time, rate, tlim=None, save_name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots activity rate in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>rate_time</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of times for which the activity rate is computed, dimension is
+N_times.</dd>
+<dt><strong><code>rate</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of activity rate in time, dimension is N_times.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt><strong><code>save_name</code></strong> :&ensp;<code>str</code> or <code>None (default)</code></dt>
+<dd>Path for the figure to save.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>fig : figure object from matplotlib.
+The figure created in this function.
+axes : axes object from matplotlib.
+The axes created in this function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def activity_rate_fig(rate_time, rate, tlim=None, save_name=None):
+    &#34;&#34;&#34;
+    Plots activity rate in time.
+
+    Parameters
+    ----------
+    rate_time : 1D array
+        Array of times for which the activity rate is computed, dimension is
+        N_times.
+    rate : 1D array
+        Array of activity rate in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : axes object from matplotlib.
+        The axes created in this function.
+    &#34;&#34;&#34;
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = activity_rate(rate_time, rate, tlim=tlim, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.figures.bound_in_fig"><code class="name flex">
+<span>def <span class="ident">bound_in_fig</span></span>(<span>T, bound_0, PARAM, smoothed=None, v_eff=None, tlim=None, save_name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots values of pp/q the in bound in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>T</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of times, dimension is N_times.</dd>
+<dt><strong><code>bound_0</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of values taken by the in bound in time, dimension is N_times.</dd>
+<dt><strong><code>smoothed</code></strong> :&ensp;<code>1D array(default </code>None<code>)</code></dt>
+<dd>Smoothed variable, same size as the main variable.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Dictionnary of physical parameters set for the system.</dd>
+<dt><strong><code>v_eff</code></strong> :&ensp;<code>float (default </code>None<code>)</code></dt>
+<dd>Effective value of the input boundary variable. If specified it is
+plotted and added as a text insert.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt><strong><code>save_name</code></strong> :&ensp;<code>str</code> or <code>None (default)</code></dt>
+<dd>Path for the figure to save.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>fig : figure object from matplotlib.</dt>
+<dt>The figure created in this function.</dt>
+<dt>ax : ax object from matplotlib.</dt>
+<dt>The axis created in this function.</dt>
+<dt><strong><code>g_objs</code></strong> :&ensp;<code>line object from matplotlib</code></dt>
+<dd>The line object created in this function.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bound_in_fig(T, bound_0, PARAM, smoothed=None, v_eff=None, tlim=None, save_name=None):
+    &#34;&#34;&#34;
+    Plots values of pp/q the in bound in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    bound_0 : 1D array
+        Array of values taken by the in bound in time, dimension is N_times.
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    v_eff : float (default `None`)
+        Effective value of the input boundary variable. If specified it is
+        plotted and added as a text insert.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = bound_in(T, bound_0, PARAM, v_eff=v_eff,
+                               smoothed=smoothed, tlim=tlim, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.figures.corr_mats"><code class="name flex">
+<span>def <span class="ident">corr_mats</span></span>(<span>reg_bounds, corr_mat, lag_mat, X_valves=None, txt=True, plot_params={}, save_name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots the correlation matrices: cross-correlation coefficient and
+cross-correlation lag.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>reg_bounds</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Spatial bounds of the regions for which correlation and lag are
+plotted, dimension N_reg + 1.</dd>
+<dt><strong><code>corr_mat</code></strong> :&ensp;<code>2D array</code></dt>
+<dd>Cross-correlation matrix for regional activity, dimension N_reg, N_reg.</dd>
+<dt><strong><code>lag_mat</code></strong> :&ensp;<code>2D array</code></dt>
+<dd>Cross-correlation lag matrix for regional activity, dimension N_reg,
+N_reg.</dd>
+<dt><strong><code>X_valves</code></strong> :&ensp;<code>1D array (optionnal)</code></dt>
+<dd>Array of valve positions, dimension N_valves.</dd>
+<dt><strong><code>txt</code></strong> :&ensp;<code>bool (default to </code>True<code>)</code></dt>
+<dd>Option to write the value of each cell in the cell.</dd>
+<dt>plot_params : dictionnary (default is {}, empty dic.)</dt>
+<dt>A dictionnary of plotting parameters for the pore pressure profile,</dt>
+<dt>flux profile and valves.</dt>
+<dt><strong><code>save_name</code></strong> :&ensp;<code>str</code> or <code>None (default)</code></dt>
+<dd>Path for the figure to save.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>fig</code></strong> :&ensp;<code>mpl figure object</code></dt>
+<dd>Our figure.</dd>
+<dt><strong><code>axes</code></strong> :&ensp;<code>list</code> of <code>mpl axes objects</code></dt>
+<dd>Our axes.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def corr_mats(reg_bounds, corr_mat, lag_mat, X_valves=None, txt=True, \
+              plot_params={}, save_name=None):
+    &#34;&#34;&#34;
+    Plots the correlation matrices: cross-correlation coefficient and
+    cross-correlation lag.
+
+    Parameters
+    ----------
+    reg_bounds : 1D array
+        Spatial bounds of the regions for which correlation and lag are
+        plotted, dimension N_reg + 1.
+    corr_mat : 2D array
+        Cross-correlation matrix for regional activity, dimension N_reg, N_reg.
+    lag_mat : 2D array
+        Cross-correlation lag matrix for regional activity, dimension N_reg,
+        N_reg.
+    X_valves : 1D array (optionnal)
+        Array of valve positions, dimension N_valves.
+    txt : bool (default to `True`)
+        Option to write the value of each cell in the cell.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters for the pore pressure profile,
+        flux profile and valves.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : mpl figure object
+        Our figure.
+    axes : list of mpl axes objects
+        Our axes.
+
+    &#34;&#34;&#34;
+    # Get defaults
+    # ============
+    needed_params = [&#39;lag_cmap&#39;, &#39;corr_cmap&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Start plotting
+    # ==============
+    fig, axes = plt.subplots(1, 2, figsize=(9, 5))
+
+    # Correlation matrix
+    # ------------------
+    ax = axes[0]
+    # --&gt; Matrix
+    pc = ax.pcolormesh(reg_bounds, reg_bounds, corr_mat,
+                       vmin=np.min(corr_mat),
+                       vmax=np.max(corr_mat[corr_mat&lt;0.99]),
+                       cmap=plot_params[&#39;corr_cmap&#39;])
+    # --&gt; Valves?
+    if X_valves is not None:
+        ax.plot(X_valves, X_valves, &#39;ks&#39;, label=&#39;Valves&#39;)
+        ax.legend(loc=&#39;lower right&#39;, bbox_to_anchor=(.99, .01))
+
+
+    # --&gt; Colorbar on top
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes(&#34;top&#34;, &#39;5%&#39;, pad=0.3)
+    plt.colorbar(pc, cax=cax, orientation=&#39;horizontal&#39;,
+                 label=&#39;Correlation coefficient&#39;)
+    cax.xaxis.set_label_position(&#39;top&#39;)
+
+    # --&gt; Text in half the cells?
+    if txt:
+        for ii in range(len(reg_bounds)-1):
+            for jj in range(ii + 1, len(reg_bounds)-1):
+                Xtxt = (reg_bounds[ii] + reg_bounds[ii + 1])/2
+                Ytxt = (reg_bounds[jj] + reg_bounds[jj + 1])/2
+                ax.text(Xtxt, Ytxt, &#39;{:.2f}&#39;.format(corr_mat[ii, jj]),
+                        fontname=&#39;Andale Mono&#39;, va=&#39;center&#39;, ha=&#39;center&#39;,
+                        c=&#39;w&#39;)
+    # --&gt; Labels
+    ax.set_xlabel(&#34;Along dip distance&#34;)
+    ax.set_ylabel(&#34;Along dip distance&#34;)
+
+    # Correlation lag matrix
+    # ----------------------
+    ax = axes[1]
+    # --&gt; Matrix
+    lag_mat = abs(lag_mat)
+    pc = ax.pcolormesh(reg_bounds, reg_bounds, lag_mat, cmap=&#39;BuPu&#39;,
+                       vmin=0,
+                       vmax=np.max(lag_mat[lag_mat != np.max(lag_mat)]))
+    # --&gt; Valves ?
+    if X_valves is not None:
+        ax.plot(X_valves, X_valves, &#39;ks&#39;)
+
+    # --&gt; Colorbar
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes(&#34;top&#34;, &#39;5%&#39;, pad=0.3 )
+    plt.colorbar(pc, cax=cax, orientation=&#39;horizontal&#39;,
+                 label=&#39;Correlation lag&#39;)
+    cax.xaxis.set_label_position(&#39;top&#39;)
+
+    # --&gt; Text in half the cells
+    if txt:
+        for ii in range(len(reg_bounds)-1):
+            for jj in range(ii+1, len(reg_bounds)-1):
+                Xtxt = (reg_bounds[ii] + reg_bounds[ii + 1])/2
+                Ytxt = (reg_bounds[jj] + reg_bounds[jj + 1])/2
+                ax.text(Xtxt, Ytxt, &#39;{:g}&#39;.format(abs(lag_mat[ii, jj])),
+                        fontname=&#39;Andale Mono&#39;, va=&#39;center&#39;, ha=&#39;center&#39;,
+                        c=&#39;k&#39;)
+    # --&gt; Labels
+    ax.set_xlabel(&#34;Along dip distance&#34;)
+    ax.set_ylabel(&#34;Along dip distance&#34;)
+
+    plt.tight_layout()
+    # Saving?
+    # =======
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, axes</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.figures.deltap_1v_fig"><code class="name flex">
+<span>def <span class="ident">deltap_1v_fig</span></span>(<span>time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}, save_name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots the correlation matrices: cross-correlation coefficient and
+cross-correlation lag.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>time</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Time array, dimension Nt.</dd>
+<dt><strong><code>deltap</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Pressure differential at valve array, dimension Nt.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Dictionnary of physical parameters set for the system.</dd>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valve parameters dictionnary. VALVES['open'] is used for valve states
+if states_override is not specified.</dd>
+<dt><strong><code>states</code></strong> :&ensp;<code>1D array, boolean</code></dt>
+<dd>States of the valve in time, <code>True</code> is open, <code>False</code> is closed.
+Dimension Nt.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt>plot_params : dictionnary (default is {}, empty dic.)</dt>
+<dt>A dictionnary of plotting parameters for the pore pressure profile,</dt>
+<dt>flux profile and valves.</dt>
+<dt><strong><code>save_name</code></strong> :&ensp;<code>str</code> or <code>None (default)</code></dt>
+<dd>Path for the figure to save.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>fig</code></strong> :&ensp;<code>mpl figure object</code></dt>
+<dd>Our figure.</dd>
+<dt><strong><code>axes</code></strong> :&ensp;<code>list</code> of <code>mpl axes objects</code></dt>
+<dd>Our axes.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def deltap_1v_fig(time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}, save_name=None):
+    &#34;&#34;&#34;
+    Plots the correlation matrices: cross-correlation coefficient and
+    cross-correlation lag.
+
+    Parameters
+    ----------
+    time : 1D array
+        Time array, dimension Nt.
+    deltap : 1D array
+        Pressure differential at valve array, dimension Nt.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    VALVES : dictionnary
+        Valve parameters dictionnary. VALVES[&#39;open&#39;] is used for valve states
+        if states_override is not specified.
+    states : 1D array, boolean
+        States of the valve in time, `True` is open, `False` is closed.
+        Dimension Nt.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters for the pore pressure profile,
+        flux profile and valves.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : mpl figure object
+        Our figure.
+    axes : list of mpl axes objects
+        Our axes.
+
+    &#34;&#34;&#34;
+    # Unpack a few things
+    # ===================
+    # &gt; thresholds
+    dphi = VALVES[&#39;dPhi&#39;][0]
+    dplo = VALVES[&#39;dPlo&#39;][0]
+
+    ddp = 0.05*(dphi - dplo)
+    dplim = (dplo-ddp, dphi+ddp)
+
+    # &gt; opening and closing times
+    t_cl = cat.close_count(states, time)
+    t_op = cat.open_count(states, time)
+
+    # &gt; Define c_op and c_cl
+    c_op = &#39;#9ad3bc&#39;
+    c_cl = &#39;#ec524b&#39;
+
+    # Manage time limits and rasterization
+    # ====================================
+    if tlim is not None:
+        t_win = (tlim[0] &lt; time) &amp; (time &lt; tlim[1])
+        time = time[t_win]
+        deltap = deltap[t_win]
+        t_op_win = (t_op &gt; tlim[0]) &amp; (t_op &lt; tlim[1])
+        t_cl_win = (t_cl &gt; tlim[0]) &amp; (t_cl &lt; tlim[1])
+        t_op = t_op[t_op_win]
+        t_cl = t_cl[t_cl_win]
+
+    else:
+        tlim=(0, np.max(time))
+
+    if len(time) &gt; 1e4:
+        rasterize=True
+    else:
+        rasterize=False
+
+    # Start plotting
+    # ==============
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    ax.plot(time, deltap, c=&#39;k&#39;, zorder=10)
+
+    ax.set_xlim(tlim)
+    ax.set_ylim(dplim)
+
+    ax.set_xlabel(&#39;Time (scaled)&#39;)
+    ax.set_ylabel(r&#39;$\delta p$ across valve (scaled)&#39;)
+
+    # --&gt; Thresholds
+    ax.axhline(dphi, ls=&#39;--&#39;, c=c_op, zorder=9)
+    ax.axhline(dplo, ls=&#39;--&#39;, c=c_cl, zorder=9)
+
+    # --&gt; Events
+    ax.plot(t_op, np.ones(len(t_op))*dphi, ls=&#39;&#39;, ms=7,
+                     marker=&#39;o&#39;, mec=&#39;k&#39;, mfc=&#39;w&#39;, mew=1.5, zorder=11)
+    ax.plot(t_op, np.ones(len(t_op))*dphi, ls=&#39;&#39;, ms=15, marker=&#39;o&#39;,
+            mec=&#39;.5&#39;, mfc=to_rgba(&#39;w&#39;, 0), mew=.5, zorder=11, clip_on=False)
+    ax.plot(t_op, np.ones(len(t_op))*dphi, ls=&#39;&#39;, ms=20, marker=&#39;o&#39;,
+            mec=&#39;.5&#39;, mfc=to_rgba(&#39;w&#39;, 0), mew=.5, zorder=11, clip_on=False)
+    ax.plot(t_op, np.ones(len(t_op))*dphi, ls=&#39;&#39;, ms=25, marker=&#39;o&#39;,
+            mec=&#39;.5&#39;, mfc=to_rgba(&#39;w&#39;, 0), mew=.5, zorder=11, clip_on=False)
+
+    ax.plot(t_cl, np.ones(len(t_cl))*dplo, ls=&#39;&#39;, ms=7,
+            marker=&#39;x&#39;, mec=&#39;k&#39;, mfc=&#39;w&#39;, lw=1, zorder=11)
+
+    # --&gt; Open/closed periods (only implementing starting with all closed for
+    # now)
+    bounds = np.sort(np.hstack([tlim, t_op, t_cl]))
+
+    if len(t_op)&gt;1 and len(t_cl)&gt;1:
+        if t_op[0] &gt; t_cl[0]:
+            # If first event is closing, the first state is open
+            c_cycle = [c_op, c_cl]
+            st_lab = [&#39;Closed&#39;, &#39;Open&#39;]
+            st_xy = ([(t_cl[0]+t_op[0])/2, dplo + 2*ddp],
+                     [(t_cl[1]+t_op[0])/2, dphi - 2*ddp])
+        else:
+            c_cycle = [c_cl, c_op]
+            st_lab = [&#39;Open&#39;, &#39;Closed&#39;]
+            st_xy = ([(t_cl[0]+t_op[0])/2, dphi - 2*ddp],
+                     [(t_cl[0]+t_op[1])/2, dplo + 2*ddp])
+
+        for ii in range(len(bounds)-1):
+            ax.axvspan(bounds[ii], bounds[ii+1],
+                    fc=to_rgba(c_cycle[ii%2], .3), ec=[0, 0, 0, 0])
+            if ii &lt;= 1:
+                  ax.text(st_xy[ii][0], st_xy[ii][1], st_lab[ii], fontname=&#39;Roboto Condensed&#39;,
+                          c=c_cycle[(ii+1)%2], va=&#39;center&#39;, ha=&#39;center&#39;, fontsize=9)
+
+    # --&gt; Better ticks
+    ax.yaxis.set_major_locator(tk.FixedLocator([dplo, dphi]))
+    ax.yaxis.set_major_formatter(tk.FixedFormatter([&#39;CLOSING&#39;, &#39;OPENING&#39;]))
+
+    ax.yaxis.set_minor_locator(tk.MultipleLocator(.005))
+    ax.yaxis.set_minor_formatter(tk.ScalarFormatter())
+
+    axes = ax
+    plt.tight_layout()
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, axes</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.figures.init"><code class="name flex">
+<span>def <span class="ident">init</span></span>(<span>X, p0, states0, VALVES, PARAM, plot_params={}, save_name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plot the initial and boundary conditions: pore pressure profile, boundary
+conditions values, valve states at t=0 and gauge of input boundary value.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Space array, dimension PARAM['Nx'] + 1.</dd>
+<dt><strong><code>p0</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Initial profile of pore pressure. Same dimension as X.</dd>
+<dt><strong><code>states0</code></strong> :&ensp;<code>1D array, boolean</code></dt>
+<dd>Initial state of valves: True is open, False is closed. Dimension is
+the number of valves.</dd>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valve parameters dictionnary.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Dictionnary of physical parameters set for the system.</dd>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the valves. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+<dt>plot_params : dictionnary (default is {}, empty dic.)</dt>
+<dt>A dictionnary of plotting parameters.</dt>
+<dt><strong><code>save_name</code></strong> :&ensp;<code>str</code> or <code>None (default)</code></dt>
+<dd>Path for the figure to save.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>fig : figure object from matplotlib.
+The figure created in this function.
+axes : axes object from matplotlib.
+The axes created in this function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def init(X, p0, states0, VALVES, PARAM, plot_params={}, save_name=None):
+    &#34;&#34;&#34;
+    Plot the initial and boundary conditions: pore pressure profile, boundary
+    conditions values, valve states at t=0 and gauge of input boundary value.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space array, dimension PARAM[&#39;Nx&#39;] + 1.
+    p0 : 1D array
+        Initial profile of pore pressure. Same dimension as X.
+    states0 : 1D array, boolean
+        Initial state of valves: True is open, False is closed. Dimension is
+        the number of valves.
+    VALVES : dictionnary
+        Valve parameters dictionnary.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : axes object from matplotlib.
+        The axes created in this function.
+    &#34;&#34;&#34;
+    # Initialize figure layout
+    # ------------------------
+    fig = plt.figure(figsize=(8, 3.5))
+    gs = GridSpec(1, 8, figure=fig)
+    fig.subplots_adjust(wspace=0.05)
+
+    ax_pp = fig.add_subplot(gs[:, :7])
+    ax_b = fig.add_subplot(gs[:, 7:])
+
+    ax_pp.set_title(&#39;Initial state and boundary conditions&#39;)
+
+
+    # Ticks and label parameters
+    # --------------------------
+    ax_b.tick_params(left=False, labelleft=False,
+                     right=True, labelright=True,
+                     bottom=False, labelbottom=False)
+
+    # Plot inital system state
+    # -------------------------
+    pp_profile(X, p0, fig=fig, ax=ax_pp)  # pore pressure profile
+
+    bounds(p0[0], PARAM, fig=fig, ax=ax_pp)
+
+    valves(X, VALVES, states_override=states0, fig=fig, ax=ax_pp,
+           plot_params=plot_params)  # valves
+
+    # Plot boundary condition gauge
+    # -----------------------------
+    if np.isnan(PARAM[&#39;qin_&#39;]):
+        in_bound = &#39;p&#39;
+    else:
+        in_bound = &#39;q&#39;
+
+    bound_gauge(in_bound, VALVES, PARAM, fig=fig, ax=ax_b)
+
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    axes = [ax_pp, ax_b]
+
+    return fig, axes</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.figures.mass_balance_fig"><code class="name flex">
+<span>def <span class="ident">mass_balance_fig</span></span>(<span>T, deltaM, tlim=None, save_name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots mass balance in system in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>T</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of times, dimension is N_times.</dd>
+<dt><strong><code>deltaM</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of mass balance in time, dimension is N_times.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt><strong><code>save_name</code></strong> :&ensp;<code>str</code> or <code>None (default)</code></dt>
+<dd>Path for the figure to save.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>fig : figure object from matplotlib.</dt>
+<dt>The figure created in this function.</dt>
+<dt>ax : ax object from matplotlib.</dt>
+<dt>The axis created in this function.</dt>
+<dt><strong><code>g_objs</code></strong> :&ensp;<code>line object from matplotlib</code></dt>
+<dd>The line object created in this function.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mass_balance_fig(T, deltaM, tlim=None, save_name=None):
+    &#34;&#34;&#34;
+    Plots mass balance in system in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    deltaM : 1D array
+        Array of mass balance in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = mass_balance(T, deltaM, tlim=tlim, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.figures.perm_eq_fig"><code class="name flex">
+<span>def <span class="ident">perm_eq_fig</span></span>(<span>T, k_eq, smoothed=None, k_ref=None, tlim=None, log=True, save_name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots equivalent permeability in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>T</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of times, dimension is N_times.</dd>
+<dt><strong><code>k_eq</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of equivalent permeability in time, dimension is N_times.</dd>
+<dt><strong><code>k_ref</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot background and fully closed equivalent permeability.</dd>
+<dt><strong><code>smoothed</code></strong> :&ensp;<code>1D array(default </code>None<code>)</code></dt>
+<dd>Smoothed variable, same size as the main variable.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>bool (default=</code>True<code>)</code></dt>
+<dd>Option to have the y-axis (permeability) in log-scale. Set to
+logarithmic (<code>True</code>) by default, to linear otherwise.</dd>
+<dt><strong><code>save_name</code></strong> :&ensp;<code>str</code> or <code>None (default)</code></dt>
+<dd>Path for the figure to save.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>fig : figure object from matplotlib.</dt>
+<dt>The figure created in this function.</dt>
+<dt>ax : ax object from matplotlib.</dt>
+<dt>The axis created in this function.</dt>
+<dt><strong><code>g_objs</code></strong> :&ensp;<code>line object from matplotlib</code></dt>
+<dd>The line object created in this function.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def perm_eq_fig(T, k_eq, smoothed=None, k_ref=None, tlim=None, log=True, save_name=None):
+    &#34;&#34;&#34;
+    Plots equivalent permeability in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    k_eq : 1D array
+        Array of equivalent permeability in time, dimension is N_times.
+    k_ref : tuple (default `None`)
+        Option to plot background and fully closed equivalent permeability.
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    log : bool (default=`True`)
+        Option to have the y-axis (permeability) in log-scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = perm_eq(T, k_eq, k_ref=k_ref, smoothed=smoothed,
+                              tlim=tlim, log=log, fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.figures.phase_diagram"><code class="name flex">
+<span>def <span class="ident">phase_diagram</span></span>(<span>T, variables, labels, scales=('linear', 'linear'), tlim=None, cycle=None, plot_params={}, save_name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots the phase diagram of two variables in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>T</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Time array, both variables should be defined on the same time steps,
+dimension N_times.</dd>
+<dt><strong><code>variables</code></strong> :&ensp;<code>list, tuple, array-like</code></dt>
+<dd>Array of the two variables to plot against each other, as 1D arrays of
+the same dimension, N_times.</dd>
+<dt>labels : list, tuple</dt>
+<dt>The variable labels, as strings of characters..</dt>
+<dt><strong><code>scales</code></strong> :&ensp;<code>list, tuple (default =</code>('linear', 'linear')<code>)</code></dt>
+<dd>The scales used to plot the variables. Default is set to both linear
+scale. <code>linear</code> for linear scale, <code>log</code> for logarithmic scale.</dd>
+<dt>tlim : tuple (default = <code>None</code>)</dt>
+<dt>Option to plot in between specific time limits, specified as a tuple.</dt>
+<dt><strong><code>cycle</code></strong> :&ensp;<code>float (default =</code>None<code>)</code></dt>
+<dd>Use a cyclic colormap for time to highlight cycles, cycle is the period
+of the cycle.</dd>
+<dt>plot_params : dic (default=<code>{}</code>)</dt>
+<dt>A dictionnary of plotting parameters.</dt>
+<dt><strong><code>save_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Path for the figure to save.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>fig : figure object from matplotlib.
+The figure created in this function.
+ax : ax object from matplotlib.
+The axis created in this function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def phase_diagram(T, variables, labels, scales=(&#39;linear&#39;,&#39;linear&#39;), tlim=None, \
+        cycle=None, plot_params={}, save_name=None):
+    &#34;&#34;&#34;
+    Plots the phase diagram of two variables in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Time array, both variables should be defined on the same time steps,
+        dimension N_times.
+    variables : list, tuple, array-like
+        Array of the two variables to plot against each other, as 1D arrays of
+        the same dimension, N_times.
+    labels : list, tuple
+        The variable labels, as strings of characters..
+    scales : list, tuple (default = `(&#39;linear&#39;, &#39;linear&#39;)`)
+        The scales used to plot the variables. Default is set to both linear
+        scale. `linear` for linear scale, `log` for logarithmic scale.
+    tlim : tuple (default = `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    cycle : float (default = `None`)
+        Use a cyclic colormap for time to highlight cycles, cycle is the period
+        of the cycle.
+    plot_params : dic (default=`{}`)
+        A dictionnary of plotting parameters.
+    save_name : str
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    &#34;&#34;&#34;
+    # Unpack
+    # ------
+    v_x, v_y = variables
+    l_x, l_y = labels
+    sc_x, sc_y = scales
+
+    period = (T &lt;= max(tlim)) &amp; (T &gt;= min(tlim))
+    T = T[period]
+    v_x = v_x[period]
+    v_y = v_y[period]
+
+    # Get defaults
+    # ------------
+    if cycle is None:
+        needed_params = [&#39;time_cmap&#39;]
+        plot_params = set_plot_params(plot_params, needed_params)
+        cmap = plot_params[&#39;time_cmap&#39;]
+    else:
+        needed_params = [&#39;cyclic_cmap&#39;]
+        plot_params = set_plot_params(plot_params, needed_params)
+        cmap = plot_params[&#39;cyclic_cmap&#39;]
+        T = T - T[0] # start T at 0
+        T = (T%cycle) * 2*np.pi / cycle  # transform T in phase
+
+    # Set up figure and axis
+    # ----------------------
+    fig, ax = plt.subplots(figsize=(5, 3.5))
+
+    # Plot the scatter
+    # ----------------
+    coll = ax.scatter(v_x, v_y, c=T, cmap=cmap, s=5, rasterized=True)
+
+    ax.set_xscale(sc_x)
+    ax.set_yscale(sc_y)
+
+    ax.set_xlabel(l_x)
+    ax.set_ylabel(l_y)
+
+    # &gt; set up limits
+    dx = .01 * (np.max(v_x) - np.min(v_x))
+    dy = .01 * (np.max(v_y) - np.min(v_y))
+    xlim = (np.min(v_x)-dx, np.max(v_x)+dx)
+    ylim = (np.min(v_y)-dy, np.max(v_y)+dy)
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+
+    # Set up colorbar
+    # ---------------
+    if cycle is None:
+        cb = plt.colorbar(coll, label=&#39;Time (scaled)&#39;)
+    else:
+        cb = plt.colorbar(coll, label=&#39;Cycle phase&#39;,
+                          ticks=[0, np.pi/2, np.pi, 3/2*np.pi, 2*np.pi],
+                          format=ticker.FixedFormatter([r&#39;$0$&#39;, r&#39;$\pi/2$&#39;,
+                                                        r&#39;$\pi$&#39;, r&#39;$3\pi/2$&#39;,
+                                                        r&#39;$2\pi$&#39;]))
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.figures.recurrence_fig"><code class="name flex">
+<span>def <span class="ident">recurrence_fig</span></span>(<span>event_t, rec, log=True, tlim=None, save_name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots events recurrence interval in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>event_t</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of event times, dimension is N_ev, the recurrence intervals are
+counted at each events, for the next interval: last event is excluded.</dd>
+<dt><strong><code>rec</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of events recurrence interval, time before the next event.
+Dimension is N_ev - 1</dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>bool (default=</code>True<code>)</code></dt>
+<dd>Option to have the y-axis (recurrence intervals) in log scale. Set to
+logarithmic (<code>True</code>) by default, to linear otherwise.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt><strong><code>save_name</code></strong> :&ensp;<code>str</code> or <code>None (default)</code></dt>
+<dd>Path for the figure to save.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>fig : figure object from matplotlib.
+The figure created in this function.
+axes : axes object from matplotlib.
+The axes created in this function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def recurrence_fig(event_t, rec, log=True, tlim=None, save_name=None):
+    &#34;&#34;&#34;
+    Plots events recurrence interval in time.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension is N_ev, the recurrence intervals are
+        counted at each events, for the next interval: last event is excluded.
+    rec : 1D array
+        Array of events recurrence interval, time before the next event.
+        Dimension is N_ev - 1
+    log : bool (default=`True`)
+        Option to have the y-axis (recurrence intervals) in log scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : axes object from matplotlib.
+        The axes created in this function.
+    &#34;&#34;&#34;
+    # Initialize the function
+    # -----------------------
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+
+    fig, ax, g_objs = recurrence(event_t, rec, log=log, tlim=tlim,
+                                 fig=fig, ax=ax)
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.figures.tseries_comp"><code class="name flex">
+<span>def <span class="ident">tseries_comp</span></span>(<span>T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, v_eff=None, k_ref=None, ksmooth=None, bsmooth=None, tlim=None, show_T=None, save_name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>T</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of times, dimension is N_times.</dd>
+<dt><strong><code>rate_time</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of times for which the activity rate is computed, dimension is
+N_rate_times.</dd>
+<dt><strong><code>bound_0</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of values taken by the in bound in time, dimension is N_times.</dd>
+<dt><strong><code>deltaM</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of mass balance in time, dimension is N_times.</dd>
+<dt><strong><code>k_eq</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of equivalent permeability in time, dimension is N_times.</dd>
+<dt><strong><code>rate</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of activity rate in time, dimension is N_rate_times.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Dictionnary of physical parameters set for the system.</dd>
+<dt><strong><code>v_eff</code></strong> :&ensp;<code>float (default </code>None<code>)</code></dt>
+<dd>Effective value of the input boundary variable. If specified it is
+plotted and added as a text insert.</dd>
+<dt><strong><code>k_ref</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot background and fully closed equivalent permeability.</dd>
+<dt><strong><code>ksmooth</code></strong> :&ensp;<code>1D array(default </code>None<code>)</code></dt>
+<dd>Smoothed permeability variable, same size as the main variable.</dd>
+<dt><strong><code>bsmooth</code></strong> :&ensp;<code>1D array(default </code>None<code>)</code></dt>
+<dd>Smoothed inbound variable, same size as the main variable.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt>show_T : list/tuple/array (default <code>None</code>)</dt>
+<dt>Option to highlight some region. If specified as an array-like object</dt>
+<dt>(2 elements long) the range in between each element will be</dt>
+<dt>highlighted.</dt>
+<dt><strong><code>save_name</code></strong> :&ensp;<code>str</code> or <code>None (default)</code></dt>
+<dd>Path for the figure to save.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>fig : figure object from matplotlib.
+The figure created in this function.
+axes : list ax object from matplotlib.
+The axes created in this function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tseries_comp(T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, v_eff=None,\
+                 k_ref=None, ksmooth=None, bsmooth=None, tlim=None, show_T=None, save_name=None):
+    &#34;&#34;&#34;
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    rate_time : 1D array
+        Array of times for which the activity rate is computed, dimension is
+        N_rate_times.
+    bound_0 : 1D array
+        Array of values taken by the in bound in time, dimension is N_times.
+    deltaM : 1D array
+        Array of mass balance in time, dimension is N_times.
+    k_eq : 1D array
+        Array of equivalent permeability in time, dimension is N_times.
+    rate : 1D array
+        Array of activity rate in time, dimension is N_rate_times.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    v_eff : float (default `None`)
+        Effective value of the input boundary variable. If specified it is
+        plotted and added as a text insert.
+    k_ref : tuple (default `None`)
+        Option to plot background and fully closed equivalent permeability.
+    ksmooth : 1D array(default `None`)
+        Smoothed permeability variable, same size as the main variable.
+    bsmooth : 1D array(default `None`)
+        Smoothed inbound variable, same size as the main variable.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    show_T : list/tuple/array (default `None`)
+        Option to highlight some region. If specified as an array-like object
+        (2 elements long) the range in between each element will be
+        highlighted.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    axes : list ax object from matplotlib.
+        The axes created in this function.
+    &#34;&#34;&#34;
+    def show_period(show_T, ax, with_txt=False):
+        &#34;&#34;&#34;
+        Function to show period span
+        &#34;&#34;&#34;
+        T = show_T[1] - show_T[0]
+        T1, T2 = show_T
+
+        ax.axvspan(T1, T2, fc=&#39;0.7&#39;, ec=&#39;0.7&#39;)
+
+        if with_txt:
+            ax.text(T1 + 0.1*T, ax.get_ylim()[0],
+                    r&#34;$T_{{cycle}} = {:.2e}$&#34;.format(T),
+                    ha = &#39;left&#39;, va=&#39;bottom&#39;,
+                    bbox={&#39;boxstyle&#39; : &#39;square, pad=0.1&#39;, &#39;alpha&#39; : 0.5,
+                          &#39;facecolor&#39; : &#39;w&#39;, &#39;edgecolor&#39; : &#39;w&#39;}, zorder=11)
+
+    # Set up figure
+    # -------------
+    fig, axes = plt.subplots(4, 1, sharex=True, figsize=(9, 7))
+
+    # Adjust plot setup
+    # -----------------
+    for ax, v in zip(axes, [bound_0, deltaM, k_eq, rate]):
+        ax.spines[&#39;top&#39;].set_visible(False)
+        ax.spines[&#39;right&#39;].set_visible(False)
+        ax.spines[&#39;bottom&#39;].set_visible(False)
+
+        ax.tick_params(bottom=True, labelbottom=False, direction=&#39;in&#39;,
+                       which=&#39;both&#39;)
+
+        ax.grid(lw=.5, axis=&#39;x&#39;)
+
+#        dy = max(v) - min(v)
+#        ylim = (0.95*min(v), max(v) + 0.01*dy)
+#        ax.set_ylim(ylim)
+
+    # Plot each subplot
+    # -----------------
+    # a/ In-bound
+    _ = bound_in(T, bound_0, PARAM, smoothed=bsmooth, v_eff=v_eff, tlim=tlim, fig=fig,
+                 ax=axes[0])
+    axes[0].set_xlabel(&#34;&#34;)
+    axes[0].set_title(&#34;&#34;)
+
+    if show_T is not None:
+        show_period(show_T, axes[0], with_txt=True)
+
+    # b/ Mass balance
+    _ = mass_balance(T, deltaM, tlim=tlim, fig=fig, ax=axes[1])
+    axes[1].set_xlabel(&#34;&#34;)
+    axes[1].set_title(&#34;&#34;)
+
+    if show_T is not None:
+        show_period(show_T, axes[1])
+
+    # c/ Equivalent permeability
+    _ = perm_eq(T, k_eq, k_ref=k_ref, smoothed=ksmooth, tlim=tlim, fig=fig, ax=axes[2])
+    axes[2].set_xlabel(&#34;&#34;)
+    axes[2].set_title(&#34;&#34;)
+
+    if show_T is not None:
+        show_period(show_T, axes[2])
+
+    # d/ Activity rate
+    _ = activity_rate(rate_time, rate, tlim=tlim, fig=fig, ax=axes[3])
+    axes[3].set_title(&#34;&#34;)
+    axes[3].tick_params(bottom=True, labelbottom=True)
+    axes[3].spines[&#39;bottom&#39;].set_visible(True)
+
+    if show_T is not None:
+        show_period(show_T, axes[3])
+
+    fig.subplots_adjust(hspace=0.02, bottom=0.1)
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, axes</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.figures.x_profile"><code class="name flex">
+<span>def <span class="ident">x_profile</span></span>(<span>X, P, PARAM, VALVES, states_override=None, plot_params={}, save_name=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plot profile of pore pressure, flux and valve states and positions at a
+given time on an existing figure and axes.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Space position array.</dd>
+<dt><strong><code>P</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Pore pressure in space array, at plot time, same dimension as X.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Dictionnary of physical parameters set for the system.</dd>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valve parameters dictionnary. VALVES['open'] is used for valve states
+if states_override is not specified.</dd>
+<dt><strong><code>states_override</code></strong> :&ensp;<code>1D array (default to None)</code></dt>
+<dd>Boolean array overriding VALVE['open'] to plot states. Each element is
+the state of a valve, True is open, False is closed. Dimension Nvalves.</dd>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the valves. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+<dt>plot_params : dictionnary (default is {}, empty dic.)</dt>
+<dt>a dictionnary of plotting parameters for the pore pressure profile,</dt>
+<dt>flux profile and valves. See pp_profile, q_profile, and valves</dt>
+<dt>functions of this module for respective paramaters.</dt>
+<dt><strong><code>save_name</code></strong> :&ensp;<code>str</code> or <code>None (default)</code></dt>
+<dd>Path for the figure to save.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>g_objs</code></strong> :&ensp;<code>list</code></dt>
+<dd>List of matplotlib objects corresponding to pore pressure profile line,
+flux profile line and valves patch collection.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def x_profile(X, P, PARAM, VALVES, states_override=None, plot_params={}, save_name=None):
+    &#34;&#34;&#34;
+    Plot profile of pore pressure, flux and valve states and positions at a
+    given time on an existing figure and axes.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space position array.
+    P : 1D array
+        Pore pressure in space array, at plot time, same dimension as X.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    VALVES : dictionnary
+        Valve parameters dictionnary. VALVES[&#39;open&#39;] is used for valve states
+        if states_override is not specified.
+    states_override : 1D array (default to None)
+        Boolean array overriding VALVE[&#39;open&#39;] to plot states. Each element is
+        the state of a valve, True is open, False is closed. Dimension Nvalves.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    plot_params : dictionnary (default is {}, empty dic.)
+        a dictionnary of plotting parameters for the pore pressure profile,
+        flux profile and valves. See pp_profile, q_profile, and valves
+        functions of this module for respective paramaters.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    g_objs : list
+        List of matplotlib objects corresponding to pore pressure profile line,
+        flux profile line and valves patch collection.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    fig, ax_q = plt.subplots(figsize=(8, 3.5))
+
+    # --&gt; Add another axis for p, and switch location of labels
+    ax_p = ax_q.twinx()
+    ax_p.tick_params(left=True, labelleft=True,
+                     right=False, labelright=False)
+    ax_q.tick_params(left=False, labelleft=False,
+                     right=True, labelright=True)
+    ax_p.yaxis.set_label_position(&#34;left&#34;)
+
+    # Plot pore pressure profile
+    # --------------------------
+    pp_line = pp_profile(X, P, fig=fig, ax=ax_p,
+                         plot_params=plot_params)
+
+    # Compute and plot flux profile
+    # -----------------------------
+    k = calc_k(VALVES, PARAM, states_override=states_override)
+    Q = calc_Q(P, k, PARAM)
+    q_line = q_profile(X, Q, fig=fig, ax=ax_q,
+                       plot_params=plot_params)
+    ax_q.yaxis.set_label_position(&#34;right&#34;)
+    ax_q.set_ylim((-.2, 1))
+
+    # Plot valves
+    # -----------
+    valves_pc, v_op_pc, v_cl_pc = valves(X, VALVES,
+                                         states_override=states_override,
+                                         fig=fig, ax=ax_q,
+                                         plot_params=plot_params)
+
+    #    ax_p.set_title(&#39;State of the system at t={:.2f}&#39;.format(t_plot))
+
+    plt.tight_layout()
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print(&#39;Saving figure at {:}&#39;.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    axes = [ax_p, ax_q]
+    g_objs = [pp_line, q_line, valves_pc, v_op_pc, v_cl_pc]
+
+    return fig, axes, g_objs</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PPvalves.plots" href="index.html">PPvalves.plots</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="PPvalves.plots.figures.activity_dip_fig" href="#PPvalves.plots.figures.activity_dip_fig">activity_dip_fig</a></code></li>
+<li><code><a title="PPvalves.plots.figures.activity_rate_fig" href="#PPvalves.plots.figures.activity_rate_fig">activity_rate_fig</a></code></li>
+<li><code><a title="PPvalves.plots.figures.bound_in_fig" href="#PPvalves.plots.figures.bound_in_fig">bound_in_fig</a></code></li>
+<li><code><a title="PPvalves.plots.figures.corr_mats" href="#PPvalves.plots.figures.corr_mats">corr_mats</a></code></li>
+<li><code><a title="PPvalves.plots.figures.deltap_1v_fig" href="#PPvalves.plots.figures.deltap_1v_fig">deltap_1v_fig</a></code></li>
+<li><code><a title="PPvalves.plots.figures.init" href="#PPvalves.plots.figures.init">init</a></code></li>
+<li><code><a title="PPvalves.plots.figures.mass_balance_fig" href="#PPvalves.plots.figures.mass_balance_fig">mass_balance_fig</a></code></li>
+<li><code><a title="PPvalves.plots.figures.perm_eq_fig" href="#PPvalves.plots.figures.perm_eq_fig">perm_eq_fig</a></code></li>
+<li><code><a title="PPvalves.plots.figures.phase_diagram" href="#PPvalves.plots.figures.phase_diagram">phase_diagram</a></code></li>
+<li><code><a title="PPvalves.plots.figures.recurrence_fig" href="#PPvalves.plots.figures.recurrence_fig">recurrence_fig</a></code></li>
+<li><code><a title="PPvalves.plots.figures.tseries_comp" href="#PPvalves.plots.figures.tseries_comp">tseries_comp</a></code></li>
+<li><code><a title="PPvalves.plots.figures.x_profile" href="#PPvalves.plots.figures.x_profile">x_profile</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

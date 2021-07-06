@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>PPvalves.valves API documentation</title>
+<meta name="description" content="A module to manage valve creation, distribution and action" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PPvalves.valves</code></h1>
+</header>
+<section id="section-intro">
+<p>A module to manage valve creation, distribution and action</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34; A module to manage valve creation, distribution and action &#34;&#34;&#34;
+
+# Imports
+# =======
+
+import numpy as np
+
+
+# Core
+# ====
+def comb(dx, v_wid, PARAM):
+    &#34;&#34;&#34;
+    Scatters valve at a constant distance along the domain.
+
+    Parameters
+    ----------
+    dx : float
+        Inter-valve distance to maintain across the domain, in non-dimensional
+        unit of length (fraction of total domain length).
+    v_wid : float
+        Width of the valve as a fraction of the total length of the domain
+        (non-dimensional length of valve).
+    PARAM : dict
+        Parameters dictionnary.
+
+    Returns
+    -------
+    v_idx : 1D array
+        Array of valve indices, index of P(x) just before valve.
+
+    &#34;&#34;&#34;
+    v_idx_0 = 1  # first possible valve index
+    v_idx_N = PARAM[&#39;Nx&#39;] - int(v_wid/PARAM[&#39;h_&#39;])  # last possible valve index
+    d_idx = int((dx + v_wid)/PARAM[&#39;h_&#39;])  # distance between valve indices
+
+    v_idx = np.arange(v_idx_0, v_idx_N, d_idx)
+
+    return v_idx
+
+# ----------------------------------------------------------------------------
+
+def scatter(scale, v_wid, PARAM):
+    &#34;&#34;&#34;
+    Scatters valves on the domain, according to an exponential law for their
+    distance. End and beginning of valves (in terms of k) have to be at
+    least h apart, they cannot be on the first or last 2 pts of
+    domain.
+    valves all have a fixed width.
+
+    Parameters
+    ----------
+    v_wid : float
+        Width of the valve in physical unit.
+    scale : float
+        Mean distance between valves (parameter of exponential law that dictate
+        inter-valve distances).
+    PARAM : dictionnary
+        Parameters dictionnary
+
+    Returns
+    -------
+    v_idx : 1D array
+        Array of the valves indices for the discretization used in `PARAM`.
+    &#34;&#34;&#34;
+    # Unpack
+    Nx = PARAM[&#39;Nx&#39;]
+    h_ = PARAM[&#39;h_&#39;]
+
+    # Initialization
+    prev_end = 1 # last
+    v_id = prev_end # v_id+1 is first index of low k
+    v_idx = []
+
+    # Draw intervalve distances while they do not cross domain end
+    while v_id + v_wid/h_ &lt; Nx - 1:
+        dist = np.random.exponential(scale)
+
+        v_id = np.floor(dist/h_) + prev_end
+
+        v_idx.append(v_id)
+        prev_end = v_id + v_wid/h_
+
+    v_idx = np.array(v_idx[:-1]).astype(int)
+
+    return v_idx
+
+# ----------------------------------------------------------------------------
+
+def patch_scatter(patch, scale, v_wid, PARAM):
+    &#34;&#34;&#34;
+    Scatters valves in the domain, but only in a patch.
+
+    Distributed according to an exponential law for their distance. End and
+    beginning of valves (in terms of k) have to be at least `h` apart. First
+    valve starts exactly where the patch starts, last valve finishes exactly
+    where the patch finishes. Valves all have a fixed width.
+
+    Parameters
+    ----------
+    patch : tuple
+        Extrema of the patch, in physical unit.
+    v_wid : float
+        Width of the valve in physical unit.
+    scale : float
+        Mean distance between valves (parameter of exponential law that dictate
+        inter-valve distances).
+    PARAM : dictionnary
+        Parameters dictionnary
+
+    Returns
+    -------
+    v_idx : 1D array
+        Array of the valves indices for the discretization used in `PARAM`.
+    &#34;&#34;&#34;
+    # Unpack
+    Nx = PARAM[&#39;Nx&#39;]
+    h_ = PARAM[&#39;h_&#39;]
+    X = np.arange(0, 1+h_, h_)
+
+    pid1 = np.where(X == min(patch))[0][0] # x index where patch starts
+    pid2 = np.where(X == max(patch))[0][0] # x index where patch ends
+    print(pid1, X[pid1])
+    print(pid2, X[pid2])
+
+    # Initialization
+    v_id = pid1  # first valve starts the patch
+    v_idx = [v_id]
+    prev_end = v_id + v_wid/h_ # end index of the (first) previous valve
+
+    while v_id + 2*v_wid/h_ &lt; pid2: # last valve must be before the closing valve
+        print(v_idx)
+        dist = np.random.exponential(scale)  # draw intervalve distance
+
+        v_id = np.floor(dist/h_) + prev_end  # add valve at dist from end of
+                                             # previous valve
+        v_idx.append(v_id)          # add a new valve to our list
+        prev_end = v_id + v_wid/h_  # change previous valve end to the new one
+
+    v_idx.remove(v_idx[-1]) # remove the last valve
+
+    last_v_id = pid2 - v_wid/h_
+    v_idx.append(last_v_id) # add the closing valve
+    v_idx = np.array(v_idx).astype(int)
+
+    return v_idx
+
+# ----------------------------------------------------------------------------
+
+def make(idx, dPhi, dPlo, width, klo, PARAM, verbose=True):
+    &#34;&#34;&#34;Creates valve distribution based on input parameters
+
+    Parameters
+    ----------
+    idx : 1D integer array
+        X indices just before valve. A valve has to start at 1 at least, and it
+        has to end before the end of the domain: idx &lt; Nx+2.
+    dPhi, dPlo : 1D arrays
+        Threshold of `dP` for opening and closing. Same length as `idx`.
+    width : 1D array
+        Width of each valve, in units. Corresponds to width between X point
+        just before and just after low permeability domain. Same length as `idx`.
+    klo : 1D array
+        Permeability of valves when closed. Same length as `idx`.
+
+    Returns
+    -------
+    VALVES : dictionnary
+        Valves dictionnary description. Fields are similar to input, additional
+        fields for storing valve state (closed initially) and dP.
+
+    &#34;&#34;&#34;
+    # Unpack
+    h = PARAM[&#39;h_&#39;]
+    Nx = PARAM[&#39;Nx&#39;]
+
+    # Check for invalid valves:
+    #--&gt; valves out of domain (low perm starting at 0 or ending at/after Nx)
+    if np.any(idx+1&lt;=1) | np.any((idx + width/h) &gt;= Nx):
+        raise ValueError(&#39;A valve\&#39;s boundaries exceed allowed domain&#39;)
+    #--&gt; valves one above another
+    i_sort = np.argsort(idx)
+    idx = idx[i_sort]
+    width = width[i_sort]
+    if np.any(idx[:-1] + width[:-1]/h &gt;= idx[1:]+1):
+        raise ValueError(&#39;Some valves are ontop of one another&#39;)
+
+    #--&gt; valves too thin (less than 2*h_ wide)
+    if np.any((width - 2*h) &lt; 0):
+        raise ValueError(&#39;Some valves are thinner than 2*h, minimum width recquired.&#39;)
+
+    # Build dictionnary
+    VALVES = {}
+
+    Nv = len(idx) # number of valves
+
+    #--&gt; Order valves in increasing X
+    i_sort = np.argsort(idx)
+
+    VALVES[&#39;idx&#39;] = idx
+    VALVES[&#39;dP&#39;] = np.zeros(Nv) # delta pore p seen by one valve
+    VALVES[&#39;open&#39;] = np.zeros(len(idx)).astype(bool) # open=True when open
+    VALVES[&#39;dPhi&#39;] = dPhi[i_sort]
+    VALVES[&#39;dPlo&#39;] = dPlo[i_sort]
+    VALVES[&#39;width&#39;] = width
+    VALVES[&#39;klo&#39;] = klo[i_sort]
+
+    if verbose:
+        print(&#39;valves idxs: \n {:}&#39;.format(VALVES[&#39;idx&#39;]))
+        print(&#39;Opening dP (nd): \n {:}&#39;.format(VALVES[&#39;dPhi&#39;]))
+        print(&#39;Closing dP (nd): \n {:}&#39;.format(VALVES[&#39;dPlo&#39;]))
+        print(&#39;valves state (True=open): \n {:}&#39;.format(VALVES[&#39;open&#39;]))
+
+    return VALVES
+
+# ----------------------------------------------------------------------------
+
+def X2idx(X, d):
+    &#34;&#34;&#34;A function to calculate the valve index for a given x coordinate.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space vector.
+    d : float
+        `X` coordinate of the updip end of the valve, preferably closest to a
+        multiple of the spacing of X for no surprises...
+
+    Returns
+    -------
+    idx : integer
+        Indices of X corresponding to the input `d`.
+    &#34;&#34;&#34;
+    # Get closest index to distance you set, what a function
+    idx = np.argmin(np.abs(X-d))
+
+    return idx
+
+# ----------------------------------------------------------------------------
+
+def dist2idx(X, d, w):
+    &#34;&#34;&#34;Compute valve indices for two valves at a given distance, centered in
+    the domain.
+In this second version, d is the distance between last point
+        of low_k of previous valve and first point of low_k of next.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space vector.
+    d : float
+        The distance between last point of low permeability of first valve and
+        first point of low permeability of next.
+    w : float
+        Valves&#39; width
+
+    Returns
+    -------
+    idx1, idx2 : integers.
+        Indices of `X` corresponding to the input `d`, indices are on each side
+        of the mid-point of `X`.
+    &#34;&#34;&#34;
+
+    # Get space increment
+    h = X[1]-X[0]
+
+    # Get mid-point of X
+    mid_idx = len(X)/2. # we are using float to diminish the number of cases
+
+    # Convert distance to index distance
+    idx_d = d/h
+
+    # Calculate indices
+    idx1 = int(np.floor(mid_idx - idx_d/2.).astype(int) - w/h)
+    idx2 = int(np.floor(mid_idx + idx_d/2.).astype(int) - 1)
+
+    return idx1, idx2
+
+# -----------------------------------------------------------------------------
+
+def evolve(P, h, VALVES):
+    &#34;&#34;&#34;Checks the new pore pressure state at valves and opens/closes them
+    accordingly.
+
+    Parameters
+    ----------
+    P : 1D array
+        Pore pressure profile that will define valve states.
+    VALVES : dict.
+        Valve parameters dictionnary.
+
+    Returns
+    -------
+    VALVES : dict.
+        Updated valve parameters dictionnary: current `&#39;dP&#39;` and `&#39;state&#39;`.
+    active_valves : boolean array
+        Which valve has either opened or closed.
+
+    &#34;&#34;&#34;
+    # &gt;&gt; Update pressure differential
+    VALVES[&#39;dP&#39;] = P[VALVES[&#39;idx&#39;]] - P[(VALVES[&#39;idx&#39;]+VALVES[&#39;width&#39;]/h).astype(int)]
+
+    # &gt;&gt; Compute boolean for above/below opening/closing criteria
+    above_dpop = VALVES[&#39;dP&#39;] &gt; VALVES[&#39;dPhi&#39;]
+    below_dpcl = VALVES[&#39;dP&#39;] &lt; VALVES[&#39;dPlo&#39;]
+
+    # &gt;&gt; Compute new states
+    # opening
+    opening = ~VALVES[&#39;open&#39;] &amp; above_dpop
+    VALVES[&#39;open&#39;] = VALVES[&#39;open&#39;] | above_dpop
+
+    # closing
+    closing = VALVES[&#39;open&#39;] &amp; below_dpcl
+    VALVES[&#39;open&#39;] = VALVES[&#39;open&#39;] &amp; ~below_dpcl
+
+    # NB : condition to update state is different than opening (resp. closing) detector
+    # because the first one accounts for when an open valve stays open (resp. a
+    # closed valve stays closed) and not the latter.
+
+    active_valves = opening | closing
+
+    return VALVES, active_valves
+
+#---------------------------------------------------------------------------------
+
+def update_k(VALVES, active_valves, PARAM):
+    &#34;&#34;&#34;Computes permeability profile according to valve new valve states.
+
+    Parameters
+    ----------
+    VALVES : dictionnary
+        Valves dictionnary description. Fields are similar to input, additional
+    active_valves : boolean array
+        Which valve has either opened or closed.
+    PARAM : dict
+        Parameters dictionnary.
+
+    Returns
+    -------
+    k : 1D array
+        Updated permeability.
+
+    &#34;&#34;&#34;
+    # &gt;&gt; Unpack
+    h = PARAM[&#39;h_&#39;]
+    k = PARAM[&#39;k&#39;]
+    k_bg = k[0] # ensure that your k is always k_bg at the 2 1st and 2 last pts
+
+
+    # Visit every valve that was active and change its permeability to its
+    #  updated value
+    v_iterable = zip(VALVES[&#39;open&#39;][active_valves], VALVES[&#39;idx&#39;][active_valves],\
+            VALVES[&#39;width&#39;][active_valves], VALVES[&#39;klo&#39;][active_valves])
+
+    for v_is_open, idx, w, klo in v_iterable:
+        k[idx+1 : int(idx+w/h+1)] = k_bg*v_is_open + ~v_is_open*klo
+
+    return k
+
+# Alternate, to avoid to loop, but not really more efficient at first sight,
+# maybe when more valves ?
+#
+#     &gt;&gt; Make slices of space domain to isolate their permeability
+#    slices = [np.arange(VALVES[&#39;idx&#39;][active_valves][ii]+1,
+#              int(VALVES[&#39;idx&#39;][active_valves][ii]+VALVES[&#39;width&#39;][active_valves][ii]/h) + 1)
+#              for ii in range(len(VALVES[&#39;idx&#39;][active_valves]))]
+#
+#    # &gt;&gt; For each valve, associate its new permeability to its state
+#    kval = [slices[ii]*0 +
+#            ~VALVES[&#39;open&#39;][active_valves][ii]*VALVES[&#39;klo&#39;][active_valves][ii] +
+#            VALVES[&#39;open&#39;][active_valves][ii]*k_bg
+#            for ii in range(len(VALVES[&#39;idx&#39;][active_valves]))]
+#
+#    # &gt;&gt; Update permeability domain using slices and permeability in slices
+#    kval = np.concatenate(kval)
+#    slices = np.concatenate(slices)
+#    k[slices] = kval</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="PPvalves.valves.X2idx"><code class="name flex">
+<span>def <span class="ident">X2idx</span></span>(<span>X, d)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A function to calculate the valve index for a given x coordinate.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Space vector.</dd>
+<dt><strong><code>d</code></strong> :&ensp;<code>float</code></dt>
+<dd><code>X</code> coordinate of the updip end of the valve, preferably closest to a
+multiple of the spacing of X for no surprises&hellip;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>idx</code></strong> :&ensp;<code>integer</code></dt>
+<dd>Indices of X corresponding to the input <code>d</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def X2idx(X, d):
+    &#34;&#34;&#34;A function to calculate the valve index for a given x coordinate.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space vector.
+    d : float
+        `X` coordinate of the updip end of the valve, preferably closest to a
+        multiple of the spacing of X for no surprises...
+
+    Returns
+    -------
+    idx : integer
+        Indices of X corresponding to the input `d`.
+    &#34;&#34;&#34;
+    # Get closest index to distance you set, what a function
+    idx = np.argmin(np.abs(X-d))
+
+    return idx</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.valves.comb"><code class="name flex">
+<span>def <span class="ident">comb</span></span>(<span>dx, v_wid, PARAM)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Scatters valve at a constant distance along the domain.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>dx</code></strong> :&ensp;<code>float</code></dt>
+<dd>Inter-valve distance to maintain across the domain, in non-dimensional
+unit of length (fraction of total domain length).</dd>
+<dt>v_wid : float</dt>
+<dt>Width of the valve as a fraction of the total length of the domain</dt>
+<dt>(non-dimensional length of valve).</dt>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Parameters dictionnary.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>v_idx</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of valve indices, index of P(x) just before valve.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def comb(dx, v_wid, PARAM):
+    &#34;&#34;&#34;
+    Scatters valve at a constant distance along the domain.
+
+    Parameters
+    ----------
+    dx : float
+        Inter-valve distance to maintain across the domain, in non-dimensional
+        unit of length (fraction of total domain length).
+    v_wid : float
+        Width of the valve as a fraction of the total length of the domain
+        (non-dimensional length of valve).
+    PARAM : dict
+        Parameters dictionnary.
+
+    Returns
+    -------
+    v_idx : 1D array
+        Array of valve indices, index of P(x) just before valve.
+
+    &#34;&#34;&#34;
+    v_idx_0 = 1  # first possible valve index
+    v_idx_N = PARAM[&#39;Nx&#39;] - int(v_wid/PARAM[&#39;h_&#39;])  # last possible valve index
+    d_idx = int((dx + v_wid)/PARAM[&#39;h_&#39;])  # distance between valve indices
+
+    v_idx = np.arange(v_idx_0, v_idx_N, d_idx)
+
+    return v_idx</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.valves.dist2idx"><code class="name flex">
+<span>def <span class="ident">dist2idx</span></span>(<span>X, d, w)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compute valve indices for two valves at a given distance, centered in
+the domain.
+In this second version, d is the distance between last point
+of low_k of previous valve and first point of low_k of next.</p>
+<pre><code>Parameters
+----------
+X : 1D array
+    Space vector.
+d : float
+    The distance between last point of low permeability of first valve and
+    first point of low permeability of next.
+w : float
+    Valves' width
+
+Returns
+-------
+idx1, idx2 : integers.
+    Indices of &lt;code&gt;X&lt;/code&gt; corresponding to the input &lt;code&gt;d&lt;/code&gt;, indices are on each side
+    of the mid-point of &lt;code&gt;X&lt;/code&gt;.
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dist2idx(X, d, w):
+    &#34;&#34;&#34;Compute valve indices for two valves at a given distance, centered in
+    the domain.
+In this second version, d is the distance between last point
+        of low_k of previous valve and first point of low_k of next.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space vector.
+    d : float
+        The distance between last point of low permeability of first valve and
+        first point of low permeability of next.
+    w : float
+        Valves&#39; width
+
+    Returns
+    -------
+    idx1, idx2 : integers.
+        Indices of `X` corresponding to the input `d`, indices are on each side
+        of the mid-point of `X`.
+    &#34;&#34;&#34;
+
+    # Get space increment
+    h = X[1]-X[0]
+
+    # Get mid-point of X
+    mid_idx = len(X)/2. # we are using float to diminish the number of cases
+
+    # Convert distance to index distance
+    idx_d = d/h
+
+    # Calculate indices
+    idx1 = int(np.floor(mid_idx - idx_d/2.).astype(int) - w/h)
+    idx2 = int(np.floor(mid_idx + idx_d/2.).astype(int) - 1)
+
+    return idx1, idx2</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.valves.evolve"><code class="name flex">
+<span>def <span class="ident">evolve</span></span>(<span>P, h, VALVES)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks the new pore pressure state at valves and opens/closes them
+accordingly.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>P</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Pore pressure profile that will define valve states.</dd>
+</dl>
+<p>VALVES : dict.
+Valve parameters dictionnary.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>VALVES : dict.</dt>
+<dt>Updated valve parameters dictionnary: current <code>'dP'</code> and <code>'state'</code>.</dt>
+<dt><strong><code>active_valves</code></strong> :&ensp;<code>boolean array</code></dt>
+<dd>Which valve has either opened or closed.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def evolve(P, h, VALVES):
+    &#34;&#34;&#34;Checks the new pore pressure state at valves and opens/closes them
+    accordingly.
+
+    Parameters
+    ----------
+    P : 1D array
+        Pore pressure profile that will define valve states.
+    VALVES : dict.
+        Valve parameters dictionnary.
+
+    Returns
+    -------
+    VALVES : dict.
+        Updated valve parameters dictionnary: current `&#39;dP&#39;` and `&#39;state&#39;`.
+    active_valves : boolean array
+        Which valve has either opened or closed.
+
+    &#34;&#34;&#34;
+    # &gt;&gt; Update pressure differential
+    VALVES[&#39;dP&#39;] = P[VALVES[&#39;idx&#39;]] - P[(VALVES[&#39;idx&#39;]+VALVES[&#39;width&#39;]/h).astype(int)]
+
+    # &gt;&gt; Compute boolean for above/below opening/closing criteria
+    above_dpop = VALVES[&#39;dP&#39;] &gt; VALVES[&#39;dPhi&#39;]
+    below_dpcl = VALVES[&#39;dP&#39;] &lt; VALVES[&#39;dPlo&#39;]
+
+    # &gt;&gt; Compute new states
+    # opening
+    opening = ~VALVES[&#39;open&#39;] &amp; above_dpop
+    VALVES[&#39;open&#39;] = VALVES[&#39;open&#39;] | above_dpop
+
+    # closing
+    closing = VALVES[&#39;open&#39;] &amp; below_dpcl
+    VALVES[&#39;open&#39;] = VALVES[&#39;open&#39;] &amp; ~below_dpcl
+
+    # NB : condition to update state is different than opening (resp. closing) detector
+    # because the first one accounts for when an open valve stays open (resp. a
+    # closed valve stays closed) and not the latter.
+
+    active_valves = opening | closing
+
+    return VALVES, active_valves</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.valves.make"><code class="name flex">
+<span>def <span class="ident">make</span></span>(<span>idx, dPhi, dPlo, width, klo, PARAM, verbose=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates valve distribution based on input parameters</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>idx</code></strong> :&ensp;<code>1D integer array</code></dt>
+<dd>X indices just before valve. A valve has to start at 1 at least, and it
+has to end before the end of the domain: idx &lt; Nx+2.</dd>
+<dt><strong><code>dPhi</code></strong>, <strong><code>dPlo</code></strong> :&ensp;<code>1D arrays</code></dt>
+<dd>Threshold of <code>dP</code> for opening and closing. Same length as <code>idx</code>.</dd>
+<dt><strong><code>width</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Width of each valve, in units. Corresponds to width between X point
+just before and just after low permeability domain. Same length as <code>idx</code>.</dd>
+<dt><strong><code>klo</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Permeability of valves when closed. Same length as <code>idx</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valves dictionnary description. Fields are similar to input, additional
+fields for storing valve state (closed initially) and dP.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def make(idx, dPhi, dPlo, width, klo, PARAM, verbose=True):
+    &#34;&#34;&#34;Creates valve distribution based on input parameters
+
+    Parameters
+    ----------
+    idx : 1D integer array
+        X indices just before valve. A valve has to start at 1 at least, and it
+        has to end before the end of the domain: idx &lt; Nx+2.
+    dPhi, dPlo : 1D arrays
+        Threshold of `dP` for opening and closing. Same length as `idx`.
+    width : 1D array
+        Width of each valve, in units. Corresponds to width between X point
+        just before and just after low permeability domain. Same length as `idx`.
+    klo : 1D array
+        Permeability of valves when closed. Same length as `idx`.
+
+    Returns
+    -------
+    VALVES : dictionnary
+        Valves dictionnary description. Fields are similar to input, additional
+        fields for storing valve state (closed initially) and dP.
+
+    &#34;&#34;&#34;
+    # Unpack
+    h = PARAM[&#39;h_&#39;]
+    Nx = PARAM[&#39;Nx&#39;]
+
+    # Check for invalid valves:
+    #--&gt; valves out of domain (low perm starting at 0 or ending at/after Nx)
+    if np.any(idx+1&lt;=1) | np.any((idx + width/h) &gt;= Nx):
+        raise ValueError(&#39;A valve\&#39;s boundaries exceed allowed domain&#39;)
+    #--&gt; valves one above another
+    i_sort = np.argsort(idx)
+    idx = idx[i_sort]
+    width = width[i_sort]
+    if np.any(idx[:-1] + width[:-1]/h &gt;= idx[1:]+1):
+        raise ValueError(&#39;Some valves are ontop of one another&#39;)
+
+    #--&gt; valves too thin (less than 2*h_ wide)
+    if np.any((width - 2*h) &lt; 0):
+        raise ValueError(&#39;Some valves are thinner than 2*h, minimum width recquired.&#39;)
+
+    # Build dictionnary
+    VALVES = {}
+
+    Nv = len(idx) # number of valves
+
+    #--&gt; Order valves in increasing X
+    i_sort = np.argsort(idx)
+
+    VALVES[&#39;idx&#39;] = idx
+    VALVES[&#39;dP&#39;] = np.zeros(Nv) # delta pore p seen by one valve
+    VALVES[&#39;open&#39;] = np.zeros(len(idx)).astype(bool) # open=True when open
+    VALVES[&#39;dPhi&#39;] = dPhi[i_sort]
+    VALVES[&#39;dPlo&#39;] = dPlo[i_sort]
+    VALVES[&#39;width&#39;] = width
+    VALVES[&#39;klo&#39;] = klo[i_sort]
+
+    if verbose:
+        print(&#39;valves idxs: \n {:}&#39;.format(VALVES[&#39;idx&#39;]))
+        print(&#39;Opening dP (nd): \n {:}&#39;.format(VALVES[&#39;dPhi&#39;]))
+        print(&#39;Closing dP (nd): \n {:}&#39;.format(VALVES[&#39;dPlo&#39;]))
+        print(&#39;valves state (True=open): \n {:}&#39;.format(VALVES[&#39;open&#39;]))
+
+    return VALVES</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.valves.patch_scatter"><code class="name flex">
+<span>def <span class="ident">patch_scatter</span></span>(<span>patch, scale, v_wid, PARAM)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Scatters valves in the domain, but only in a patch.</p>
+<p>Distributed according to an exponential law for their distance. End and
+beginning of valves (in terms of k) have to be at least <code>h</code> apart. First
+valve starts exactly where the patch starts, last valve finishes exactly
+where the patch finishes. Valves all have a fixed width.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>patch</code></strong> :&ensp;<code>tuple</code></dt>
+<dd>Extrema of the patch, in physical unit.</dd>
+<dt><strong><code>v_wid</code></strong> :&ensp;<code>float</code></dt>
+<dd>Width of the valve in physical unit.</dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>float</code></dt>
+<dd>Mean distance between valves (parameter of exponential law that dictate
+inter-valve distances).</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Parameters dictionnary</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>v_idx</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of the valves indices for the discretization used in <code>PARAM</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def patch_scatter(patch, scale, v_wid, PARAM):
+    &#34;&#34;&#34;
+    Scatters valves in the domain, but only in a patch.
+
+    Distributed according to an exponential law for their distance. End and
+    beginning of valves (in terms of k) have to be at least `h` apart. First
+    valve starts exactly where the patch starts, last valve finishes exactly
+    where the patch finishes. Valves all have a fixed width.
+
+    Parameters
+    ----------
+    patch : tuple
+        Extrema of the patch, in physical unit.
+    v_wid : float
+        Width of the valve in physical unit.
+    scale : float
+        Mean distance between valves (parameter of exponential law that dictate
+        inter-valve distances).
+    PARAM : dictionnary
+        Parameters dictionnary
+
+    Returns
+    -------
+    v_idx : 1D array
+        Array of the valves indices for the discretization used in `PARAM`.
+    &#34;&#34;&#34;
+    # Unpack
+    Nx = PARAM[&#39;Nx&#39;]
+    h_ = PARAM[&#39;h_&#39;]
+    X = np.arange(0, 1+h_, h_)
+
+    pid1 = np.where(X == min(patch))[0][0] # x index where patch starts
+    pid2 = np.where(X == max(patch))[0][0] # x index where patch ends
+    print(pid1, X[pid1])
+    print(pid2, X[pid2])
+
+    # Initialization
+    v_id = pid1  # first valve starts the patch
+    v_idx = [v_id]
+    prev_end = v_id + v_wid/h_ # end index of the (first) previous valve
+
+    while v_id + 2*v_wid/h_ &lt; pid2: # last valve must be before the closing valve
+        print(v_idx)
+        dist = np.random.exponential(scale)  # draw intervalve distance
+
+        v_id = np.floor(dist/h_) + prev_end  # add valve at dist from end of
+                                             # previous valve
+        v_idx.append(v_id)          # add a new valve to our list
+        prev_end = v_id + v_wid/h_  # change previous valve end to the new one
+
+    v_idx.remove(v_idx[-1]) # remove the last valve
+
+    last_v_id = pid2 - v_wid/h_
+    v_idx.append(last_v_id) # add the closing valve
+    v_idx = np.array(v_idx).astype(int)
+
+    return v_idx</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.valves.scatter"><code class="name flex">
+<span>def <span class="ident">scatter</span></span>(<span>scale, v_wid, PARAM)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Scatters valves on the domain, according to an exponential law for their
+distance. End and beginning of valves (in terms of k) have to be at
+least h apart, they cannot be on the first or last 2 pts of
+domain.
+valves all have a fixed width.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>v_wid</code></strong> :&ensp;<code>float</code></dt>
+<dd>Width of the valve in physical unit.</dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>float</code></dt>
+<dd>Mean distance between valves (parameter of exponential law that dictate
+inter-valve distances).</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Parameters dictionnary</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>v_idx</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of the valves indices for the discretization used in <code>PARAM</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def scatter(scale, v_wid, PARAM):
+    &#34;&#34;&#34;
+    Scatters valves on the domain, according to an exponential law for their
+    distance. End and beginning of valves (in terms of k) have to be at
+    least h apart, they cannot be on the first or last 2 pts of
+    domain.
+    valves all have a fixed width.
+
+    Parameters
+    ----------
+    v_wid : float
+        Width of the valve in physical unit.
+    scale : float
+        Mean distance between valves (parameter of exponential law that dictate
+        inter-valve distances).
+    PARAM : dictionnary
+        Parameters dictionnary
+
+    Returns
+    -------
+    v_idx : 1D array
+        Array of the valves indices for the discretization used in `PARAM`.
+    &#34;&#34;&#34;
+    # Unpack
+    Nx = PARAM[&#39;Nx&#39;]
+    h_ = PARAM[&#39;h_&#39;]
+
+    # Initialization
+    prev_end = 1 # last
+    v_id = prev_end # v_id+1 is first index of low k
+    v_idx = []
+
+    # Draw intervalve distances while they do not cross domain end
+    while v_id + v_wid/h_ &lt; Nx - 1:
+        dist = np.random.exponential(scale)
+
+        v_id = np.floor(dist/h_) + prev_end
+
+        v_idx.append(v_id)
+        prev_end = v_id + v_wid/h_
+
+    v_idx = np.array(v_idx[:-1]).astype(int)
+
+    return v_idx</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.valves.update_k"><code class="name flex">
+<span>def <span class="ident">update_k</span></span>(<span>VALVES, active_valves, PARAM)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes permeability profile according to valve new valve states.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valves dictionnary description. Fields are similar to input, additional</dd>
+<dt><strong><code>active_valves</code></strong> :&ensp;<code>boolean array</code></dt>
+<dd>Which valve has either opened or closed.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Parameters dictionnary.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>k</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Updated permeability.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_k(VALVES, active_valves, PARAM):
+    &#34;&#34;&#34;Computes permeability profile according to valve new valve states.
+
+    Parameters
+    ----------
+    VALVES : dictionnary
+        Valves dictionnary description. Fields are similar to input, additional
+    active_valves : boolean array
+        Which valve has either opened or closed.
+    PARAM : dict
+        Parameters dictionnary.
+
+    Returns
+    -------
+    k : 1D array
+        Updated permeability.
+
+    &#34;&#34;&#34;
+    # &gt;&gt; Unpack
+    h = PARAM[&#39;h_&#39;]
+    k = PARAM[&#39;k&#39;]
+    k_bg = k[0] # ensure that your k is always k_bg at the 2 1st and 2 last pts
+
+
+    # Visit every valve that was active and change its permeability to its
+    #  updated value
+    v_iterable = zip(VALVES[&#39;open&#39;][active_valves], VALVES[&#39;idx&#39;][active_valves],\
+            VALVES[&#39;width&#39;][active_valves], VALVES[&#39;klo&#39;][active_valves])
+
+    for v_is_open, idx, w, klo in v_iterable:
+        k[idx+1 : int(idx+w/h+1)] = k_bg*v_is_open + ~v_is_open*klo
+
+    return k</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PPvalves" href="index.html">PPvalves</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="PPvalves.valves.X2idx" href="#PPvalves.valves.X2idx">X2idx</a></code></li>
+<li><code><a title="PPvalves.valves.comb" href="#PPvalves.valves.comb">comb</a></code></li>
+<li><code><a title="PPvalves.valves.dist2idx" href="#PPvalves.valves.dist2idx">dist2idx</a></code></li>
+<li><code><a title="PPvalves.valves.evolve" href="#PPvalves.valves.evolve">evolve</a></code></li>
+<li><code><a title="PPvalves.valves.make" href="#PPvalves.valves.make">make</a></code></li>
+<li><code><a title="PPvalves.valves.patch_scatter" href="#PPvalves.valves.patch_scatter">patch_scatter</a></code></li>
+<li><code><a title="PPvalves.valves.scatter" href="#PPvalves.valves.scatter">scatter</a></code></li>
+<li><code><a title="PPvalves.valves.update_k" href="#PPvalves.valves.update_k">update_k</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

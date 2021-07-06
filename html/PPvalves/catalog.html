@@ -1,0 +1,1731 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>PPvalves.catalog API documentation</title>
+<meta name="description" content="Module used to produce and analyze synthetic activity catalogs.
+`PPvalves.catalog` is adapted to analyse the results of PPv mainly." />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PPvalves.catalog</code></h1>
+</header>
+<section id="section-intro">
+<p>Module used to produce and analyze synthetic activity catalogs.
+<code><a title="PPvalves.catalog" href="#PPvalves.catalog">PPvalves.catalog</a></code> is adapted to analyse the results of PPv mainly.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">r&#34;&#34;&#34;Module used to produce and analyze synthetic activity catalogs.
+`PPvalves.catalog` is adapted to analyse the results of PPv mainly.
+&#34;&#34;&#34;
+# &gt;&gt; Imports
+import numpy as np
+from mtspec import mtspec
+from scipy.special import erfinv
+from scipy.signal import savgol_filter
+
+import sys
+import os
+sys.path.append(&#39;/Users/farge/work/py_modules/my_modules/&#39;)
+import stats as ms
+
+
+# &gt;&gt; Core
+
+#------------------------------------------------------------------------------
+
+def open_ratio(states):
+    &#34;&#34;&#34;
+    Computes the ratio of open valves to total number of valves in time.
+
+    Parameters
+    ----------
+    states: 2D array
+        History of valve states, dimension `Ntimes, Nvalves`.  `False` is
+        closed, `True` is open.
+    Returns
+    -------
+    ratio : 1D array
+        For each time `states` is specified, the proportion of open valves is
+        returned.
+
+    Notes
+    -----
+    Parameter `states` is usually taken from `run_ppv` output: `v_activity[times,0,valve_idx]`, where
+    `valve_idx` selects the indices of the valves you want an event count f.
+    &#34;&#34;&#34;
+    Nv = np.shape(states)[1]  # Total number of valves
+    ratio = np.sum(states, axis=1) / Nv
+
+    return ratio
+
+#------------------------------------------------------------------------------
+
+def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):
+    &#34;&#34;&#34;Produces a catalog of valve events (openings or closings).
+
+    Produces a catalog of events in time --- and optionally space. The time of
+    an event occuring is taken as the time at which the corresponding threshold
+    of pressure differential is crossed at the given valve.
+
+    Parameters
+    ----------
+    ev_type : str
+        type of event to count, either `&#34;close&#34;`, or `&#34;open&#34;`.
+    states: 2D array
+        History of valve states, dimension `Ntimes, Nvalves`.  `False` is
+        closed, `True` is open.
+    time : 1D array
+        Array of physical times, same shape as first dimension of `states`.
+    catalog : bool, optional
+        If `catalog=True`, the allows `event_count` to return
+        the position of events `x_events` in addition to their time `t_event`.
+        Then, it recquires that `VALVES` and `X` are specified.
+    VALVES : dictionnary, optional
+        Valve characteristics dictionnary. Needed for `catalog` option.
+    X : 1D array, optional
+        Physical sppace array. Needed for `catalog` option.
+
+    Returns
+    -------
+    events_t : 1D array
+        Event times.
+    events_x : 1D array
+        Event locations, if catalog is True.
+
+    Notes
+    -----
+    Parameter `states` is usually taken from `run_ppv` output: `v_activity[times,0,valve_idx]`, where
+    `valve_idx` selects the indices of the valves you want an event count f.
+    &#34;&#34;&#34;
+    # &gt;&gt; Check if catalog option is on
+    if catalog &amp; isinstance(VALVES, type(None)) &amp; isinstance(X, type(None)):
+        raise ValueError(&#34;When catalog option is turned on, the valves&#39;&#34; + \
+         &#39;location needs to be specified with the v_x argument.&#39;)
+
+
+    # &gt;&gt; For several valves
+    if len(states.shape) &gt; 1:
+        n_valves = states.shape[1] # number of valves
+
+        all_events_i = []  # init: time indices of events
+        if catalog:
+            v_x = X[VALVES[&#39;idx&#39;]] + VALVES[&#39;width&#39;]/2 # location of valves
+            all_events_x = []  # init: locations of events
+
+        for iv in range(n_valves):
+            # -&gt; Run through valves, for each, compute (t, x)
+            v_states = states[:, iv].astype(int)  # states for this valve
+
+            if ev_type == &#39;close&#39;:  # get 1 -&gt; 0 events
+                events = (v_states[1:]-v_states[:-1]) == -1
+                v_events_i = np.where(events)[0]+1  # events idxs
+
+            elif ev_type == &#39;open&#39;:  # get 0 -&gt; 1 events
+                events = (v_states[1:]-v_states[:-1]) == 1
+                v_events_i = np.where(events)[0]+1  # events idxs
+
+            v_events_i = v_events_i.tolist()
+            all_events_i.extend(v_events_i)  # add valve events t to all events
+
+            # -&gt; build event location vector
+            if catalog:
+                v_events_x = [v_x[iv] for ii in\
+                 range(len(v_events_i))]
+                all_events_x.extend(v_events_x) # add valve events t to all events
+
+        # &gt;&gt; Convert event time idx to time
+        events_t = time[all_events_i]
+        if catalog:
+            events_x = np.array(all_events_x)
+
+        # &gt;&gt; Sort events t, x in chronological order and return
+        if catalog:
+            id_sort = np.argsort(events_t)
+            events_t = events_t[id_sort]
+            events_x = events_x[id_sort]
+            return events_t, events_x
+
+        else:
+            events_t = np.sort(events_t)
+            return events_t
+
+    # &gt;&gt; For one valve only
+    else:
+        if ev_type == &#39;close&#39;:
+            events_i = np.where(states[1:].astype(int) -\
+                        states[:-1].astype(int) == -1)[0] + 1
+        if ev_type == &#39;open&#39;:
+            events_i = np.where(states[1:].astype(int) -\
+                        states[:-1].astype(int) == 1)[0] + 1
+        events_i = events_i.tolist()
+        t_events = time[events_i]
+        return t_events
+
+#------------------------------------------------------------------------------
+
+def open_count(states, time, catalog=False, VALVES=None, X=None):
+    &#34;&#34;&#34;Counts and makes a catalog of valve opening events.
+
+    Parameters
+    ----------
+    states: 2D array
+        History of valve states, dimension `Ntimes, Nvalves`.  `False` is
+        closed, `True` is open.
+    time : 1D array
+        Array of physical times, same shape as first dimension of `states`.
+    catalog : bool, optional
+        If `catalog=True`, the allows `event_count` to return
+        the position of events `x_events` in addition to their time `t_event`.
+        Then, it recquires that `VALVES` and `X` are specified.
+    VALVES : dictionnary, optional
+        Valve characteristics dictionnary. Needed for `catalog` option.
+    X : 1D array, optional
+        Physical sppace array. Needed for `catalog` option.
+
+    Returns
+    -------
+    events_t : 1D array
+        Event times.
+    events_x : 1D array
+        Event locations, if catalog is True.
+
+    Notes
+    -----
+        - This is a shortcut function to use instead of `event_count`.
+        - Parameter `states` is usually taken from `run_ppv` output:
+          `v_activity[times,0,valve_idx]`, where `valve_idx` selects the
+          indices of the valves you want an event count f.
+
+    See also
+    --------
+    event_count : General event count.
+    &#34;&#34;&#34;
+    # &gt;&gt; Call event count
+    out = event_count(&#39;open&#39;, states, time, catalog=catalog, VALVES=VALVES, X=X)
+
+    return out
+
+#------------------------------------------------------------------------------
+
+def close_count(states, time, catalog=False, VALVES=None, X=None):
+    &#34;&#34;&#34;Counts and makes a catalog of valve opening events.
+
+    Parameters
+    ----------
+    states: 2D array
+        History of valve states, dimension `Ntimes, Nvalves`.  `False` is
+        closed, `True` is open.
+    time : 1D array
+        Array of physical times, same shape as first dimension of `states`.
+    catalog : bool, optional
+        If `catalog=True`, the allows `event_count` to return
+        the position of events `x_events` in addition to their time `t_event`.
+        Then, it recquires that `VALVES` and `X` are specified.
+    VALVES : dictionnary, optional
+        Valve characteristics dictionnary. Needed for `catalog` option.
+    X : 1D array, optional
+        Physical sppace array. Needed for `catalog` option.
+
+    Returns
+    -------
+    events_t : 1D array
+        Event times.
+    events_x : 1D array
+        Event locations, if catalog is True.
+
+    Notes
+    -----
+        - This is a shortcut function to use instead of `event_count`.
+        - Parameter `states` is usually taken from `run_ppv` output:
+          `v_activity[times,0,valve_idx]`, where `valve_idx` selects the
+          indices of the valves you want an event count f.
+
+    See also
+    --------
+    event_count : General event count.
+    &#34;&#34;&#34;
+    # &gt;&gt; Call event count
+    out = event_count(&#39;close&#39;, states, time, catalog=catalog, VALVES=VALVES, X=X)
+
+    return out
+
+#---------------------------------------------------------------------------------
+
+def recurrence(event_time):
+    &#34;&#34;&#34;Computes time before next event for a sequence of events.
+
+    Parameters
+    ----------
+    event_time : 1D array
+        Event times.
+
+    Returns
+    -------
+    time_before_next : 1D array
+        Time before next event for the all the events *but the last one*:
+        dimension is one less than `event_time`. Same unit as the event times.
+    &#34;&#34;&#34;
+
+    time_before_next = event_time[1:] - event_time[:-1]
+
+    return time_before_next
+
+#------------------------------------------------------------------------------
+
+def open_duration(states, time):
+    &#34;&#34;&#34;open_times computes the duration a valve spends open each time it
+    closes.
+
+    Parameters
+    ----------
+    states : 1D array
+        Valve states in time. Can start at 0, or at anytime.
+    time : 1D array
+        Time array.
+
+    Returns
+    -------
+    durations : 1D array
+        Time spent open for each time the valve is closed. Returns an empty
+        array when there are no events.
+
+    &#34;&#34;&#34;
+    # &gt;&gt; In cases when there are no events, just return empty array
+    if (not np.any(states)) or np.all(states):
+        return np.array([])
+
+    t_op = open_count(states, time)
+    t_cl = close_count(states, time)
+
+    # &gt;&gt; If first event is opening :
+    # --&gt; first t_op is before t_cl, well ordered
+    if t_op[0] &lt; t_cl[0]:
+        icl0 = 0
+    # &gt;&gt; If first event is closing :
+    # --&gt; first t_cl should not be taken into account
+    else:
+        icl0 = 1
+
+    # &gt;&gt; If last event is closing :
+    # --&gt; no problem of ordering : last t_op is before last t_cl
+    if t_op[-1] &lt; t_cl[-1]:
+        iopN = len(t_cl)
+    # &gt;&gt; If last event is opening :
+    # --&gt; do not count last opening
+    else:
+        iopN = -1
+
+    durations = t_cl[icl0:] - t_op[:iopN]
+
+    return durations
+
+#------------------------------------------------------------------------------
+
+def closed_duration(states, time):
+    &#34;&#34;&#34;closed_times computes the duration a valve spends closed each time it
+    closes.
+
+    Parameters
+    ----------
+    states : 1D array
+        Valve states in time. Can start at 0, or at anytime.
+    time : 1D array
+        Time array.
+
+    Returns
+    -------
+    durations : 1D array
+        Time spent closed for each time the valve is closed. Returns an empty
+        array when there are no events.
+
+    &#34;&#34;&#34;
+    # &gt;&gt; In cases when there are no events, just return empty array
+    if (not np.any(states)) or np.all(states):
+        return np.array([])
+
+    t_op = open_count(states, time)
+    t_cl = close_count(states, time)
+
+    # &gt;&gt; If first event is closing :
+    # --&gt; first t_cl and t_op are well ordered
+    if t_op[0] &gt; t_cl[0]:
+        iop0 = 0
+    # &gt;&gt; If first event is opening :
+    # --&gt; first t_op is before t_cl, do not take it into account
+    else:
+        iop0 = 1
+
+    # &gt;&gt; If last event is opening :
+    # --&gt; no problem of ordering : last t_cl is before last t_op
+    if t_op[-1] &gt; t_cl[-1]:
+        iclN = len(t_cl)
+    # &gt;&gt; If last event is closing :
+    # --&gt; do not count last closing
+    else:
+        iclN = -1
+
+    durations = t_op[iop0:] - t_cl[:iclN]
+
+    return durations
+
+
+#-------------------------------------------------------------------------------
+
+def event_count_signal(event_time, dt, t0=0., tn=None):
+    &#34;&#34;&#34;Computes the event count signal.
+
+    The event count signal is a time-binned count of events. It can easily be
+    linked to an activity rate, as it is the number of events in a given time
+    bin across time.
+
+    Parameters
+    ----------
+    event_time : 1D array
+        Event times.
+    dt : float
+        Binning length to compute event count, final discretization of the
+        event count signal.
+    t0 : float, optional
+        Beginning time of the first bin. If left blank, it starts at `t0=0`.
+    tn : float, optional
+        Beginning time of the final bin. Default is time of last event.
+
+    Returns
+    -------
+    event_count_signal : 1D array
+        Evenly spaced count of events in time bins of length `dt`.
+    bin_edges : 1D array
+        Boundaries of time bins, one element longer than event_count_signal.
+    &#34;&#34;&#34;
+
+    # &gt;&gt; Check if tn is &#39;max&#39; and if so set it to its value
+    if tn is None:
+        tn = max(event_time)
+
+    # &gt;&gt; The evenly spaced count is in fact a simple histogram
+    ev_count, bin_edges = np.histogram(event_time, bins=int((tn-t0)//dt+2),
+                                       range=(t0, tn+dt))
+
+    # /!\ bin_edges length is 1 unit longer than event_count
+
+    return ev_count, bin_edges
+
+#------------------------------------------------------------------------------
+
+
+def act_interval_frac(event_t, tau):
+    &#34;&#34;&#34;Computes the fraction of time-interval of various length in which there
+    is at least an event.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension `N_ev`.
+    tau : 1D array
+        Array of time interval lengths to test, dimension `N_tau`. If all
+        values of `tau` are not multiples of `min(tau)`, the output `tau` will
+        be different than the input one.
+
+    Returns
+    -------
+    X_tau : 1D array
+        Fraction of intervals of corresponding lengths `tau` that contain at
+        least an event, dimension `N_tau`
+    tau : 1D array
+        Input `tau` adjusted to match the actual interval length that is
+        tested, which here has to be a multiple of the min of `tau`. Dimension
+        `N_tau`.
+
+    &#34;&#34;&#34;
+    tau_min = min(tau)  # lowest tau is taken as sweeping window time increment
+    count, _ = event_count_signal(event_t, tau_min, t0=min(event_t))
+
+    X_tau = np.zeros(len(tau))
+
+    for ii, tt in enumerate(tau):
+        # &gt;&gt; First: build sweeping window
+        len_tau_win = int(np.round(tt/tau_min))
+        tau_win = np.ones(len_tau_win)  # sweeping window to count events
+        tau[ii] = len_tau_win * tau_min
+
+        # &gt;&gt; Second: correlate to count intervals with activity
+        corr = np.correlate(count, tau_win, mode=&#39;valid&#39;)
+
+        X_tau[ii] = 1 - np.sum(corr == 0) / len(corr)  # compute fraction
+
+    return X_tau, tau
+
+
+#-------------------------------------------------------------------------------
+
+def correlation_matrix(event_t, event_x, dt, X):
+    &#34;&#34;&#34;Computes the correlation of activity in different zones in space.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension `N_ev`.
+    event_x : 1D array
+        Array of event positions, dimension `N_ev`.
+    dt : float
+        Time step to compute the activity of the different zones.
+    X : 1D array
+        Array of the positions of the activity zones boundaries, dimension
+        `N_X`.
+
+    Returns
+    -------
+    corr_mat : 2D array
+        Cross-correlation coefficient matrix for the activity of the different
+        regions specified by `X`, dimensions `N_X - 1`, `N_X - 1`.
+    lag_mat : 2D array
+        Lag time matrix corresponding to the maximum cross-correlation for the
+        activity of different regions specified by `X`, dimensions `N_X - 1`, `N_X -
+        1`.
+    &#34;&#34;&#34;
+    # &gt;&gt; Compute the activity in each region
+    activities = []  #  List of regional activities
+    for ix in range(len(X)-1):
+        region = (event_x &gt;= X[ix]) &amp; (event_x &lt; X[ix + 1])
+        regional_act, _ = event_count_signal(event_t[region], dt,
+                                             t0=min(event_t))
+        activities.append(regional_act)
+
+    # &gt;&gt; Perform the cross-correlation and build the corr and lag matrices
+    corr_mat = np.zeros((len(X) - 1, len(X) - 1))
+    lag_mat = np.zeros((len(X) - 1, len(X) - 1))
+
+    for ix in range(len(X) - 1):
+        for jx in range(ix, len(X) - 1):
+            cc, cc_lag = corr_coeff(activities[ix], activities[jx], dt)
+            corr_mat[ix, jx] = corr_mat[jx, ix] = cc
+            lag_mat[ix, jx] = lag_mat[jx, ix] = cc_lag
+
+    return corr_mat, lag_mat
+
+#-------------------------------------------------------------------------------
+
+def calc_alpha(ev_count, dt, per_max):
+    &#34;&#34;&#34;Computes the slope of the event count auto-correlation spectrum.
+
+    This spectral slope is a good estimator of time-clustering of a
+    point-process: if it is close to 0, the point process shows less time
+    clustering than if it is significantly higher [1]_.
+
+    Parameters
+    ----------
+    ev_count : 1D array
+        Event count, number of events in regular time bins, dimension `N_bins`.
+    dt : float
+        Size of time bin.
+    per_max : float
+        Maximum period to take into account in the fit.
+
+    Returns
+    -------
+    sp : 1D array
+        Multi-taper spectrum of the event count auto-correlation.
+    per : 1D array
+        Periods at which the amplitude spectrum is computed.
+    alpha : float
+        The log-log slope of the spectrum of event count auto-correlation,
+        along period, not frequency.
+
+    References
+    ----------
+    .. [1] Lowen, S. B., &amp; Teich, M. C. (2005). Fractal-Based Point Processes
+       (Vol. 366). John Wiley and Sons, Inc.
+    &#34;&#34;&#34;
+    # &gt;&gt; Compute un-bias autocorrelation
+    a_corr, _ = ms.cross_corr(ev_count, ev_count, dt, norm=True, no_bias=True)
+
+    # &gt;&gt; Compute its spectrum
+    sp, fq = mtspec(a_corr, dt, time_bandwidth=3.5, number_of_tapers=5)
+    sp = np.sqrt(sp) * len(sp)  # convert PSD into amplitude
+
+    # -&gt; Get rid of 0 frequency
+    sp = sp[fq &gt; 0]
+    fq = fq[fq &gt; 0]
+
+    per = 1/fq
+
+    # &gt;&gt; Compute slope of spectrum
+    log_per = np.log10(per[per &lt; per_max])
+    log_sp = np.log10(sp[per &lt; per_max])
+
+    p = np.polyfit(log_per, log_sp, 1)
+    alpha = p[0]
+
+    return sp, per, alpha
+
+#-------------------------------------------------------------------------------
+
+def detect_period(ev_count, dt):
+    &#34;&#34;&#34;Detect a periodicity in an event count signal (or activity rate time
+    series).
+
+    The period is computed using the autocorrelation of the event count signal
+    (smoothed over 0.01 scaled units).
+    It corresponds to the lag of the first peak (more than 1 ponit) that is above
+    the 99.99% confidence interval (null hypothesis: autocorrelation is
+    autocorrelation of white noise).
+
+    Parameters
+    ----------
+    ev_count : 1D array
+        Event count, number of events in regular time bins, dimension N_bins.
+    dt : float
+        Size of time bin.
+
+    Returns
+    -------
+    period : float
+        Period detected with the autocorrelation. If no period is detected,
+        returns `None`.
+    validity : float
+        Homemade estimation of the validity of the detected period. Low
+        confidence 0, high confidence 1. See notes for more.
+
+    Notes
+    -----
+    `validity` corresponds to a correlation coefficient between the count
+    autocorrelation and a the autocorrelation of a sine (with the same period
+    as the detected one). The lower (closer to 0) the validity is, the more
+    the detected period can only be interpreted as a correlation time-scale.
+    The higher (closer to 1), the more it corresponds to an actual
+    periodicity (there are other bumps).
+
+    Please note that this is not an perfectly robust function.
+    &#34;&#34;&#34;
+    # Compute un-bias autocorrelation
+    # -------------------------------
+    a_corr, lag = ms.cross_corr(ev_count, ev_count, dt, norm=True, no_bias=False)
+
+    # Smooth it
+    # ---------
+    smooth_len = 0.01
+    a_corr = savgol_filter(a_corr, int((smooth_len/dt//2) * 2 + 1), 2)
+
+    # Compute confidence interval
+    # ---------------------------
+    lvl = 1 - 1e-3  #
+    conf = erfinv(lvl) * np.sqrt(2) / np.sqrt(len(ev_count))
+
+    # Detect period
+    # -------------
+    a_corr = a_corr[lag &gt;= 0]  # working only with positive lag
+    lag = lag[lag &gt;= 0]
+
+    if np.any(a_corr &gt; conf):
+    # --&gt; If some non-white noise points (above confidence interval), locate
+    # them
+        above = a_corr &gt; conf
+        bumps_idx = []  # list of the bumps indices above conf. int.
+        bump = []  # indices of each bump above conf. int.
+
+        for ii in range(len(above)):
+            if above[ii]:  # for this index, value above conf. int.
+                bump.append(ii)  # add it to the bump
+            else:  # for this index, we are not in a bump (anymore)
+                if len(bump) &gt; 0:  # if we were in a bump before...
+                    bumps_idx.append(bump)  # ...store it
+                bump = []  # reinitialize bump
+
+        bumps_idx = bumps_idx[1:]  # remove the 0 correlation bump
+
+        done = False
+        while (len(bumps_idx) &gt; 0) and not done:
+            first_bump = bumps_idx[0]
+            if len(first_bump) &gt; 1:  # if long bump: that&#39;s a period!
+                # --&gt; detect the period
+                period = lag[first_bump][np.argmax(a_corr[first_bump])]
+                # --&gt; estimate validity
+                count_time = np.arange(0, len(ev_count)*dt+1, dt)
+                sine = np.sin(2*np.pi/period * count_time)
+                sine_corr, _ = ms.cross_corr(sine, sine, dt, no_bias=False)
+                validity, _ = ms.corr_coeff(sine_corr, a_corr, dt)
+
+                # --&gt; And we arrrre
+                done = True
+
+            else:  # if only one point in bump...
+                bumps_idx = bumps_idx[1:]   # ... remove it and carry on
+
+        if (len(bumps_idx) == 0) and not done:
+        # --&gt; If no long bumps, no significant period
+            period = None
+            validity = None
+
+    else:
+        # --&gt; If none, no significant periodicity
+        period = None
+        validity = None
+
+    return period, validity
+
+#-------------------------------------------------------------------------------</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="PPvalves.catalog.act_interval_frac"><code class="name flex">
+<span>def <span class="ident">act_interval_frac</span></span>(<span>event_t, tau)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the fraction of time-interval of various length in which there
+is at least an event.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>event_t</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of event times, dimension <code>N_ev</code>.</dd>
+<dt><strong><code>tau</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of time interval lengths to test, dimension <code>N_tau</code>. If all
+values of <code>tau</code> are not multiples of <code>min(tau)</code>, the output <code>tau</code> will
+be different than the input one.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>X_tau</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Fraction of intervals of corresponding lengths <code>tau</code> that contain at
+least an event, dimension <code>N_tau</code></dd>
+<dt><strong><code>tau</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Input <code>tau</code> adjusted to match the actual interval length that is
+tested, which here has to be a multiple of the min of <code>tau</code>. Dimension
+<code>N_tau</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def act_interval_frac(event_t, tau):
+    &#34;&#34;&#34;Computes the fraction of time-interval of various length in which there
+    is at least an event.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension `N_ev`.
+    tau : 1D array
+        Array of time interval lengths to test, dimension `N_tau`. If all
+        values of `tau` are not multiples of `min(tau)`, the output `tau` will
+        be different than the input one.
+
+    Returns
+    -------
+    X_tau : 1D array
+        Fraction of intervals of corresponding lengths `tau` that contain at
+        least an event, dimension `N_tau`
+    tau : 1D array
+        Input `tau` adjusted to match the actual interval length that is
+        tested, which here has to be a multiple of the min of `tau`. Dimension
+        `N_tau`.
+
+    &#34;&#34;&#34;
+    tau_min = min(tau)  # lowest tau is taken as sweeping window time increment
+    count, _ = event_count_signal(event_t, tau_min, t0=min(event_t))
+
+    X_tau = np.zeros(len(tau))
+
+    for ii, tt in enumerate(tau):
+        # &gt;&gt; First: build sweeping window
+        len_tau_win = int(np.round(tt/tau_min))
+        tau_win = np.ones(len_tau_win)  # sweeping window to count events
+        tau[ii] = len_tau_win * tau_min
+
+        # &gt;&gt; Second: correlate to count intervals with activity
+        corr = np.correlate(count, tau_win, mode=&#39;valid&#39;)
+
+        X_tau[ii] = 1 - np.sum(corr == 0) / len(corr)  # compute fraction
+
+    return X_tau, tau</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.catalog.calc_alpha"><code class="name flex">
+<span>def <span class="ident">calc_alpha</span></span>(<span>ev_count, dt, per_max)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the slope of the event count auto-correlation spectrum.</p>
+<p>This spectral slope is a good estimator of time-clustering of a
+point-process: if it is close to 0, the point process shows less time
+clustering than if it is significantly higher [1]_.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>ev_count</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Event count, number of events in regular time bins, dimension <code>N_bins</code>.</dd>
+<dt><strong><code>dt</code></strong> :&ensp;<code>float</code></dt>
+<dd>Size of time bin.</dd>
+<dt><strong><code>per_max</code></strong> :&ensp;<code>float</code></dt>
+<dd>Maximum period to take into account in the fit.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>sp : 1D array</code></dt>
+<dd>Multi-taper spectrum of the event count auto-correlation.</dd>
+<dt><strong><code>per</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Periods at which the amplitude spectrum is computed.</dd>
+<dt><code>alpha : float</code></dt>
+<dd>The log-log slope of the spectrum of event count auto-correlation,
+along period, not frequency.</dd>
+</dl>
+<h2 id="references">References</h2>
+<p>.. [1] Lowen, S. B., &amp; Teich, M. C. (2005). Fractal-Based Point Processes
+(Vol. 366). John Wiley and Sons, Inc.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_alpha(ev_count, dt, per_max):
+    &#34;&#34;&#34;Computes the slope of the event count auto-correlation spectrum.
+
+    This spectral slope is a good estimator of time-clustering of a
+    point-process: if it is close to 0, the point process shows less time
+    clustering than if it is significantly higher [1]_.
+
+    Parameters
+    ----------
+    ev_count : 1D array
+        Event count, number of events in regular time bins, dimension `N_bins`.
+    dt : float
+        Size of time bin.
+    per_max : float
+        Maximum period to take into account in the fit.
+
+    Returns
+    -------
+    sp : 1D array
+        Multi-taper spectrum of the event count auto-correlation.
+    per : 1D array
+        Periods at which the amplitude spectrum is computed.
+    alpha : float
+        The log-log slope of the spectrum of event count auto-correlation,
+        along period, not frequency.
+
+    References
+    ----------
+    .. [1] Lowen, S. B., &amp; Teich, M. C. (2005). Fractal-Based Point Processes
+       (Vol. 366). John Wiley and Sons, Inc.
+    &#34;&#34;&#34;
+    # &gt;&gt; Compute un-bias autocorrelation
+    a_corr, _ = ms.cross_corr(ev_count, ev_count, dt, norm=True, no_bias=True)
+
+    # &gt;&gt; Compute its spectrum
+    sp, fq = mtspec(a_corr, dt, time_bandwidth=3.5, number_of_tapers=5)
+    sp = np.sqrt(sp) * len(sp)  # convert PSD into amplitude
+
+    # -&gt; Get rid of 0 frequency
+    sp = sp[fq &gt; 0]
+    fq = fq[fq &gt; 0]
+
+    per = 1/fq
+
+    # &gt;&gt; Compute slope of spectrum
+    log_per = np.log10(per[per &lt; per_max])
+    log_sp = np.log10(sp[per &lt; per_max])
+
+    p = np.polyfit(log_per, log_sp, 1)
+    alpha = p[0]
+
+    return sp, per, alpha</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.catalog.close_count"><code class="name flex">
+<span>def <span class="ident">close_count</span></span>(<span>states, time, catalog=False, VALVES=None, X=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Counts and makes a catalog of valve opening events.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>states</code></strong> :&ensp;<code>2D array</code></dt>
+<dd>History of valve states, dimension <code>Ntimes, Nvalves</code>.
+<code>False</code> is
+closed, <code>True</code> is open.</dd>
+<dt><strong><code>time</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of physical times, same shape as first dimension of <code>states</code>.</dd>
+<dt><strong><code>catalog</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>If <code>catalog=True</code>, the allows <code><a title="PPvalves.catalog.event_count" href="#PPvalves.catalog.event_count">event_count()</a></code> to return
+the position of events <code>x_events</code> in addition to their time <code>t_event</code>.
+Then, it recquires that <code>VALVES</code> and <code>X</code> are specified.</dd>
+<dt>VALVES : dictionnary, optional</dt>
+<dt>Valve characteristics dictionnary. Needed for <code>catalog</code> option.</dt>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code>, optional</dt>
+<dd>Physical sppace array. Needed for <code>catalog</code> option.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>events_t</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Event times.</dd>
+<dt><strong><code>events_x</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Event locations, if catalog is True.</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<pre><code>- This is a shortcut function to use instead of &lt;code&gt;&lt;a title="PPvalves.catalog.event_count" href="#PPvalves.catalog.event_count"&gt;event\_count()&lt;/a&gt;&lt;/code&gt;.
+- Parameter &lt;code&gt;states&lt;/code&gt; is usually taken from &lt;code&gt;run\_ppv&lt;/code&gt; output:
+  &lt;code&gt;v\_activity\[times,0,valve\_idx]&lt;/code&gt;, where &lt;code&gt;valve\_idx&lt;/code&gt; selects the
+  indices of the valves you want an event count f.
+</code></pre>
+<h2 id="see-also">See Also</h2>
+<dl>
+<dt><code><a title="PPvalves.catalog.event_count" href="#PPvalves.catalog.event_count">event_count()</a></code></dt>
+<dd>General event count.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def close_count(states, time, catalog=False, VALVES=None, X=None):
+    &#34;&#34;&#34;Counts and makes a catalog of valve opening events.
+
+    Parameters
+    ----------
+    states: 2D array
+        History of valve states, dimension `Ntimes, Nvalves`.  `False` is
+        closed, `True` is open.
+    time : 1D array
+        Array of physical times, same shape as first dimension of `states`.
+    catalog : bool, optional
+        If `catalog=True`, the allows `event_count` to return
+        the position of events `x_events` in addition to their time `t_event`.
+        Then, it recquires that `VALVES` and `X` are specified.
+    VALVES : dictionnary, optional
+        Valve characteristics dictionnary. Needed for `catalog` option.
+    X : 1D array, optional
+        Physical sppace array. Needed for `catalog` option.
+
+    Returns
+    -------
+    events_t : 1D array
+        Event times.
+    events_x : 1D array
+        Event locations, if catalog is True.
+
+    Notes
+    -----
+        - This is a shortcut function to use instead of `event_count`.
+        - Parameter `states` is usually taken from `run_ppv` output:
+          `v_activity[times,0,valve_idx]`, where `valve_idx` selects the
+          indices of the valves you want an event count f.
+
+    See also
+    --------
+    event_count : General event count.
+    &#34;&#34;&#34;
+    # &gt;&gt; Call event count
+    out = event_count(&#39;close&#39;, states, time, catalog=catalog, VALVES=VALVES, X=X)
+
+    return out</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.catalog.closed_duration"><code class="name flex">
+<span>def <span class="ident">closed_duration</span></span>(<span>states, time)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>closed_times computes the duration a valve spends closed each time it
+closes.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>states</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Valve states in time. Can start at 0, or at anytime.</dd>
+<dt><strong><code>time</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Time array.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>durations</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Time spent closed for each time the valve is closed. Returns an empty
+array when there are no events.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def closed_duration(states, time):
+    &#34;&#34;&#34;closed_times computes the duration a valve spends closed each time it
+    closes.
+
+    Parameters
+    ----------
+    states : 1D array
+        Valve states in time. Can start at 0, or at anytime.
+    time : 1D array
+        Time array.
+
+    Returns
+    -------
+    durations : 1D array
+        Time spent closed for each time the valve is closed. Returns an empty
+        array when there are no events.
+
+    &#34;&#34;&#34;
+    # &gt;&gt; In cases when there are no events, just return empty array
+    if (not np.any(states)) or np.all(states):
+        return np.array([])
+
+    t_op = open_count(states, time)
+    t_cl = close_count(states, time)
+
+    # &gt;&gt; If first event is closing :
+    # --&gt; first t_cl and t_op are well ordered
+    if t_op[0] &gt; t_cl[0]:
+        iop0 = 0
+    # &gt;&gt; If first event is opening :
+    # --&gt; first t_op is before t_cl, do not take it into account
+    else:
+        iop0 = 1
+
+    # &gt;&gt; If last event is opening :
+    # --&gt; no problem of ordering : last t_cl is before last t_op
+    if t_op[-1] &gt; t_cl[-1]:
+        iclN = len(t_cl)
+    # &gt;&gt; If last event is closing :
+    # --&gt; do not count last closing
+    else:
+        iclN = -1
+
+    durations = t_op[iop0:] - t_cl[:iclN]
+
+    return durations</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.catalog.correlation_matrix"><code class="name flex">
+<span>def <span class="ident">correlation_matrix</span></span>(<span>event_t, event_x, dt, X)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the correlation of activity in different zones in space.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>event_t</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of event times, dimension <code>N_ev</code>.</dd>
+<dt><strong><code>event_x</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of event positions, dimension <code>N_ev</code>.</dd>
+<dt><strong><code>dt</code></strong> :&ensp;<code>float</code></dt>
+<dd>Time step to compute the activity of the different zones.</dd>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of the positions of the activity zones boundaries, dimension
+<code>N_X</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>corr_mat</code></strong> :&ensp;<code>2D array</code></dt>
+<dd>Cross-correlation coefficient matrix for the activity of the different
+regions specified by <code>X</code>, dimensions <code>N_X - 1</code>, <code>N_X - 1</code>.</dd>
+<dt><strong><code>lag_mat</code></strong> :&ensp;<code>2D array</code></dt>
+<dd>Lag time matrix corresponding to the maximum cross-correlation for the
+activity of different regions specified by <code>X</code>, dimensions <code>N_X - 1</code>, <code>N_X -
+1</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def correlation_matrix(event_t, event_x, dt, X):
+    &#34;&#34;&#34;Computes the correlation of activity in different zones in space.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension `N_ev`.
+    event_x : 1D array
+        Array of event positions, dimension `N_ev`.
+    dt : float
+        Time step to compute the activity of the different zones.
+    X : 1D array
+        Array of the positions of the activity zones boundaries, dimension
+        `N_X`.
+
+    Returns
+    -------
+    corr_mat : 2D array
+        Cross-correlation coefficient matrix for the activity of the different
+        regions specified by `X`, dimensions `N_X - 1`, `N_X - 1`.
+    lag_mat : 2D array
+        Lag time matrix corresponding to the maximum cross-correlation for the
+        activity of different regions specified by `X`, dimensions `N_X - 1`, `N_X -
+        1`.
+    &#34;&#34;&#34;
+    # &gt;&gt; Compute the activity in each region
+    activities = []  #  List of regional activities
+    for ix in range(len(X)-1):
+        region = (event_x &gt;= X[ix]) &amp; (event_x &lt; X[ix + 1])
+        regional_act, _ = event_count_signal(event_t[region], dt,
+                                             t0=min(event_t))
+        activities.append(regional_act)
+
+    # &gt;&gt; Perform the cross-correlation and build the corr and lag matrices
+    corr_mat = np.zeros((len(X) - 1, len(X) - 1))
+    lag_mat = np.zeros((len(X) - 1, len(X) - 1))
+
+    for ix in range(len(X) - 1):
+        for jx in range(ix, len(X) - 1):
+            cc, cc_lag = corr_coeff(activities[ix], activities[jx], dt)
+            corr_mat[ix, jx] = corr_mat[jx, ix] = cc
+            lag_mat[ix, jx] = lag_mat[jx, ix] = cc_lag
+
+    return corr_mat, lag_mat</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.catalog.detect_period"><code class="name flex">
+<span>def <span class="ident">detect_period</span></span>(<span>ev_count, dt)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Detect a periodicity in an event count signal (or activity rate time
+series).</p>
+<p>The period is computed using the autocorrelation of the event count signal
+(smoothed over 0.01 scaled units).
+It corresponds to the lag of the first peak (more than 1 ponit) that is above
+the 99.99% confidence interval (null hypothesis: autocorrelation is
+autocorrelation of white noise).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>ev_count</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Event count, number of events in regular time bins, dimension N_bins.</dd>
+<dt><strong><code>dt</code></strong> :&ensp;<code>float</code></dt>
+<dd>Size of time bin.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>period</code></strong> :&ensp;<code>float</code></dt>
+<dd>Period detected with the autocorrelation. If no period is detected,
+returns <code>None</code>.</dd>
+<dt><strong><code>validity</code></strong> :&ensp;<code>float</code></dt>
+<dd>Homemade estimation of the validity of the detected period. Low
+confidence 0, high confidence 1. See notes for more.</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<p><code>validity</code> corresponds to a correlation coefficient between the count
+autocorrelation and a the autocorrelation of a sine (with the same period
+as the detected one). The lower (closer to 0) the validity is, the more
+the detected period can only be interpreted as a correlation time-scale.
+The higher (closer to 1), the more it corresponds to an actual
+periodicity (there are other bumps).</p>
+<p>Please note that this is not an perfectly robust function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def detect_period(ev_count, dt):
+    &#34;&#34;&#34;Detect a periodicity in an event count signal (or activity rate time
+    series).
+
+    The period is computed using the autocorrelation of the event count signal
+    (smoothed over 0.01 scaled units).
+    It corresponds to the lag of the first peak (more than 1 ponit) that is above
+    the 99.99% confidence interval (null hypothesis: autocorrelation is
+    autocorrelation of white noise).
+
+    Parameters
+    ----------
+    ev_count : 1D array
+        Event count, number of events in regular time bins, dimension N_bins.
+    dt : float
+        Size of time bin.
+
+    Returns
+    -------
+    period : float
+        Period detected with the autocorrelation. If no period is detected,
+        returns `None`.
+    validity : float
+        Homemade estimation of the validity of the detected period. Low
+        confidence 0, high confidence 1. See notes for more.
+
+    Notes
+    -----
+    `validity` corresponds to a correlation coefficient between the count
+    autocorrelation and a the autocorrelation of a sine (with the same period
+    as the detected one). The lower (closer to 0) the validity is, the more
+    the detected period can only be interpreted as a correlation time-scale.
+    The higher (closer to 1), the more it corresponds to an actual
+    periodicity (there are other bumps).
+
+    Please note that this is not an perfectly robust function.
+    &#34;&#34;&#34;
+    # Compute un-bias autocorrelation
+    # -------------------------------
+    a_corr, lag = ms.cross_corr(ev_count, ev_count, dt, norm=True, no_bias=False)
+
+    # Smooth it
+    # ---------
+    smooth_len = 0.01
+    a_corr = savgol_filter(a_corr, int((smooth_len/dt//2) * 2 + 1), 2)
+
+    # Compute confidence interval
+    # ---------------------------
+    lvl = 1 - 1e-3  #
+    conf = erfinv(lvl) * np.sqrt(2) / np.sqrt(len(ev_count))
+
+    # Detect period
+    # -------------
+    a_corr = a_corr[lag &gt;= 0]  # working only with positive lag
+    lag = lag[lag &gt;= 0]
+
+    if np.any(a_corr &gt; conf):
+    # --&gt; If some non-white noise points (above confidence interval), locate
+    # them
+        above = a_corr &gt; conf
+        bumps_idx = []  # list of the bumps indices above conf. int.
+        bump = []  # indices of each bump above conf. int.
+
+        for ii in range(len(above)):
+            if above[ii]:  # for this index, value above conf. int.
+                bump.append(ii)  # add it to the bump
+            else:  # for this index, we are not in a bump (anymore)
+                if len(bump) &gt; 0:  # if we were in a bump before...
+                    bumps_idx.append(bump)  # ...store it
+                bump = []  # reinitialize bump
+
+        bumps_idx = bumps_idx[1:]  # remove the 0 correlation bump
+
+        done = False
+        while (len(bumps_idx) &gt; 0) and not done:
+            first_bump = bumps_idx[0]
+            if len(first_bump) &gt; 1:  # if long bump: that&#39;s a period!
+                # --&gt; detect the period
+                period = lag[first_bump][np.argmax(a_corr[first_bump])]
+                # --&gt; estimate validity
+                count_time = np.arange(0, len(ev_count)*dt+1, dt)
+                sine = np.sin(2*np.pi/period * count_time)
+                sine_corr, _ = ms.cross_corr(sine, sine, dt, no_bias=False)
+                validity, _ = ms.corr_coeff(sine_corr, a_corr, dt)
+
+                # --&gt; And we arrrre
+                done = True
+
+            else:  # if only one point in bump...
+                bumps_idx = bumps_idx[1:]   # ... remove it and carry on
+
+        if (len(bumps_idx) == 0) and not done:
+        # --&gt; If no long bumps, no significant period
+            period = None
+            validity = None
+
+    else:
+        # --&gt; If none, no significant periodicity
+        period = None
+        validity = None
+
+    return period, validity</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.catalog.event_count"><code class="name flex">
+<span>def <span class="ident">event_count</span></span>(<span>ev_type, states, time, catalog=False, VALVES=None, X=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Produces a catalog of valve events (openings or closings).</p>
+<p>Produces a catalog of events in time &mdash; and optionally space. The time of
+an event occuring is taken as the time at which the corresponding threshold
+of pressure differential is crossed at the given valve.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>ev_type</code></strong> :&ensp;<code>str</code></dt>
+<dd>type of event to count, either <code>"close"</code>, or <code>"open"</code>.</dd>
+<dt><strong><code>states</code></strong> :&ensp;<code>2D array</code></dt>
+<dd>History of valve states, dimension <code>Ntimes, Nvalves</code>.
+<code>False</code> is
+closed, <code>True</code> is open.</dd>
+<dt><strong><code>time</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of physical times, same shape as first dimension of <code>states</code>.</dd>
+<dt><strong><code>catalog</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>If <code>catalog=True</code>, the allows <code><a title="PPvalves.catalog.event_count" href="#PPvalves.catalog.event_count">event_count()</a></code> to return
+the position of events <code>x_events</code> in addition to their time <code>t_event</code>.
+Then, it recquires that <code>VALVES</code> and <code>X</code> are specified.</dd>
+<dt>VALVES : dictionnary, optional</dt>
+<dt>Valve characteristics dictionnary. Needed for <code>catalog</code> option.</dt>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code>, optional</dt>
+<dd>Physical sppace array. Needed for <code>catalog</code> option.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>events_t</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Event times.</dd>
+<dt><strong><code>events_x</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Event locations, if catalog is True.</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<p>Parameter <code>states</code> is usually taken from <code>run_ppv</code> output: <code>v_activity[times,0,valve_idx]</code>, where
+<code>valve_idx</code> selects the indices of the valves you want an event count f.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):
+    &#34;&#34;&#34;Produces a catalog of valve events (openings or closings).
+
+    Produces a catalog of events in time --- and optionally space. The time of
+    an event occuring is taken as the time at which the corresponding threshold
+    of pressure differential is crossed at the given valve.
+
+    Parameters
+    ----------
+    ev_type : str
+        type of event to count, either `&#34;close&#34;`, or `&#34;open&#34;`.
+    states: 2D array
+        History of valve states, dimension `Ntimes, Nvalves`.  `False` is
+        closed, `True` is open.
+    time : 1D array
+        Array of physical times, same shape as first dimension of `states`.
+    catalog : bool, optional
+        If `catalog=True`, the allows `event_count` to return
+        the position of events `x_events` in addition to their time `t_event`.
+        Then, it recquires that `VALVES` and `X` are specified.
+    VALVES : dictionnary, optional
+        Valve characteristics dictionnary. Needed for `catalog` option.
+    X : 1D array, optional
+        Physical sppace array. Needed for `catalog` option.
+
+    Returns
+    -------
+    events_t : 1D array
+        Event times.
+    events_x : 1D array
+        Event locations, if catalog is True.
+
+    Notes
+    -----
+    Parameter `states` is usually taken from `run_ppv` output: `v_activity[times,0,valve_idx]`, where
+    `valve_idx` selects the indices of the valves you want an event count f.
+    &#34;&#34;&#34;
+    # &gt;&gt; Check if catalog option is on
+    if catalog &amp; isinstance(VALVES, type(None)) &amp; isinstance(X, type(None)):
+        raise ValueError(&#34;When catalog option is turned on, the valves&#39;&#34; + \
+         &#39;location needs to be specified with the v_x argument.&#39;)
+
+
+    # &gt;&gt; For several valves
+    if len(states.shape) &gt; 1:
+        n_valves = states.shape[1] # number of valves
+
+        all_events_i = []  # init: time indices of events
+        if catalog:
+            v_x = X[VALVES[&#39;idx&#39;]] + VALVES[&#39;width&#39;]/2 # location of valves
+            all_events_x = []  # init: locations of events
+
+        for iv in range(n_valves):
+            # -&gt; Run through valves, for each, compute (t, x)
+            v_states = states[:, iv].astype(int)  # states for this valve
+
+            if ev_type == &#39;close&#39;:  # get 1 -&gt; 0 events
+                events = (v_states[1:]-v_states[:-1]) == -1
+                v_events_i = np.where(events)[0]+1  # events idxs
+
+            elif ev_type == &#39;open&#39;:  # get 0 -&gt; 1 events
+                events = (v_states[1:]-v_states[:-1]) == 1
+                v_events_i = np.where(events)[0]+1  # events idxs
+
+            v_events_i = v_events_i.tolist()
+            all_events_i.extend(v_events_i)  # add valve events t to all events
+
+            # -&gt; build event location vector
+            if catalog:
+                v_events_x = [v_x[iv] for ii in\
+                 range(len(v_events_i))]
+                all_events_x.extend(v_events_x) # add valve events t to all events
+
+        # &gt;&gt; Convert event time idx to time
+        events_t = time[all_events_i]
+        if catalog:
+            events_x = np.array(all_events_x)
+
+        # &gt;&gt; Sort events t, x in chronological order and return
+        if catalog:
+            id_sort = np.argsort(events_t)
+            events_t = events_t[id_sort]
+            events_x = events_x[id_sort]
+            return events_t, events_x
+
+        else:
+            events_t = np.sort(events_t)
+            return events_t
+
+    # &gt;&gt; For one valve only
+    else:
+        if ev_type == &#39;close&#39;:
+            events_i = np.where(states[1:].astype(int) -\
+                        states[:-1].astype(int) == -1)[0] + 1
+        if ev_type == &#39;open&#39;:
+            events_i = np.where(states[1:].astype(int) -\
+                        states[:-1].astype(int) == 1)[0] + 1
+        events_i = events_i.tolist()
+        t_events = time[events_i]
+        return t_events</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.catalog.event_count_signal"><code class="name flex">
+<span>def <span class="ident">event_count_signal</span></span>(<span>event_time, dt, t0=0.0, tn=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the event count signal.</p>
+<p>The event count signal is a time-binned count of events. It can easily be
+linked to an activity rate, as it is the number of events in a given time
+bin across time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>event_time</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Event times.</dd>
+<dt><strong><code>dt</code></strong> :&ensp;<code>float</code></dt>
+<dd>Binning length to compute event count, final discretization of the
+event count signal.</dd>
+<dt><strong><code>t0</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Beginning time of the first bin. If left blank, it starts at <code>t0=0</code>.</dd>
+<dt><strong><code>tn</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>Beginning time of the final bin. Default is time of last event.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>event_count_signal</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Evenly spaced count of events in time bins of length <code>dt</code>.</dd>
+<dt><strong><code>bin_edges</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Boundaries of time bins, one element longer than event_count_signal.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def event_count_signal(event_time, dt, t0=0., tn=None):
+    &#34;&#34;&#34;Computes the event count signal.
+
+    The event count signal is a time-binned count of events. It can easily be
+    linked to an activity rate, as it is the number of events in a given time
+    bin across time.
+
+    Parameters
+    ----------
+    event_time : 1D array
+        Event times.
+    dt : float
+        Binning length to compute event count, final discretization of the
+        event count signal.
+    t0 : float, optional
+        Beginning time of the first bin. If left blank, it starts at `t0=0`.
+    tn : float, optional
+        Beginning time of the final bin. Default is time of last event.
+
+    Returns
+    -------
+    event_count_signal : 1D array
+        Evenly spaced count of events in time bins of length `dt`.
+    bin_edges : 1D array
+        Boundaries of time bins, one element longer than event_count_signal.
+    &#34;&#34;&#34;
+
+    # &gt;&gt; Check if tn is &#39;max&#39; and if so set it to its value
+    if tn is None:
+        tn = max(event_time)
+
+    # &gt;&gt; The evenly spaced count is in fact a simple histogram
+    ev_count, bin_edges = np.histogram(event_time, bins=int((tn-t0)//dt+2),
+                                       range=(t0, tn+dt))
+
+    # /!\ bin_edges length is 1 unit longer than event_count
+
+    return ev_count, bin_edges</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.catalog.open_count"><code class="name flex">
+<span>def <span class="ident">open_count</span></span>(<span>states, time, catalog=False, VALVES=None, X=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Counts and makes a catalog of valve opening events.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>states</code></strong> :&ensp;<code>2D array</code></dt>
+<dd>History of valve states, dimension <code>Ntimes, Nvalves</code>.
+<code>False</code> is
+closed, <code>True</code> is open.</dd>
+<dt><strong><code>time</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of physical times, same shape as first dimension of <code>states</code>.</dd>
+<dt><strong><code>catalog</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>If <code>catalog=True</code>, the allows <code><a title="PPvalves.catalog.event_count" href="#PPvalves.catalog.event_count">event_count()</a></code> to return
+the position of events <code>x_events</code> in addition to their time <code>t_event</code>.
+Then, it recquires that <code>VALVES</code> and <code>X</code> are specified.</dd>
+<dt>VALVES : dictionnary, optional</dt>
+<dt>Valve characteristics dictionnary. Needed for <code>catalog</code> option.</dt>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code>, optional</dt>
+<dd>Physical sppace array. Needed for <code>catalog</code> option.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>events_t</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Event times.</dd>
+<dt><strong><code>events_x</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Event locations, if catalog is True.</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<pre><code>- This is a shortcut function to use instead of &lt;code&gt;&lt;a title="PPvalves.catalog.event_count" href="#PPvalves.catalog.event_count"&gt;event\_count()&lt;/a&gt;&lt;/code&gt;.
+- Parameter &lt;code&gt;states&lt;/code&gt; is usually taken from &lt;code&gt;run\_ppv&lt;/code&gt; output:
+  &lt;code&gt;v\_activity\[times,0,valve\_idx]&lt;/code&gt;, where &lt;code&gt;valve\_idx&lt;/code&gt; selects the
+  indices of the valves you want an event count f.
+</code></pre>
+<h2 id="see-also">See Also</h2>
+<dl>
+<dt><code><a title="PPvalves.catalog.event_count" href="#PPvalves.catalog.event_count">event_count()</a></code></dt>
+<dd>General event count.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def open_count(states, time, catalog=False, VALVES=None, X=None):
+    &#34;&#34;&#34;Counts and makes a catalog of valve opening events.
+
+    Parameters
+    ----------
+    states: 2D array
+        History of valve states, dimension `Ntimes, Nvalves`.  `False` is
+        closed, `True` is open.
+    time : 1D array
+        Array of physical times, same shape as first dimension of `states`.
+    catalog : bool, optional
+        If `catalog=True`, the allows `event_count` to return
+        the position of events `x_events` in addition to their time `t_event`.
+        Then, it recquires that `VALVES` and `X` are specified.
+    VALVES : dictionnary, optional
+        Valve characteristics dictionnary. Needed for `catalog` option.
+    X : 1D array, optional
+        Physical sppace array. Needed for `catalog` option.
+
+    Returns
+    -------
+    events_t : 1D array
+        Event times.
+    events_x : 1D array
+        Event locations, if catalog is True.
+
+    Notes
+    -----
+        - This is a shortcut function to use instead of `event_count`.
+        - Parameter `states` is usually taken from `run_ppv` output:
+          `v_activity[times,0,valve_idx]`, where `valve_idx` selects the
+          indices of the valves you want an event count f.
+
+    See also
+    --------
+    event_count : General event count.
+    &#34;&#34;&#34;
+    # &gt;&gt; Call event count
+    out = event_count(&#39;open&#39;, states, time, catalog=catalog, VALVES=VALVES, X=X)
+
+    return out</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.catalog.open_duration"><code class="name flex">
+<span>def <span class="ident">open_duration</span></span>(<span>states, time)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>open_times computes the duration a valve spends open each time it
+closes.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>states</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Valve states in time. Can start at 0, or at anytime.</dd>
+<dt><strong><code>time</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Time array.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>durations</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Time spent open for each time the valve is closed. Returns an empty
+array when there are no events.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def open_duration(states, time):
+    &#34;&#34;&#34;open_times computes the duration a valve spends open each time it
+    closes.
+
+    Parameters
+    ----------
+    states : 1D array
+        Valve states in time. Can start at 0, or at anytime.
+    time : 1D array
+        Time array.
+
+    Returns
+    -------
+    durations : 1D array
+        Time spent open for each time the valve is closed. Returns an empty
+        array when there are no events.
+
+    &#34;&#34;&#34;
+    # &gt;&gt; In cases when there are no events, just return empty array
+    if (not np.any(states)) or np.all(states):
+        return np.array([])
+
+    t_op = open_count(states, time)
+    t_cl = close_count(states, time)
+
+    # &gt;&gt; If first event is opening :
+    # --&gt; first t_op is before t_cl, well ordered
+    if t_op[0] &lt; t_cl[0]:
+        icl0 = 0
+    # &gt;&gt; If first event is closing :
+    # --&gt; first t_cl should not be taken into account
+    else:
+        icl0 = 1
+
+    # &gt;&gt; If last event is closing :
+    # --&gt; no problem of ordering : last t_op is before last t_cl
+    if t_op[-1] &lt; t_cl[-1]:
+        iopN = len(t_cl)
+    # &gt;&gt; If last event is opening :
+    # --&gt; do not count last opening
+    else:
+        iopN = -1
+
+    durations = t_cl[icl0:] - t_op[:iopN]
+
+    return durations</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.catalog.open_ratio"><code class="name flex">
+<span>def <span class="ident">open_ratio</span></span>(<span>states)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the ratio of open valves to total number of valves in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>states</code></strong> :&ensp;<code>2D array</code></dt>
+<dd>History of valve states, dimension <code>Ntimes, Nvalves</code>.
+<code>False</code> is
+closed, <code>True</code> is open.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>ratio</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>For each time <code>states</code> is specified, the proportion of open valves is
+returned.</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<p>Parameter <code>states</code> is usually taken from <code>run_ppv</code> output: <code>v_activity[times,0,valve_idx]</code>, where
+<code>valve_idx</code> selects the indices of the valves you want an event count f.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def open_ratio(states):
+    &#34;&#34;&#34;
+    Computes the ratio of open valves to total number of valves in time.
+
+    Parameters
+    ----------
+    states: 2D array
+        History of valve states, dimension `Ntimes, Nvalves`.  `False` is
+        closed, `True` is open.
+    Returns
+    -------
+    ratio : 1D array
+        For each time `states` is specified, the proportion of open valves is
+        returned.
+
+    Notes
+    -----
+    Parameter `states` is usually taken from `run_ppv` output: `v_activity[times,0,valve_idx]`, where
+    `valve_idx` selects the indices of the valves you want an event count f.
+    &#34;&#34;&#34;
+    Nv = np.shape(states)[1]  # Total number of valves
+    ratio = np.sum(states, axis=1) / Nv
+
+    return ratio</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.catalog.recurrence"><code class="name flex">
+<span>def <span class="ident">recurrence</span></span>(<span>event_time)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes time before next event for a sequence of events.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>event_time</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Event times.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>time_before_next</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Time before next event for the all the events <em>but the last one</em>:
+dimension is one less than <code>event_time</code>. Same unit as the event times.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def recurrence(event_time):
+    &#34;&#34;&#34;Computes time before next event for a sequence of events.
+
+    Parameters
+    ----------
+    event_time : 1D array
+        Event times.
+
+    Returns
+    -------
+    time_before_next : 1D array
+        Time before next event for the all the events *but the last one*:
+        dimension is one less than `event_time`. Same unit as the event times.
+    &#34;&#34;&#34;
+
+    time_before_next = event_time[1:] - event_time[:-1]
+
+    return time_before_next</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PPvalves" href="index.html">PPvalves</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="PPvalves.catalog.act_interval_frac" href="#PPvalves.catalog.act_interval_frac">act_interval_frac</a></code></li>
+<li><code><a title="PPvalves.catalog.calc_alpha" href="#PPvalves.catalog.calc_alpha">calc_alpha</a></code></li>
+<li><code><a title="PPvalves.catalog.close_count" href="#PPvalves.catalog.close_count">close_count</a></code></li>
+<li><code><a title="PPvalves.catalog.closed_duration" href="#PPvalves.catalog.closed_duration">closed_duration</a></code></li>
+<li><code><a title="PPvalves.catalog.correlation_matrix" href="#PPvalves.catalog.correlation_matrix">correlation_matrix</a></code></li>
+<li><code><a title="PPvalves.catalog.detect_period" href="#PPvalves.catalog.detect_period">detect_period</a></code></li>
+<li><code><a title="PPvalves.catalog.event_count" href="#PPvalves.catalog.event_count">event_count</a></code></li>
+<li><code><a title="PPvalves.catalog.event_count_signal" href="#PPvalves.catalog.event_count_signal">event_count_signal</a></code></li>
+<li><code><a title="PPvalves.catalog.open_count" href="#PPvalves.catalog.open_count">open_count</a></code></li>
+<li><code><a title="PPvalves.catalog.open_duration" href="#PPvalves.catalog.open_duration">open_duration</a></code></li>
+<li><code><a title="PPvalves.catalog.open_ratio" href="#PPvalves.catalog.open_ratio">open_ratio</a></code></li>
+<li><code><a title="PPvalves.catalog.recurrence" href="#PPvalves.catalog.recurrence">recurrence</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

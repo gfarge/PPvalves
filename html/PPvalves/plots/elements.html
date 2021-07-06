@@ -1,0 +1,2828 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>PPvalves.plots.elements API documentation</title>
+<meta name="description" content="Plots figure elements, to be assembled" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PPvalves.plots.elements</code></h1>
+</header>
+<section id="section-intro">
+<p>Plots figure elements, to be assembled</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34; Plots figure elements, to be assembled &#34;&#34;&#34;
+
+# Imports
+# =======
+# Built-in packages
+# -----------------
+import numpy as np
+
+from scipy.signal import savgol_filter
+
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+from matplotlib.collections import PatchCollection
+
+# My packages
+# -----------
+from PPvalves.plots.utility import set_plot_params, set_valve_fc, set_valve_mc
+import PPvalves.equilibrium as equi
+
+
+# Core
+# ====
+
+def valves(X, VALVES, states_override=None, fig=None, ax=None, X_axis=&#39;x&#39;, plot_params={}):
+    &#34;&#34;&#34;
+    A function to plot valves in existing figure/axes.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space position array.
+    VALVES : dictionnary
+        Valve parameters dictionnary.
+    states_override : 1D array (default to None)
+        Boolean array overriding VALVE[&#39;open&#39;] to plot states. Each element is
+        the state of a valve, True is open, False is closed.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    X_axis : str (default is &#39;x&#39;)
+        Which axis corresponds to physical X axis. &#39;x&#39; for horizontal axis, &#39;y&#39;
+        for vertical axis
+    plot_params : dictionnary (default is {}, empty dic.)
+        a dictionnary of plotting parameters for the valves. Implemented:
+        facecolor (any matplotlib ways of indicating color) for both open and
+        close state (default = &#39;v_op_fc&#39; : &#39;lightgray&#39;, &#39;v_cl_fc&#39; :
+        &#39;darkgray&#39;), zorder (default &#39;zorder&#39; : 0).
+
+    Returns
+    -------
+    valves_pc : matplotlib PatchCollection object
+        Valves patches.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for valve states,
+    # figure and axis
+    # ------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+    if ax is None:
+        ax = plt.gca()
+
+    if states_override is None:
+        open_valves = VALVES[&#39;open&#39;].astype(bool)
+    else:
+        open_valves = states_override.astype(bool)
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;v_op_fc&#39;, &#39;v_cl_fc&#39;, &#39;v_st_marker&#39;, &#39;v_zorder&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Add state markers before plotting patches underneath
+    # ----------------------------------------------------
+    if plot_params[&#39;v_st_marker&#39;]:
+        v_op_pc, v_cl_pc = valve_markers(X, VALVES,
+                                         states_override=states_override,
+                                         fig=fig, ax=ax, X_axis=X_axis,
+                                         plot_params=plot_params)
+
+    # Check which axis is physical X_axis
+    # -----------------------------------
+    if X_axis == &#39;x&#39;:
+        zlim = ax.get_ylim()
+#        print(zlim)
+    elif X_axis == &#39;y&#39;:
+        zlim = ax.get_xlim()
+#        print(zlim)
+
+    # Build valve patches and colors as a function of valve states
+    # ------------------------------------------------------------
+    if X_axis == &#39;x&#39;:
+        valve_patches = [Rectangle((x_v, zlim[0]), w_v, zlim[1]-zlim[0])
+                         for x_v, w_v in zip(X[VALVES[&#39;idx&#39;]], VALVES[&#39;width&#39;])]
+    elif X_axis == &#39;y&#39;:
+        valve_patches = [Rectangle((zlim[0], x_v), zlim[1]-zlim[0], w_v)
+                         for x_v, w_v in zip(X[VALVES[&#39;idx&#39;]], VALVES[&#39;width&#39;])]
+
+    valve_facecolors = set_valve_fc(open_valves, plot_params)
+
+    # Wrap patches in collection and plot it
+    # --------------------------------------
+    valves_pc = PatchCollection(valve_patches,
+                                facecolor=valve_facecolors,
+                                edgecolor=None,
+                                axes=ax, zorder=plot_params[&#39;v_zorder&#39;])
+    ax.add_collection(valves_pc)
+
+    if plot_params[&#39;v_st_marker&#39;]:
+        return valves_pc, v_op_pc, v_cl_pc
+
+    return valves_pc
+
+# ----------------------------------------------------------------------------
+
+def valve_markers(X, VALVES, states_override=None, fig=None, ax=None, X_axis=&#39;x&#39;, plot_params={}):
+    &#34;&#34;&#34;
+    A function to plot valves in existing figure/axes.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space position array.
+    VALVES : dictionnary
+        Valve parameters dictionnary.
+    states_override : 1D array (default to None)
+        Boolean array overriding VALVE[&#39;open&#39;] to plot states. Each element is
+        the state of a valve, True is open, False is closed.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    X_axis : str (default is &#39;x&#39;)
+        Which axis corresponds to physical X axis. &#39;x&#39; for horizontal axis, &#39;y&#39;
+        for vertical axis
+    plot_params : dictionnary (default is {}, empty dic.)
+        a dictionnary of plotting parameters for the valves. Implemented:
+        facecolor (any matplotlib ways of indicating color) for both open and
+        close state (default = &#39;v_op_fc&#39; : &#39;lightgray&#39;, &#39;v_cl_fc&#39; :
+        &#39;darkgray&#39;), zorder (default &#39;zorder&#39; : 0).
+
+    Returns
+    -------
+    valves_op_m : matplotlib PathCollection object
+        Valves open markers.
+    valves_cl_m : matplotlib PathCollection object
+        Valves closed markers.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for valve states,
+    # figure and axis
+    # ------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+    if ax is None:
+        ax = plt.gca()
+
+    if states_override is None:
+        open_valves = VALVES[&#39;open&#39;].astype(bool)
+    else:
+        open_valves = states_override.astype(bool)
+
+    # Tweak boundaries to make space for markers
+    # ------------------------------------------
+    dy_bottom = -0.21
+    if X_axis == &#39;x&#39;:
+        ax.set_ylim(dy_bottom, ax.get_ylim()[1])
+    elif X_axis == &#39;y&#39;:
+        ax.set_xlim(dy_bottom, ax.get_xlim()[1])
+
+    # Set up default parameters when no input
+    # ---------------------------------------
+    needed_params = [&#39;v_op_mc&#39;, &#39;v_cl_mc&#39;, &#39;v_zorder&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Set valve marker colors, and positions
+    # --------------------------------------
+    m_op_c, m_cl_c = set_valve_mc(open_valves, plot_params)
+    X_marker = X[VALVES[&#39;idx&#39;]] + .5 * VALVES[&#39;width&#39;]  # center of valve
+    Y_cl_marker = np.ones(len(VALVES[&#39;idx&#39;])) * 1/3*dy_bottom  # bottom
+    Y_op_marker = np.ones(len(VALVES[&#39;idx&#39;])) * 2/3*dy_bottom  # bottom +
+
+    # Build valve patches and colors as a function of valve states
+    # ------------------------------------------------------------
+    if X_axis == &#39;x&#39;:
+        valves_cl_pc = ax.scatter(X_marker, Y_cl_marker, marker=&#39;x&#39;, ec=m_cl_c,
+                                  s=10, zorder=plot_params[&#39;v_zorder&#39;]+1, lw=.8)
+        valves_op_pc = ax.scatter(X_marker, Y_op_marker,
+                                  marker=[(-1, -1), (1, 0), (-1, 1)], lw=.8,
+                                  s=10, ec=m_op_c, zorder=plot_params[&#39;v_zorder&#39;]+1,
+                                  fc=[0, 0, 0 ,0])
+    elif X_axis == &#39;y&#39;:
+        valves_cl_pc = ax.scatter(Y_cl_marker, X_marker, marker=&#39;x&#39;, ec=m_cl_c,
+                                  zorder=plot_params[&#39;v_zorder&#39;]+1)
+        valves_op_pc = ax.scatter(Y_op_marker, X_marker,
+                                  marker=[(-1, -1), (1, 0), (-1, 1)], lw=1.5,
+                                  ec=m_op_c, zorder=plot_params[&#39;v_zorder&#39;]+1,
+                                  fc=[0, 0, 0 ,0])
+
+    return valves_op_pc, valves_cl_pc
+
+# ----------------------------------------------------------------------------
+
+def pp_profile(X, P, fig=None, ax=None, plot_params={}):
+    &#34;&#34;&#34;
+    Plots a pore pressure profile on an existing figure.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space position array.
+    P : 1D array
+        Pore pressure in space array, same dimension as X.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the profile. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    params : dictionnary (default is {}, empty dic.)
+        a dictionnary of plotting parameters. Implemented:
+        line color (any matplotlib ways of indicating color, default &#39;pp_lc&#39; :
+        &#39;teal&#39;), line width (default &#39;pp_lw&#39; : 1.5), zorder (default
+        &#39;pp_zorder&#39; : 10, over everything).
+
+    Returns
+    -------
+    pp_line : matplotlib line object
+        Line object for the pore pressure profile.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;pp_lc&#39;, &#39;pp_zorder&#39;, &#39;pp_lw&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot pore pressure profile
+    # --------------------------
+    pp_line = ax.plot(X, P,
+                      lw=plot_params[&#39;pp_lw&#39;], c=plot_params[&#39;pp_lc&#39;],
+                      zorder=plot_params[&#39;pp_zorder&#39;],
+                      label=&#39;Pore pressure&#39;)
+    ax.set_ylabel(&#39;Pore pressure&#39;, color=plot_params[&#39;pp_lc&#39;])
+    ax.set_xlabel(&#39;&lt;-- Downdip X Updip --&gt;&#39;)
+
+    return pp_line
+
+# ----------------------------------------------------------------------------
+
+def q_profile(X, Q, fig=None, ax=None, plot_params={}):
+    &#34;&#34;&#34;
+    Plots a flux profile on an existing figure.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space position array.
+    Q : 1D array
+        Pore pressure in space array, should be dimension of X -1.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the profile. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the profile. If not specified, takes output of
+        plt.gca(): current active axes.
+    params : dictionnary (default is {}, empty dic.)
+        a dictionnary of plotting parameters. Implemented:
+        line color (any matplotlib ways of indicating color, default &#39;q_lc&#39; :
+        &#39;aquamarine&#39;), line width (default &#39;q_lw&#39; : 1.5), zorder (default
+        &#39;q_zorder&#39; : 10, over everything).
+
+    Returns
+    -------
+    q_line : matplotlib line object
+        Line object for the flux profile.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;q_lc&#39;, &#39;q_zorder&#39;, &#39;q_lw&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot massic flux profile
+    # ------------------------
+    Xq = (X[1:] + X[:-1])/2  # Q is defined in between pressure points
+    q_line = ax.plot(Xq, Q,
+                     lw=plot_params[&#39;q_lw&#39;], c=plot_params[&#39;q_lc&#39;],
+                     zorder=plot_params[&#39;q_zorder&#39;],
+                     label=&#39;Massic flux&#39;)
+    ax.set_ylabel(&#39;Massic flux&#39;, color=plot_params[&#39;q_lc&#39;])
+    ax.set_xlabel(&#39;&lt;-- Downdip X Updip --&gt;&#39;)
+
+    ax.set_ylim((0-0.1*np.max(Q), np.max(Q)*1.1))
+
+    return q_line
+
+# ----------------------------------------------------------------------------
+
+def bounds(p0, PARAM, fig=None, ax=None, plot_params={}):
+    &#34;&#34;&#34;
+    Plot profile of pore pressure, flux and valve states and positions at a
+    given time on an existing figure and axes.
+
+    Parameters
+    ----------
+    p0 : float
+        Y-coordinate (pore pressure possibly?) for input point of domain.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    params : dictionnary (default is {}, empty dic.)
+        a dictionnary of plotting parameters for the pore pressure profile,
+        flux profile and valves. See pp_profile, q_profile, and valves
+        functions of this module for respective paramaters.
+
+    Returns
+    -------
+    ax : axes object from matplotlib.
+        Updated ax object.
+
+    g_objs : list
+        List of matplotlib objects corresponding to pore pressure profile line,
+        flux profile line and valves patch collection.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;q_b_m&#39;, &#39;q_b_ms&#39;, &#39;q_b_mew&#39;, &#39;q_lc&#39;,
+                     &#39;pp_b_m&#39;, &#39;pp_b_ms&#39;, &#39;pp_b_mew&#39;, &#39;pp_lc&#39;,
+                     &#39;b_zorder&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Check boundary conditions
+    # -------------------------
+    if np.isnan(PARAM[&#39;qin_&#39;]):
+        # --&gt; Fixed pressure
+        p0 = PARAM[&#39;p0_&#39;]
+        x_in = 0 - PARAM[&#39;hb_&#39;]
+
+        str_in = r&#39;$p_{{in}}={0:.2f}$&#39;.format(PARAM[&#39;p0_&#39;])
+
+        mark_in = plot_params[&#39;pp_b_m&#39;]
+        mark_in_ec = plot_params[&#39;pp_lc&#39;]
+        mark_in_fc = None
+        mark_in_ew = plot_params[&#39;pp_b_mew&#39;]
+        mark_in_s = plot_params[&#39;pp_b_ms&#39;]
+
+    else:
+        # --&gt; Fixed flux
+        x_in = 0
+#        str_in = r&#39;$q_{{in}}={0:.2f}$&#39;.format(PARAM[&#39;qin_&#39;])
+        str_in = r&#39;$q_{{in}}$&#39;.format(PARAM[&#39;qin_&#39;])
+
+        mark_in = plot_params[&#39;q_b_m&#39;]
+        mark_in_ec = &#39;k&#39;
+        mark_in_fc = plot_params[&#39;q_lc&#39;]
+        mark_in_ew = plot_params[&#39;q_b_mew&#39;]
+        mark_in_s = plot_params[&#39;q_b_ms&#39;]
+
+    if np.isnan(PARAM[&#39;qout_&#39;]):
+        # --&gt; Fixed pressure
+        x_out = 1 + PARAM[&#39;hb_&#39;]
+        pL = PARAM[&#39;pL_&#39;]
+
+#        str_out = r&#39;$p_{{out}}={0:.2f}$&#39;.format(PARAM[&#39;pL_&#39;])
+        str_out = r&#39;$p_{{out}}$&#39;.format(PARAM[&#39;pL_&#39;])
+
+        mark_out = plot_params[&#39;pp_b_m&#39;]
+        mark_out_ec = plot_params[&#39;pp_lc&#39;]
+        mark_out_fc = None
+        mark_out_ew = plot_params[&#39;pp_b_mew&#39;]
+        mark_out_s = plot_params[&#39;pp_b_ms&#39;]
+
+    else:
+        # --&gt; Fixed flux
+        x_in = 1
+        pL = 0  # to be changed
+
+        str_out = r&#39;$q_{{out}}={0:.2f}$&#39;.format(PARAM[&#39;qout_&#39;])
+
+        mark_out = plot_params[&#39;pp_b_m&#39;]
+        mark_out_ec = plot_params[&#39;pp_lc&#39;]
+        mark_out_fc = None
+        mark_out_ew = plot_params[&#39;pp_b_mew&#39;]
+        mark_out_s = plot_params[&#39;pp_b_ms&#39;]
+
+
+    # Plot the boundary conditions markers
+    # ------------------------------------
+    l_mark_in = ax.plot(x_in, p0, ls=None, marker=mark_in,
+                        ms=mark_in_s, mew=mark_in_ew,
+                        mfc=mark_in_fc, mec=mark_in_ec,
+                        zorder=plot_params[&#39;b_zorder&#39;])
+    l_mark_out = ax.plot(x_out, pL, ls=None, marker=mark_out,
+                         ms=mark_out_s, mew=mark_out_ew,
+                         mfc=mark_out_fc, mec=mark_out_ec,
+                         zorder=plot_params[&#39;b_zorder&#39;])
+
+    # Plot the boundary conditions text
+    # ---------------------------------
+    txt_in = ax.text(0.05, p0*1.0, str_in,
+                     fontsize=10,
+                     va=&#39;top&#39;, ha=&#39;right&#39;,
+                     bbox={&#39;boxstyle&#39; : &#34;square, pad=0.1&#34;,
+                           &#39;alpha&#39; : 0.5, &#39;facecolor&#39;:&#39;w&#39;, &#39;edgecolor&#39;:&#39;w&#39;},
+                     zorder=30)
+    txt_out = ax.text(0.95, 0, str_out,
+                      fontsize=10,
+                      va=&#39;bottom&#39;, ha=&#39;left&#39;,
+                      bbox={&#39;boxstyle&#39; : &#34;square, pad=0.1&#34;,
+                            &#39;alpha&#39; : 0.5, &#39;facecolor&#39;:&#39;w&#39;, &#39;edgecolor&#39;:&#39;w&#39;},
+                      zorder=30)
+
+    # Arrange the limits to fit the text box
+    # --------------------------------------
+    ax.set_ylim(min(-0.05, ax.get_ylim()[0]), max(1.05, ax.get_ylim()[1]))
+
+    g_objs = [l_mark_in, l_mark_out, txt_in, txt_out]
+    return ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def bound_gauge(bound, VALVES, PARAM, fig=None, ax=None, plot_params={}):
+    &#34;&#34;&#34;
+    Plots a gauge to compare the critical opening and closing flux (or dP)
+    to the boundary conditions of the system.
+
+    Parameters
+    ----------
+    bound : str
+        Information about the type of boundary condition.
+    VALVES : dictionnary
+        Valve parameters dictionnary.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters.
+
+    Returns
+    -------
+    ax : axis object from matplotlib.
+        The axis created in this function.
+    g_objs : list
+        List of graphical objects created by this function.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Get parameters of interest
+    # --------------------------
+    needed_params = [&#39;v_cl_fc&#39;, &#39;v_op_fc&#39;, &#39;q_lc&#39;, &#39;pp_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Compute critical thresholds
+    # ---------------------------
+    if bound == &#39;q&#39;:
+        bound = &#39;flux&#39;
+        bound_value = PARAM[&#39;qin_&#39;]
+        v_op_crit = equi.calc_q_crit(0, VALVES, PARAM, event=&#39;opening&#39;)
+        v_cl_crit = equi.calc_q_crit(0, VALVES, PARAM, event=&#39;closing&#39;)
+        bound_value_c = plot_params[&#39;q_lc&#39;]
+
+    elif bound == &#39;p&#39;:
+        bound = &#39;pressure&#39;
+        bound_value = PARAM[&#39;p0_&#39;]
+        v_op_crit = equi.calc_dP_crit(0, VALVES, PARAM, event=&#39;opening&#39;)
+        v_cl_crit = equi.calc_dP_crit(0, VALVES, PARAM, event=&#39;closing&#39;)
+        bound_value_c = plot_params[&#39;pp_lc&#39;]
+
+    # Define plot limits, ticks, tick labels
+    # --------------------------------------
+    ax.set_xlim((0, 1))
+
+    # --&gt; Equivalent domains, or shape them
+    y_lim = [min(v_op_crit, v_cl_crit) - abs(v_op_crit - v_cl_crit),
+             max(v_op_crit, v_cl_crit) + abs(v_op_crit - v_cl_crit)]
+    if bound_value &gt; y_lim[1]:
+        y_lim[1] = 1.05 * bound_value
+    elif bound_value &lt; y_lim[0]:
+        y_lim[0] = 0.95 * bound_value
+    ax.set_ylim(y_lim)
+
+    ax.set_yticks([v_cl_crit, v_op_crit])
+    ax.set_yticklabels([&#34;{:.2f}&#34;.format(v_cl_crit), &#34;{:.2f}&#34;.format(v_op_crit)])
+
+    ax.set_ylabel(&#39;Crit. input {:}&#39;.format(bound), rotation=270, labelpad=15)
+    ax.yaxis.set_label_position(&#34;right&#34;)
+
+    # Plot thresholds and domains
+    # ---------------------------
+    y_cl_dom = ax.get_ylim()[0]  # bottom left of closed domain
+    y_op_dom = max(v_cl_crit, v_op_crit)  # bottom left of open domain
+    h_cl_dom = min(v_cl_crit, v_op_crit) - y_cl_dom  # height of closed domain
+    h_op_dom = ax.get_ylim()[1] - y_op_dom  # height of open domain
+    y_trans_dom = y_cl_dom + h_cl_dom  # bottom left of transition domain
+    h_trans_dom = y_op_dom - y_trans_dom  # height of transition domain
+
+    ax.axhline(v_cl_crit, c=&#39;k&#39;, ls=&#39;-&#39;, lw=2, zorder=10)
+    ax.axhline(v_op_crit, c=&#39;k&#39;, ls=&#39;-&#39;, lw=2, zorder=10)
+
+    p_op_dom = Rectangle((0, y_op_dom), 1, h_op_dom,
+                         ec=None, fc=plot_params[&#39;v_op_fc&#39;], zorder=0)
+    txt_op = ax.text(0.05, y_op_dom + 0.5 * h_op_dom, &#39;Op&#39;,
+                     ha=&#39;left&#39;, va=&#39;center&#39;, rotation=270)
+    p_cl_dom = Rectangle((0, y_cl_dom), 1, h_cl_dom,
+                         ec=None, fc=plot_params[&#39;v_cl_fc&#39;], zorder=0)
+    txt_cl = ax.text(0.05, y_cl_dom + 0.5 * h_cl_dom, &#39;Cl&#39;,
+                     ha=&#39;left&#39;, va=&#39;center&#39;, rotation=270)
+    ax.add_patch(p_op_dom)
+    ax.add_patch(p_cl_dom)
+
+    if v_op_crit &lt; v_cl_crit:
+        p_trans_dom = Rectangle((0, y_trans_dom), 1, h_trans_dom,
+                                ec=plot_params[&#39;v_op_fc&#39;], fc=plot_params[&#39;v_cl_fc&#39;],
+                                hatch=&#39;..&#39;, lw=1)
+        txt_trans = ax.text(0.05, y_trans_dom + 0.5 * h_trans_dom, &#39;Act&#39;,
+                            ha=&#39;left&#39;, va=&#39;center&#39;, rotation=270)
+    else:
+        p_trans_dom = Rectangle((0, y_trans_dom), 1, h_trans_dom,
+                                ec=plot_params[&#39;v_op_fc&#39;], fc=plot_params[&#39;v_cl_fc&#39;],
+                                hatch=&#39;///&#39;, lw=1)
+        txt_trans = ax.text(0.05, y_trans_dom + 0.5 * h_trans_dom, &#39;CI&#39;,
+                            ha=&#39;left&#39;, va=&#39;center&#39;, rotation=270)
+    ax.add_patch(p_trans_dom)
+
+    # Plot initial state and boundary conditions
+    # ------------------------------------------
+    # --&gt; Boundary condition
+    l_bound_value = ax.plot(0.5, bound_value, ls=None,
+                            marker=&#39;o&#39;, ms=12, mew=2, mec=bound_value_c,
+                            mfc=[0, 0, 0, 0], zorder=11)
+    l_bound_value = ax.plot(0.5, bound_value, ls=None,
+                            marker=&#39;+&#39;, ms=12, mew=2, mec=bound_value_c,
+                            zorder=11)
+    ax.text(0.7, bound_value, r&#39;$q_{{in}}$&#39;,
+            va=&#39;bottom&#39;, ha=&#39;left&#39;,
+            bbox={&#39;boxstyle&#39; : &#34;square, pad=0.1&#34;, &#39;alpha&#39; : 0.5,
+                  &#39;facecolor&#39;:&#39;w&#39;, &#39;edgecolor&#39;:&#39;w&#39;}, zorder=12)
+    # --&gt; Initial state
+    l_bound_value = ax.plot(0.5, v_op_crit, ls=None,
+                            marker=&#39;o&#39;, ms=12, mew=2, mec=&#39;crimson&#39;,
+                            mfc=[0, 0, 0, 0], zorder=11)
+    l_bound_value = ax.plot(0.5, v_op_crit, ls=None,
+                            marker=&#39;+&#39;, ms=12, mew=2, mec=&#39;crimson&#39;,
+                            zorder=11)
+    ax.text(0.7, v_op_crit, r&#39;$q_{{0}}$&#39;,
+            va=&#39;bottom&#39;, ha=&#39;left&#39;,
+            bbox={&#39;boxstyle&#39; : &#34;square, pad=0.1&#34;, &#39;alpha&#39; : 0.5,
+                  &#39;facecolor&#39;:&#39;w&#39;, &#39;edgecolor&#39;:&#39;w&#39;}, zorder=12)
+    # --&gt; t0 arrow
+    ax.annotate(&#39;&#39;, (0.5, bound_value), (0.5, v_op_crit),
+                arrowprops={&#39;arrowstyle&#39; : &#39;-&gt;&#39;, &#39;linewidth&#39; : 2},
+                zorder=12)
+    ax.text(0.75, (bound_value + v_op_crit)/2, r&#39;$t_0$&#39;,
+            va=&#39;center&#39;, ha=&#39;center&#39;,
+            bbox={&#39;boxstyle&#39; : &#34;square, pad=0.1&#34;, &#39;alpha&#39; : 0.5,
+                  &#39;facecolor&#39;:&#39;w&#39;, &#39;edgecolor&#39;:&#39;w&#39;})
+
+    g_objs = [p_op_dom, p_cl_dom, p_trans_dom,
+              l_bound_value,
+              txt_op, txt_cl, txt_trans]
+
+    return ax, g_objs
+
+# ------------------------------------------------------------------
+
+def recurrence(event_t, rec, log=True, tlim=None, plot_params={}, fig=None, ax=None):
+    &#34;&#34;&#34;
+    Plots events recurrence interval in time.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension is N_ev, the recurrence intervals are
+        counted at each events, for the next interval: last event is excluded.
+    rec : 1D array
+        Array of events recurrence interval, time before the next event.
+        Dimension is N_ev - 1
+    log : bool (default=`True`)
+        Option to have the y-axis (recurrence intervals) in log scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = &#39;act_lc&#39;
+        : &#39;k&#39;)
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Define plot time window
+    # -----------------------
+    event_t = event_t[:-1]  # time before next event, exclude last
+    if tlim is not None:
+        t_win = (tlim[0] &lt; event_t) &amp; (event_t &lt; tlim[1])
+        event_t = event_t[t_win]
+        rec = rec[t_win]
+
+    if len(event_t) &gt; 1e4:
+        rasterize=True
+    else:
+        rasterize=False
+
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;act_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot the events
+    # ---------------
+    ev_l, = ax.plot(event_t, rec, &#39;o&#39;, c=plot_params[&#39;act_lc&#39;], ms=1,
+                    rasterized=rasterize)
+    if log:
+        ax.set_yscale(&#39;log&#39;)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Set labels and title
+    # --------------------
+    ax.set_title(&#34;Events recurrence interval (time before next event)&#34;)
+    ax.set_xlabel(&#34;Time (scaled)&#34;)
+    ax.set_ylabel(&#34;Rec. interval (scaled)&#34;, c=plot_params[&#39;act_lc&#39;])
+
+    plt.tight_layout()
+
+    g_objs = ev_l
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def activity_dip(event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None):
+    &#34;&#34;&#34;
+    Plots activity across dip in time.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension is N_event.
+    event_x : 1D array
+        Array of event locations, dimension is N_event.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = &#39;act_lc&#39;
+        : &#39;k&#39;)
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] &lt; event_t) &amp; (event_t &lt; tlim[1])
+        event_t = event_t[t_win]
+        event_x = event_x[t_win]
+
+    if len(event_t) &gt; 1e3:
+        rasterize=True
+    else:
+        rasterize=False
+
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;act_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot the events
+    # ---------------
+    ev_l, = ax.plot(event_t, event_x, &#39;o&#39;, c=plot_params[&#39;act_lc&#39;], ms=1,
+                    rasterized=rasterize)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Set labels and title
+    # --------------------
+    ax.set_title(&#34;Activity across dip in time&#34;)
+    ax.set_xlabel(&#34;Time (scaled)&#34;)
+    ax.set_ylabel(&#34;Along-dip X (scaled)&#34;, c=plot_params[&#39;act_lc&#39;])
+
+    plt.tight_layout()
+
+    g_objs = ev_l
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def activity_rate(rate_time, rate, tlim=None, plot_params={}, smoothed=None, fig=None, ax=None):
+    &#34;&#34;&#34;
+    Plots activity rate in time.
+
+    Parameters
+    ----------
+    rate_time : 1D array
+        Array of times for which the activity rate is computed, dimension is
+        N_times.
+    rate : 1D array
+        Array of activity rate in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = &#39;k_eq_lc&#39;
+        : &#39;darkturquoise&#39;)
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] &lt; rate_time) &amp; (rate_time &lt; tlim[1])
+        rate_time = rate_time[t_win]
+        rate = rate[t_win]
+        if smoothed:
+            smoothed = smoothed[t_win]
+
+    if len(rate_time) &gt; 1e4:
+        rasterize = True
+    else:
+        rasterize = False
+
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;act_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot
+    # ----
+    if smoothed is not None:
+
+        act_r_l, = ax.plot(rate_time, rate, ls=&#39;-&#39;, lw=.7, c=&#39;.8&#39;,
+                           rasterized=rasterize, zorder=0)
+        smoothed_l, = ax.plot(rate_time, smoothed, ls=&#39;-&#39;, lw=1.5, zorder=1,
+                             c=plot_params[&#39;act_lc&#39;], rasterized=rasterize)
+    else:
+        act_r_l, = ax.plot(rate_time, rate, ls=&#39;-&#39;, lw=1.5, c=plot_params[&#39;act_lc&#39;],
+                           rasterized=rasterize)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Labels and title
+    # ----------------
+    ax.set_title(&#34;Activity rate in time&#34;)
+    ax.set_xlabel(&#34;Time (scaled)&#34;)
+    ax.set_ylabel(r&#34;Activity rate&#34;, c=plot_params[&#39;act_lc&#39;])
+    plt.tight_layout()
+
+    g_objs = act_r_l
+    if smoothed is not None:
+        g_objs = [act_r_l, smoothed_l]
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def perm_eq(T, k_eq, k_ref=None, smoothed=None, tlim=None, log=True, plot_params={}, fig=None, ax=None):
+    &#34;&#34;&#34;
+    Plots equivalent permeability in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    k_eq : 1D array
+        Array of equivalent permeability in time, dimension is N_times.
+    k_ref : tuple (default `None`)
+        Option to plot background and fully closed equivalent permeability.
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    log : bool (default=`True`)
+        Option to have the y-axis (permeability) in log-scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = &#39;k_eq_lc&#39;
+        : &#39;darkturquoise&#39;)
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] &lt; T) &amp; (T &lt; tlim[1])
+        T = T[t_win]
+        k_eq = k_eq[t_win]
+        if smoothed is not None:
+            smoothed = smoothed[t_win]
+
+    if len(T) &gt; 1e4:
+        rasterize = True
+    else:
+        rasterize = False
+
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;k_eq_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot
+    # ----
+    if smoothed is not None:
+        k_eq_l, = ax.plot(T, k_eq, ls=&#39;-&#39;, lw=0.7, c=&#39;.8&#39;,
+                          rasterized=rasterize, zorder=1)
+        smoothed_l, = ax.plot(T, smoothed, ls=&#39;-&#39;, lw=1.5, zorder=1,
+                              c=plot_params[&#39;k_eq_lc&#39;], rasterized=rasterize)
+    else:
+        k_eq_l, = ax.plot(T, k_eq, ls=&#39;-&#39;, lw=1.5, c=plot_params[&#39;k_eq_lc&#39;],
+                          rasterized=rasterize)
+
+    if k_ref is not None:
+        ax.axhline(k_ref[0], ls=&#39;:&#39;, c=&#39;k&#39;, lw=1)
+        ax.axhline(k_ref[1], ls=&#39;:&#39;, c=&#39;k&#39;, lw=1)
+
+    if log:
+        ax.set_yscale(&#39;log&#39;)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Labels and title
+    # ----------------
+    ax.set_title(&#34;System&#39;s equivalent permeability in time&#34;)
+    ax.set_xlabel(&#34;Time (scaled)&#34;)
+    ax.set_ylabel(r&#34;$k_{eq}$ ($m^2$)&#34;, c=plot_params[&#39;k_eq_lc&#39;])
+    plt.tight_layout()
+
+    if smoothed is not None:
+        g_objs = [k_eq_l, smoothed_l]
+    else:
+        g_objs = [k_eq_l]
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
+    &#34;&#34;&#34;
+    Plots mass balance in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    deltaM : 1D array
+        Array of mass balance in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = &#39;mass_lc&#39;
+        : &#39;darkturquoise&#39;)
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] &lt; T) &amp; (T &lt; tlim[1])
+        T = T[t_win]
+        deltaM = deltaM[t_win]
+
+    if len(T) &gt; 1e4:
+        rasterize=True
+    else:
+        rasterize=False
+
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;mass_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot
+    # ----
+    mass_b_l, = ax.plot(T, deltaM, ls=&#39;-&#39;, lw=1.5, c=plot_params[&#39;mass_lc&#39;],
+                        rasterized=rasterize)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Labels and title
+    # ----------------
+    ax.set_title(&#34;Mass balance in the system&#34;)
+    ax.set_xlabel(&#34;Time (scaled)&#34;)
+    ax.set_ylabel(r&#34;$\delta M$ (scaled)&#34;, c=plot_params[&#39;mass_lc&#39;])
+    plt.tight_layout()
+
+    g_objs = mass_b_l
+
+    return fig, ax, g_objs
+
+# ----------------------------------------------------------------------------
+
+def bound_in(T, bound_0, PARAM, smoothed=None, tlim=None, v_eff=None, plot_params={}, fig=None, ax=None):
+    &#34;&#34;&#34;
+    Plots pp/q value of in-bound in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    bound_0 : 1D array
+        Array of values taken by the in bound in time, dimension is N_times.
+    PARAM : dictionnary
+        Physical and numerical parameters dictionnary to determine which
+        variable is plotted.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    v_eff : float (default `None`)
+        Effective value of the input boundary variable. If specified it is
+        plotted and added as a text insert.
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = &#39;pp_lc&#39;
+        : &#39;crimson&#39;, &#39;q_lc&#39; : &#39;teal&#39;)
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] &lt; T) &amp; (T &lt; tlim[1])
+        T = T[t_win]
+        bound_0 = bound_0[t_win]
+        if smoothed is not None:
+            smoothed = smoothed[t_win]
+
+    if len(T) &gt; 1e4:
+        rasterize=True
+    else:
+        rasterize=False
+
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    if PARAM[&#39;bound&#39;][0]==&#39;Q&#39;:
+        needed_params = [&#39;pp_lc&#39;]
+    else:
+        needed_params = [&#39;q_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    if PARAM[&#39;bound&#39;][0] == &#39;Q&#39;:
+        lc = plot_params[&#39;pp_lc&#39;]
+        ylabel = r&#39;$p_{in}$ (scaled)&#39;
+        title = &#39;Input pressure in time&#39;
+    else:
+        lc = plot_params[&#39;q_lc&#39;]
+        ylabel = r&#39;$q_{in}$ (scaled)&#39;
+        title = &#39;Input flux in time&#39;
+
+    # Plot
+    # ----
+    if smoothed is not None:
+        bound_0_l, = ax.plot(T, bound_0, ls=&#39;-&#39;, lw=.7, c=&#39;.8&#39;,
+                             rasterized=rasterize, zorder=0)
+        smoothed_l, = ax.plot(T, smoothed, ls=&#39;-&#39;, lw=1.5, c=lc,
+                              rasterized=rasterize, zorder=1)
+    else:
+        bound_0_l, = ax.plot(T, bound_0, ls=&#39;-&#39;, lw=1.5, c=lc, rasterized=rasterize)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Add value of effective bound?
+    # -----------------------------
+    if v_eff is not None:
+        ax.axhline(v_eff, lw=.8, c=&#39;k&#39;, zorder=30)
+
+        if PARAM[&#39;bound&#39;][0] == &#39;Q&#39;:
+            label = r&#34;$\overline{{p_{{in}}}}={:.2f}$&#34;.format(v_eff)
+        else:
+            label = r&#34;$\overline{{q_{{in}}}}={:.2f}$&#34;.format(v_eff)
+
+        ax.text(ax.get_xlim()[0]+0.01, v_eff, label, ha=&#39;left&#39;, va=&#39;bottom&#39;,
+                bbox={&#39;boxstyle&#39; : &#39;square, pad=0.1&#39;, &#39;alpha&#39; : 0.5,
+                      &#39;facecolor&#39; : &#39;w&#39;, &#39;edgecolor&#39; : &#39;w&#39;}, zorder=11)
+
+    # Labels and title
+    # ----------------
+    ax.set_title(title)
+    ax.set_xlabel(&#34;Time (scaled)&#34;)
+    ax.set_ylabel(ylabel, c=lc)
+    plt.tight_layout()
+
+    g_objs = bound_0_l
+    if smoothed is not None:
+        g_objs = [bound_0_l, smoothed_l]
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="PPvalves.plots.elements.activity_dip"><code class="name flex">
+<span>def <span class="ident">activity_dip</span></span>(<span>event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots activity across dip in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>event_t</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of event times, dimension is N_event.</dd>
+<dt><strong><code>event_x</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of event locations, dimension is N_event.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt>plot_params : dictionnary (default is {}, empty dic.)</dt>
+<dt>A dictionnary of plotting parameters. Implemented:</dt>
+<dt>linecolor (any matplotlib ways of indicating color) default = 'act_lc'</dt>
+<dt>: 'k')</dt>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the valves. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>fig : figure object from matplotlib.</dt>
+<dt>The figure created in this function.</dt>
+<dt>ax : ax object from matplotlib.</dt>
+<dt>The axis created in this function.</dt>
+<dt><strong><code>g_objs</code></strong> :&ensp;<code>line object from matplotlib</code></dt>
+<dd>The line object created in this function.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def activity_dip(event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None):
+    &#34;&#34;&#34;
+    Plots activity across dip in time.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension is N_event.
+    event_x : 1D array
+        Array of event locations, dimension is N_event.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = &#39;act_lc&#39;
+        : &#39;k&#39;)
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] &lt; event_t) &amp; (event_t &lt; tlim[1])
+        event_t = event_t[t_win]
+        event_x = event_x[t_win]
+
+    if len(event_t) &gt; 1e3:
+        rasterize=True
+    else:
+        rasterize=False
+
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;act_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot the events
+    # ---------------
+    ev_l, = ax.plot(event_t, event_x, &#39;o&#39;, c=plot_params[&#39;act_lc&#39;], ms=1,
+                    rasterized=rasterize)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Set labels and title
+    # --------------------
+    ax.set_title(&#34;Activity across dip in time&#34;)
+    ax.set_xlabel(&#34;Time (scaled)&#34;)
+    ax.set_ylabel(&#34;Along-dip X (scaled)&#34;, c=plot_params[&#39;act_lc&#39;])
+
+    plt.tight_layout()
+
+    g_objs = ev_l
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.elements.activity_rate"><code class="name flex">
+<span>def <span class="ident">activity_rate</span></span>(<span>rate_time, rate, tlim=None, plot_params={}, smoothed=None, fig=None, ax=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots activity rate in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>rate_time</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of times for which the activity rate is computed, dimension is
+N_times.</dd>
+<dt><strong><code>rate</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of activity rate in time, dimension is N_times.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt>plot_params : dictionnary (default is {}, empty dic.)</dt>
+<dt>A dictionnary of plotting parameters. Implemented:</dt>
+<dt>linecolor (any matplotlib ways of indicating color) default = 'k_eq_lc'</dt>
+<dt>: 'darkturquoise')</dt>
+<dt><strong><code>smoothed</code></strong> :&ensp;<code>1D array(default </code>None<code>)</code></dt>
+<dd>Smoothed variable, same size as the main variable.</dd>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the valves. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>fig : figure object from matplotlib.</dt>
+<dt>The figure created in this function.</dt>
+<dt>ax : ax object from matplotlib.</dt>
+<dt>The axis created in this function.</dt>
+<dt><strong><code>g_objs</code></strong> :&ensp;<code>line object from matplotlib</code></dt>
+<dd>The line object created in this function.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def activity_rate(rate_time, rate, tlim=None, plot_params={}, smoothed=None, fig=None, ax=None):
+    &#34;&#34;&#34;
+    Plots activity rate in time.
+
+    Parameters
+    ----------
+    rate_time : 1D array
+        Array of times for which the activity rate is computed, dimension is
+        N_times.
+    rate : 1D array
+        Array of activity rate in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = &#39;k_eq_lc&#39;
+        : &#39;darkturquoise&#39;)
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] &lt; rate_time) &amp; (rate_time &lt; tlim[1])
+        rate_time = rate_time[t_win]
+        rate = rate[t_win]
+        if smoothed:
+            smoothed = smoothed[t_win]
+
+    if len(rate_time) &gt; 1e4:
+        rasterize = True
+    else:
+        rasterize = False
+
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;act_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot
+    # ----
+    if smoothed is not None:
+
+        act_r_l, = ax.plot(rate_time, rate, ls=&#39;-&#39;, lw=.7, c=&#39;.8&#39;,
+                           rasterized=rasterize, zorder=0)
+        smoothed_l, = ax.plot(rate_time, smoothed, ls=&#39;-&#39;, lw=1.5, zorder=1,
+                             c=plot_params[&#39;act_lc&#39;], rasterized=rasterize)
+    else:
+        act_r_l, = ax.plot(rate_time, rate, ls=&#39;-&#39;, lw=1.5, c=plot_params[&#39;act_lc&#39;],
+                           rasterized=rasterize)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Labels and title
+    # ----------------
+    ax.set_title(&#34;Activity rate in time&#34;)
+    ax.set_xlabel(&#34;Time (scaled)&#34;)
+    ax.set_ylabel(r&#34;Activity rate&#34;, c=plot_params[&#39;act_lc&#39;])
+    plt.tight_layout()
+
+    g_objs = act_r_l
+    if smoothed is not None:
+        g_objs = [act_r_l, smoothed_l]
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.elements.bound_gauge"><code class="name flex">
+<span>def <span class="ident">bound_gauge</span></span>(<span>bound, VALVES, PARAM, fig=None, ax=None, plot_params={})</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots a gauge to compare the critical opening and closing flux (or dP)
+to the boundary conditions of the system.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>bound</code></strong> :&ensp;<code>str</code></dt>
+<dd>Information about the type of boundary condition.</dd>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valve parameters dictionnary.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Dictionnary of physical parameters set for the system.</dd>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the valves. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+</dl>
+<p>plot_params : dictionnary (default is {}, empty dic.)
+A dictionnary of plotting parameters.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>ax : axis object from matplotlib.</dt>
+<dt>The axis created in this function.</dt>
+<dt><strong><code>g_objs</code></strong> :&ensp;<code>list</code></dt>
+<dd>List of graphical objects created by this function.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bound_gauge(bound, VALVES, PARAM, fig=None, ax=None, plot_params={}):
+    &#34;&#34;&#34;
+    Plots a gauge to compare the critical opening and closing flux (or dP)
+    to the boundary conditions of the system.
+
+    Parameters
+    ----------
+    bound : str
+        Information about the type of boundary condition.
+    VALVES : dictionnary
+        Valve parameters dictionnary.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters.
+
+    Returns
+    -------
+    ax : axis object from matplotlib.
+        The axis created in this function.
+    g_objs : list
+        List of graphical objects created by this function.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Get parameters of interest
+    # --------------------------
+    needed_params = [&#39;v_cl_fc&#39;, &#39;v_op_fc&#39;, &#39;q_lc&#39;, &#39;pp_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Compute critical thresholds
+    # ---------------------------
+    if bound == &#39;q&#39;:
+        bound = &#39;flux&#39;
+        bound_value = PARAM[&#39;qin_&#39;]
+        v_op_crit = equi.calc_q_crit(0, VALVES, PARAM, event=&#39;opening&#39;)
+        v_cl_crit = equi.calc_q_crit(0, VALVES, PARAM, event=&#39;closing&#39;)
+        bound_value_c = plot_params[&#39;q_lc&#39;]
+
+    elif bound == &#39;p&#39;:
+        bound = &#39;pressure&#39;
+        bound_value = PARAM[&#39;p0_&#39;]
+        v_op_crit = equi.calc_dP_crit(0, VALVES, PARAM, event=&#39;opening&#39;)
+        v_cl_crit = equi.calc_dP_crit(0, VALVES, PARAM, event=&#39;closing&#39;)
+        bound_value_c = plot_params[&#39;pp_lc&#39;]
+
+    # Define plot limits, ticks, tick labels
+    # --------------------------------------
+    ax.set_xlim((0, 1))
+
+    # --&gt; Equivalent domains, or shape them
+    y_lim = [min(v_op_crit, v_cl_crit) - abs(v_op_crit - v_cl_crit),
+             max(v_op_crit, v_cl_crit) + abs(v_op_crit - v_cl_crit)]
+    if bound_value &gt; y_lim[1]:
+        y_lim[1] = 1.05 * bound_value
+    elif bound_value &lt; y_lim[0]:
+        y_lim[0] = 0.95 * bound_value
+    ax.set_ylim(y_lim)
+
+    ax.set_yticks([v_cl_crit, v_op_crit])
+    ax.set_yticklabels([&#34;{:.2f}&#34;.format(v_cl_crit), &#34;{:.2f}&#34;.format(v_op_crit)])
+
+    ax.set_ylabel(&#39;Crit. input {:}&#39;.format(bound), rotation=270, labelpad=15)
+    ax.yaxis.set_label_position(&#34;right&#34;)
+
+    # Plot thresholds and domains
+    # ---------------------------
+    y_cl_dom = ax.get_ylim()[0]  # bottom left of closed domain
+    y_op_dom = max(v_cl_crit, v_op_crit)  # bottom left of open domain
+    h_cl_dom = min(v_cl_crit, v_op_crit) - y_cl_dom  # height of closed domain
+    h_op_dom = ax.get_ylim()[1] - y_op_dom  # height of open domain
+    y_trans_dom = y_cl_dom + h_cl_dom  # bottom left of transition domain
+    h_trans_dom = y_op_dom - y_trans_dom  # height of transition domain
+
+    ax.axhline(v_cl_crit, c=&#39;k&#39;, ls=&#39;-&#39;, lw=2, zorder=10)
+    ax.axhline(v_op_crit, c=&#39;k&#39;, ls=&#39;-&#39;, lw=2, zorder=10)
+
+    p_op_dom = Rectangle((0, y_op_dom), 1, h_op_dom,
+                         ec=None, fc=plot_params[&#39;v_op_fc&#39;], zorder=0)
+    txt_op = ax.text(0.05, y_op_dom + 0.5 * h_op_dom, &#39;Op&#39;,
+                     ha=&#39;left&#39;, va=&#39;center&#39;, rotation=270)
+    p_cl_dom = Rectangle((0, y_cl_dom), 1, h_cl_dom,
+                         ec=None, fc=plot_params[&#39;v_cl_fc&#39;], zorder=0)
+    txt_cl = ax.text(0.05, y_cl_dom + 0.5 * h_cl_dom, &#39;Cl&#39;,
+                     ha=&#39;left&#39;, va=&#39;center&#39;, rotation=270)
+    ax.add_patch(p_op_dom)
+    ax.add_patch(p_cl_dom)
+
+    if v_op_crit &lt; v_cl_crit:
+        p_trans_dom = Rectangle((0, y_trans_dom), 1, h_trans_dom,
+                                ec=plot_params[&#39;v_op_fc&#39;], fc=plot_params[&#39;v_cl_fc&#39;],
+                                hatch=&#39;..&#39;, lw=1)
+        txt_trans = ax.text(0.05, y_trans_dom + 0.5 * h_trans_dom, &#39;Act&#39;,
+                            ha=&#39;left&#39;, va=&#39;center&#39;, rotation=270)
+    else:
+        p_trans_dom = Rectangle((0, y_trans_dom), 1, h_trans_dom,
+                                ec=plot_params[&#39;v_op_fc&#39;], fc=plot_params[&#39;v_cl_fc&#39;],
+                                hatch=&#39;///&#39;, lw=1)
+        txt_trans = ax.text(0.05, y_trans_dom + 0.5 * h_trans_dom, &#39;CI&#39;,
+                            ha=&#39;left&#39;, va=&#39;center&#39;, rotation=270)
+    ax.add_patch(p_trans_dom)
+
+    # Plot initial state and boundary conditions
+    # ------------------------------------------
+    # --&gt; Boundary condition
+    l_bound_value = ax.plot(0.5, bound_value, ls=None,
+                            marker=&#39;o&#39;, ms=12, mew=2, mec=bound_value_c,
+                            mfc=[0, 0, 0, 0], zorder=11)
+    l_bound_value = ax.plot(0.5, bound_value, ls=None,
+                            marker=&#39;+&#39;, ms=12, mew=2, mec=bound_value_c,
+                            zorder=11)
+    ax.text(0.7, bound_value, r&#39;$q_{{in}}$&#39;,
+            va=&#39;bottom&#39;, ha=&#39;left&#39;,
+            bbox={&#39;boxstyle&#39; : &#34;square, pad=0.1&#34;, &#39;alpha&#39; : 0.5,
+                  &#39;facecolor&#39;:&#39;w&#39;, &#39;edgecolor&#39;:&#39;w&#39;}, zorder=12)
+    # --&gt; Initial state
+    l_bound_value = ax.plot(0.5, v_op_crit, ls=None,
+                            marker=&#39;o&#39;, ms=12, mew=2, mec=&#39;crimson&#39;,
+                            mfc=[0, 0, 0, 0], zorder=11)
+    l_bound_value = ax.plot(0.5, v_op_crit, ls=None,
+                            marker=&#39;+&#39;, ms=12, mew=2, mec=&#39;crimson&#39;,
+                            zorder=11)
+    ax.text(0.7, v_op_crit, r&#39;$q_{{0}}$&#39;,
+            va=&#39;bottom&#39;, ha=&#39;left&#39;,
+            bbox={&#39;boxstyle&#39; : &#34;square, pad=0.1&#34;, &#39;alpha&#39; : 0.5,
+                  &#39;facecolor&#39;:&#39;w&#39;, &#39;edgecolor&#39;:&#39;w&#39;}, zorder=12)
+    # --&gt; t0 arrow
+    ax.annotate(&#39;&#39;, (0.5, bound_value), (0.5, v_op_crit),
+                arrowprops={&#39;arrowstyle&#39; : &#39;-&gt;&#39;, &#39;linewidth&#39; : 2},
+                zorder=12)
+    ax.text(0.75, (bound_value + v_op_crit)/2, r&#39;$t_0$&#39;,
+            va=&#39;center&#39;, ha=&#39;center&#39;,
+            bbox={&#39;boxstyle&#39; : &#34;square, pad=0.1&#34;, &#39;alpha&#39; : 0.5,
+                  &#39;facecolor&#39;:&#39;w&#39;, &#39;edgecolor&#39;:&#39;w&#39;})
+
+    g_objs = [p_op_dom, p_cl_dom, p_trans_dom,
+              l_bound_value,
+              txt_op, txt_cl, txt_trans]
+
+    return ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.elements.bound_in"><code class="name flex">
+<span>def <span class="ident">bound_in</span></span>(<span>T, bound_0, PARAM, smoothed=None, tlim=None, v_eff=None, plot_params={}, fig=None, ax=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots pp/q value of in-bound in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>T</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of times, dimension is N_times.</dd>
+<dt><strong><code>bound_0</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of values taken by the in bound in time, dimension is N_times.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Physical and numerical parameters dictionnary to determine which
+variable is plotted.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt><strong><code>v_eff</code></strong> :&ensp;<code>float (default </code>None<code>)</code></dt>
+<dd>Effective value of the input boundary variable. If specified it is
+plotted and added as a text insert.</dd>
+<dt><strong><code>smoothed</code></strong> :&ensp;<code>1D array(default </code>None<code>)</code></dt>
+<dd>Smoothed variable, same size as the main variable.</dd>
+<dt>plot_params : dictionnary (default is {}, empty dic.)</dt>
+<dt>A dictionnary of plotting parameters. Implemented:</dt>
+<dt>linecolor (any matplotlib ways of indicating color) default = 'pp_lc'</dt>
+<dt>: 'crimson', 'q_lc' : 'teal')</dt>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the valves. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>fig : figure object from matplotlib.</dt>
+<dt>The figure created in this function.</dt>
+<dt>ax : ax object from matplotlib.</dt>
+<dt>The axis created in this function.</dt>
+<dt><strong><code>g_objs</code></strong> :&ensp;<code>line object from matplotlib</code></dt>
+<dd>The line object created in this function.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bound_in(T, bound_0, PARAM, smoothed=None, tlim=None, v_eff=None, plot_params={}, fig=None, ax=None):
+    &#34;&#34;&#34;
+    Plots pp/q value of in-bound in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    bound_0 : 1D array
+        Array of values taken by the in bound in time, dimension is N_times.
+    PARAM : dictionnary
+        Physical and numerical parameters dictionnary to determine which
+        variable is plotted.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    v_eff : float (default `None`)
+        Effective value of the input boundary variable. If specified it is
+        plotted and added as a text insert.
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = &#39;pp_lc&#39;
+        : &#39;crimson&#39;, &#39;q_lc&#39; : &#39;teal&#39;)
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] &lt; T) &amp; (T &lt; tlim[1])
+        T = T[t_win]
+        bound_0 = bound_0[t_win]
+        if smoothed is not None:
+            smoothed = smoothed[t_win]
+
+    if len(T) &gt; 1e4:
+        rasterize=True
+    else:
+        rasterize=False
+
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    if PARAM[&#39;bound&#39;][0]==&#39;Q&#39;:
+        needed_params = [&#39;pp_lc&#39;]
+    else:
+        needed_params = [&#39;q_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    if PARAM[&#39;bound&#39;][0] == &#39;Q&#39;:
+        lc = plot_params[&#39;pp_lc&#39;]
+        ylabel = r&#39;$p_{in}$ (scaled)&#39;
+        title = &#39;Input pressure in time&#39;
+    else:
+        lc = plot_params[&#39;q_lc&#39;]
+        ylabel = r&#39;$q_{in}$ (scaled)&#39;
+        title = &#39;Input flux in time&#39;
+
+    # Plot
+    # ----
+    if smoothed is not None:
+        bound_0_l, = ax.plot(T, bound_0, ls=&#39;-&#39;, lw=.7, c=&#39;.8&#39;,
+                             rasterized=rasterize, zorder=0)
+        smoothed_l, = ax.plot(T, smoothed, ls=&#39;-&#39;, lw=1.5, c=lc,
+                              rasterized=rasterize, zorder=1)
+    else:
+        bound_0_l, = ax.plot(T, bound_0, ls=&#39;-&#39;, lw=1.5, c=lc, rasterized=rasterize)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Add value of effective bound?
+    # -----------------------------
+    if v_eff is not None:
+        ax.axhline(v_eff, lw=.8, c=&#39;k&#39;, zorder=30)
+
+        if PARAM[&#39;bound&#39;][0] == &#39;Q&#39;:
+            label = r&#34;$\overline{{p_{{in}}}}={:.2f}$&#34;.format(v_eff)
+        else:
+            label = r&#34;$\overline{{q_{{in}}}}={:.2f}$&#34;.format(v_eff)
+
+        ax.text(ax.get_xlim()[0]+0.01, v_eff, label, ha=&#39;left&#39;, va=&#39;bottom&#39;,
+                bbox={&#39;boxstyle&#39; : &#39;square, pad=0.1&#39;, &#39;alpha&#39; : 0.5,
+                      &#39;facecolor&#39; : &#39;w&#39;, &#39;edgecolor&#39; : &#39;w&#39;}, zorder=11)
+
+    # Labels and title
+    # ----------------
+    ax.set_title(title)
+    ax.set_xlabel(&#34;Time (scaled)&#34;)
+    ax.set_ylabel(ylabel, c=lc)
+    plt.tight_layout()
+
+    g_objs = bound_0_l
+    if smoothed is not None:
+        g_objs = [bound_0_l, smoothed_l]
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.elements.bounds"><code class="name flex">
+<span>def <span class="ident">bounds</span></span>(<span>p0, PARAM, fig=None, ax=None, plot_params={})</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plot profile of pore pressure, flux and valve states and positions at a
+given time on an existing figure and axes.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>p0</code></strong> :&ensp;<code>float</code></dt>
+<dd>Y-coordinate (pore pressure possibly?) for input point of domain.</dd>
+<dt><strong><code>PARAM</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Dictionnary of physical parameters set for the system.</dd>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the valves. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+</dl>
+<p>params : dictionnary (default is {}, empty dic.)
+a dictionnary of plotting parameters for the pore pressure profile,
+flux profile and valves. See pp_profile, q_profile, and valves
+functions of this module for respective paramaters.</p>
+<h2 id="returns">Returns</h2>
+<p>ax : axes object from matplotlib.
+Updated ax object.</p>
+<dl>
+<dt><strong><code>g_objs</code></strong> :&ensp;<code>list</code></dt>
+<dd>List of matplotlib objects corresponding to pore pressure profile line,
+flux profile line and valves patch collection.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bounds(p0, PARAM, fig=None, ax=None, plot_params={}):
+    &#34;&#34;&#34;
+    Plot profile of pore pressure, flux and valve states and positions at a
+    given time on an existing figure and axes.
+
+    Parameters
+    ----------
+    p0 : float
+        Y-coordinate (pore pressure possibly?) for input point of domain.
+    PARAM : dictionnary
+        Dictionnary of physical parameters set for the system.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    params : dictionnary (default is {}, empty dic.)
+        a dictionnary of plotting parameters for the pore pressure profile,
+        flux profile and valves. See pp_profile, q_profile, and valves
+        functions of this module for respective paramaters.
+
+    Returns
+    -------
+    ax : axes object from matplotlib.
+        Updated ax object.
+
+    g_objs : list
+        List of matplotlib objects corresponding to pore pressure profile line,
+        flux profile line and valves patch collection.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;q_b_m&#39;, &#39;q_b_ms&#39;, &#39;q_b_mew&#39;, &#39;q_lc&#39;,
+                     &#39;pp_b_m&#39;, &#39;pp_b_ms&#39;, &#39;pp_b_mew&#39;, &#39;pp_lc&#39;,
+                     &#39;b_zorder&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Check boundary conditions
+    # -------------------------
+    if np.isnan(PARAM[&#39;qin_&#39;]):
+        # --&gt; Fixed pressure
+        p0 = PARAM[&#39;p0_&#39;]
+        x_in = 0 - PARAM[&#39;hb_&#39;]
+
+        str_in = r&#39;$p_{{in}}={0:.2f}$&#39;.format(PARAM[&#39;p0_&#39;])
+
+        mark_in = plot_params[&#39;pp_b_m&#39;]
+        mark_in_ec = plot_params[&#39;pp_lc&#39;]
+        mark_in_fc = None
+        mark_in_ew = plot_params[&#39;pp_b_mew&#39;]
+        mark_in_s = plot_params[&#39;pp_b_ms&#39;]
+
+    else:
+        # --&gt; Fixed flux
+        x_in = 0
+#        str_in = r&#39;$q_{{in}}={0:.2f}$&#39;.format(PARAM[&#39;qin_&#39;])
+        str_in = r&#39;$q_{{in}}$&#39;.format(PARAM[&#39;qin_&#39;])
+
+        mark_in = plot_params[&#39;q_b_m&#39;]
+        mark_in_ec = &#39;k&#39;
+        mark_in_fc = plot_params[&#39;q_lc&#39;]
+        mark_in_ew = plot_params[&#39;q_b_mew&#39;]
+        mark_in_s = plot_params[&#39;q_b_ms&#39;]
+
+    if np.isnan(PARAM[&#39;qout_&#39;]):
+        # --&gt; Fixed pressure
+        x_out = 1 + PARAM[&#39;hb_&#39;]
+        pL = PARAM[&#39;pL_&#39;]
+
+#        str_out = r&#39;$p_{{out}}={0:.2f}$&#39;.format(PARAM[&#39;pL_&#39;])
+        str_out = r&#39;$p_{{out}}$&#39;.format(PARAM[&#39;pL_&#39;])
+
+        mark_out = plot_params[&#39;pp_b_m&#39;]
+        mark_out_ec = plot_params[&#39;pp_lc&#39;]
+        mark_out_fc = None
+        mark_out_ew = plot_params[&#39;pp_b_mew&#39;]
+        mark_out_s = plot_params[&#39;pp_b_ms&#39;]
+
+    else:
+        # --&gt; Fixed flux
+        x_in = 1
+        pL = 0  # to be changed
+
+        str_out = r&#39;$q_{{out}}={0:.2f}$&#39;.format(PARAM[&#39;qout_&#39;])
+
+        mark_out = plot_params[&#39;pp_b_m&#39;]
+        mark_out_ec = plot_params[&#39;pp_lc&#39;]
+        mark_out_fc = None
+        mark_out_ew = plot_params[&#39;pp_b_mew&#39;]
+        mark_out_s = plot_params[&#39;pp_b_ms&#39;]
+
+
+    # Plot the boundary conditions markers
+    # ------------------------------------
+    l_mark_in = ax.plot(x_in, p0, ls=None, marker=mark_in,
+                        ms=mark_in_s, mew=mark_in_ew,
+                        mfc=mark_in_fc, mec=mark_in_ec,
+                        zorder=plot_params[&#39;b_zorder&#39;])
+    l_mark_out = ax.plot(x_out, pL, ls=None, marker=mark_out,
+                         ms=mark_out_s, mew=mark_out_ew,
+                         mfc=mark_out_fc, mec=mark_out_ec,
+                         zorder=plot_params[&#39;b_zorder&#39;])
+
+    # Plot the boundary conditions text
+    # ---------------------------------
+    txt_in = ax.text(0.05, p0*1.0, str_in,
+                     fontsize=10,
+                     va=&#39;top&#39;, ha=&#39;right&#39;,
+                     bbox={&#39;boxstyle&#39; : &#34;square, pad=0.1&#34;,
+                           &#39;alpha&#39; : 0.5, &#39;facecolor&#39;:&#39;w&#39;, &#39;edgecolor&#39;:&#39;w&#39;},
+                     zorder=30)
+    txt_out = ax.text(0.95, 0, str_out,
+                      fontsize=10,
+                      va=&#39;bottom&#39;, ha=&#39;left&#39;,
+                      bbox={&#39;boxstyle&#39; : &#34;square, pad=0.1&#34;,
+                            &#39;alpha&#39; : 0.5, &#39;facecolor&#39;:&#39;w&#39;, &#39;edgecolor&#39;:&#39;w&#39;},
+                      zorder=30)
+
+    # Arrange the limits to fit the text box
+    # --------------------------------------
+    ax.set_ylim(min(-0.05, ax.get_ylim()[0]), max(1.05, ax.get_ylim()[1]))
+
+    g_objs = [l_mark_in, l_mark_out, txt_in, txt_out]
+    return ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.elements.mass_balance"><code class="name flex">
+<span>def <span class="ident">mass_balance</span></span>(<span>T, deltaM, tlim=None, plot_params={}, fig=None, ax=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots mass balance in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>T</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of times, dimension is N_times.</dd>
+<dt><strong><code>deltaM</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of mass balance in time, dimension is N_times.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt>plot_params : dictionnary (default is {}, empty dic.)</dt>
+<dt>A dictionnary of plotting parameters. Implemented:</dt>
+<dt>linecolor (any matplotlib ways of indicating color) default = 'mass_lc'</dt>
+<dt>: 'darkturquoise')</dt>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the valves. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>fig : figure object from matplotlib.</dt>
+<dt>The figure created in this function.</dt>
+<dt>ax : ax object from matplotlib.</dt>
+<dt>The axis created in this function.</dt>
+<dt><strong><code>g_objs</code></strong> :&ensp;<code>line object from matplotlib</code></dt>
+<dd>The line object created in this function.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
+    &#34;&#34;&#34;
+    Plots mass balance in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    deltaM : 1D array
+        Array of mass balance in time, dimension is N_times.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = &#39;mass_lc&#39;
+        : &#39;darkturquoise&#39;)
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] &lt; T) &amp; (T &lt; tlim[1])
+        T = T[t_win]
+        deltaM = deltaM[t_win]
+
+    if len(T) &gt; 1e4:
+        rasterize=True
+    else:
+        rasterize=False
+
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;mass_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot
+    # ----
+    mass_b_l, = ax.plot(T, deltaM, ls=&#39;-&#39;, lw=1.5, c=plot_params[&#39;mass_lc&#39;],
+                        rasterized=rasterize)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Labels and title
+    # ----------------
+    ax.set_title(&#34;Mass balance in the system&#34;)
+    ax.set_xlabel(&#34;Time (scaled)&#34;)
+    ax.set_ylabel(r&#34;$\delta M$ (scaled)&#34;, c=plot_params[&#39;mass_lc&#39;])
+    plt.tight_layout()
+
+    g_objs = mass_b_l
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.elements.perm_eq"><code class="name flex">
+<span>def <span class="ident">perm_eq</span></span>(<span>T, k_eq, k_ref=None, smoothed=None, tlim=None, log=True, plot_params={}, fig=None, ax=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots equivalent permeability in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>T</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of times, dimension is N_times.</dd>
+<dt><strong><code>k_eq</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of equivalent permeability in time, dimension is N_times.</dd>
+<dt><strong><code>k_ref</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot background and fully closed equivalent permeability.</dd>
+<dt><strong><code>smoothed</code></strong> :&ensp;<code>1D array(default </code>None<code>)</code></dt>
+<dd>Smoothed variable, same size as the main variable.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>bool (default=</code>True<code>)</code></dt>
+<dd>Option to have the y-axis (permeability) in log-scale. Set to
+logarithmic (<code>True</code>) by default, to linear otherwise.</dd>
+<dt>plot_params : dictionnary (default is {}, empty dic.)</dt>
+<dt>A dictionnary of plotting parameters. Implemented:</dt>
+<dt>linecolor (any matplotlib ways of indicating color) default = 'k_eq_lc'</dt>
+<dt>: 'darkturquoise')</dt>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the valves. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>fig : figure object from matplotlib.</dt>
+<dt>The figure created in this function.</dt>
+<dt>ax : ax object from matplotlib.</dt>
+<dt>The axis created in this function.</dt>
+<dt><strong><code>g_objs</code></strong> :&ensp;<code>line object from matplotlib</code></dt>
+<dd>The line object created in this function.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def perm_eq(T, k_eq, k_ref=None, smoothed=None, tlim=None, log=True, plot_params={}, fig=None, ax=None):
+    &#34;&#34;&#34;
+    Plots equivalent permeability in time.
+
+    Parameters
+    ----------
+    T : 1D array
+        Array of times, dimension is N_times.
+    k_eq : 1D array
+        Array of equivalent permeability in time, dimension is N_times.
+    k_ref : tuple (default `None`)
+        Option to plot background and fully closed equivalent permeability.
+    smoothed : 1D array(default `None`)
+        Smoothed variable, same size as the main variable.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    log : bool (default=`True`)
+        Option to have the y-axis (permeability) in log-scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = &#39;k_eq_lc&#39;
+        : &#39;darkturquoise&#39;)
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Define plot time window
+    # -----------------------
+    if tlim is not None:
+        t_win = (tlim[0] &lt; T) &amp; (T &lt; tlim[1])
+        T = T[t_win]
+        k_eq = k_eq[t_win]
+        if smoothed is not None:
+            smoothed = smoothed[t_win]
+
+    if len(T) &gt; 1e4:
+        rasterize = True
+    else:
+        rasterize = False
+
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;k_eq_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot
+    # ----
+    if smoothed is not None:
+        k_eq_l, = ax.plot(T, k_eq, ls=&#39;-&#39;, lw=0.7, c=&#39;.8&#39;,
+                          rasterized=rasterize, zorder=1)
+        smoothed_l, = ax.plot(T, smoothed, ls=&#39;-&#39;, lw=1.5, zorder=1,
+                              c=plot_params[&#39;k_eq_lc&#39;], rasterized=rasterize)
+    else:
+        k_eq_l, = ax.plot(T, k_eq, ls=&#39;-&#39;, lw=1.5, c=plot_params[&#39;k_eq_lc&#39;],
+                          rasterized=rasterize)
+
+    if k_ref is not None:
+        ax.axhline(k_ref[0], ls=&#39;:&#39;, c=&#39;k&#39;, lw=1)
+        ax.axhline(k_ref[1], ls=&#39;:&#39;, c=&#39;k&#39;, lw=1)
+
+    if log:
+        ax.set_yscale(&#39;log&#39;)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Labels and title
+    # ----------------
+    ax.set_title(&#34;System&#39;s equivalent permeability in time&#34;)
+    ax.set_xlabel(&#34;Time (scaled)&#34;)
+    ax.set_ylabel(r&#34;$k_{eq}$ ($m^2$)&#34;, c=plot_params[&#39;k_eq_lc&#39;])
+    plt.tight_layout()
+
+    if smoothed is not None:
+        g_objs = [k_eq_l, smoothed_l]
+    else:
+        g_objs = [k_eq_l]
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.elements.pp_profile"><code class="name flex">
+<span>def <span class="ident">pp_profile</span></span>(<span>X, P, fig=None, ax=None, plot_params={})</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots a pore pressure profile on an existing figure.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Space position array.</dd>
+<dt><strong><code>P</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Pore pressure in space array, same dimension as X.</dd>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the profile. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+</dl>
+<p>params : dictionnary (default is {}, empty dic.)
+a dictionnary of plotting parameters. Implemented:
+line color (any matplotlib ways of indicating color, default 'pp_lc' :
+'teal'), line width (default 'pp_lw' : 1.5), zorder (default
+'pp_zorder' : 10, over everything).</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>pp_line</code></strong> :&ensp;<code>matplotlib line object</code></dt>
+<dd>Line object for the pore pressure profile.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pp_profile(X, P, fig=None, ax=None, plot_params={}):
+    &#34;&#34;&#34;
+    Plots a pore pressure profile on an existing figure.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space position array.
+    P : 1D array
+        Pore pressure in space array, same dimension as X.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the profile. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    params : dictionnary (default is {}, empty dic.)
+        a dictionnary of plotting parameters. Implemented:
+        line color (any matplotlib ways of indicating color, default &#39;pp_lc&#39; :
+        &#39;teal&#39;), line width (default &#39;pp_lw&#39; : 1.5), zorder (default
+        &#39;pp_zorder&#39; : 10, over everything).
+
+    Returns
+    -------
+    pp_line : matplotlib line object
+        Line object for the pore pressure profile.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;pp_lc&#39;, &#39;pp_zorder&#39;, &#39;pp_lw&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot pore pressure profile
+    # --------------------------
+    pp_line = ax.plot(X, P,
+                      lw=plot_params[&#39;pp_lw&#39;], c=plot_params[&#39;pp_lc&#39;],
+                      zorder=plot_params[&#39;pp_zorder&#39;],
+                      label=&#39;Pore pressure&#39;)
+    ax.set_ylabel(&#39;Pore pressure&#39;, color=plot_params[&#39;pp_lc&#39;])
+    ax.set_xlabel(&#39;&lt;-- Downdip X Updip --&gt;&#39;)
+
+    return pp_line</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.elements.q_profile"><code class="name flex">
+<span>def <span class="ident">q_profile</span></span>(<span>X, Q, fig=None, ax=None, plot_params={})</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots a flux profile on an existing figure.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Space position array.</dd>
+<dt><strong><code>Q</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Pore pressure in space array, should be dimension of X -1.</dd>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the profile. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the profile. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+</dl>
+<p>params : dictionnary (default is {}, empty dic.)
+a dictionnary of plotting parameters. Implemented:
+line color (any matplotlib ways of indicating color, default 'q_lc' :
+'aquamarine'), line width (default 'q_lw' : 1.5), zorder (default
+'q_zorder' : 10, over everything).</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>q_line</code></strong> :&ensp;<code>matplotlib line object</code></dt>
+<dd>Line object for the flux profile.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def q_profile(X, Q, fig=None, ax=None, plot_params={}):
+    &#34;&#34;&#34;
+    Plots a flux profile on an existing figure.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space position array.
+    Q : 1D array
+        Pore pressure in space array, should be dimension of X -1.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the profile. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the profile. If not specified, takes output of
+        plt.gca(): current active axes.
+    params : dictionnary (default is {}, empty dic.)
+        a dictionnary of plotting parameters. Implemented:
+        line color (any matplotlib ways of indicating color, default &#39;q_lc&#39; :
+        &#39;aquamarine&#39;), line width (default &#39;q_lw&#39; : 1.5), zorder (default
+        &#39;q_zorder&#39; : 10, over everything).
+
+    Returns
+    -------
+    q_line : matplotlib line object
+        Line object for the flux profile.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;q_lc&#39;, &#39;q_zorder&#39;, &#39;q_lw&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot massic flux profile
+    # ------------------------
+    Xq = (X[1:] + X[:-1])/2  # Q is defined in between pressure points
+    q_line = ax.plot(Xq, Q,
+                     lw=plot_params[&#39;q_lw&#39;], c=plot_params[&#39;q_lc&#39;],
+                     zorder=plot_params[&#39;q_zorder&#39;],
+                     label=&#39;Massic flux&#39;)
+    ax.set_ylabel(&#39;Massic flux&#39;, color=plot_params[&#39;q_lc&#39;])
+    ax.set_xlabel(&#39;&lt;-- Downdip X Updip --&gt;&#39;)
+
+    ax.set_ylim((0-0.1*np.max(Q), np.max(Q)*1.1))
+
+    return q_line</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.elements.recurrence"><code class="name flex">
+<span>def <span class="ident">recurrence</span></span>(<span>event_t, rec, log=True, tlim=None, plot_params={}, fig=None, ax=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots events recurrence interval in time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>event_t</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of event times, dimension is N_ev, the recurrence intervals are
+counted at each events, for the next interval: last event is excluded.</dd>
+<dt><strong><code>rec</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Array of events recurrence interval, time before the next event.
+Dimension is N_ev - 1</dd>
+<dt><strong><code>log</code></strong> :&ensp;<code>bool (default=</code>True<code>)</code></dt>
+<dd>Option to have the y-axis (recurrence intervals) in log scale. Set to
+logarithmic (<code>True</code>) by default, to linear otherwise.</dd>
+<dt><strong><code>tlim</code></strong> :&ensp;<code>tuple (default </code>None<code>)</code></dt>
+<dd>Option to plot in between specific time limits, specified as a tuple.</dd>
+<dt>plot_params : dictionnary (default is {}, empty dic.)</dt>
+<dt>A dictionnary of plotting parameters. Implemented:</dt>
+<dt>linecolor (any matplotlib ways of indicating color) default = 'act_lc'</dt>
+<dt>: 'k')</dt>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the valves. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>fig : figure object from matplotlib.</dt>
+<dt>The figure created in this function.</dt>
+<dt>ax : ax object from matplotlib.</dt>
+<dt>The axis created in this function.</dt>
+<dt><strong><code>g_objs</code></strong> :&ensp;<code>line object from matplotlib</code></dt>
+<dd>The line object created in this function.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def recurrence(event_t, rec, log=True, tlim=None, plot_params={}, fig=None, ax=None):
+    &#34;&#34;&#34;
+    Plots events recurrence interval in time.
+
+    Parameters
+    ----------
+    event_t : 1D array
+        Array of event times, dimension is N_ev, the recurrence intervals are
+        counted at each events, for the next interval: last event is excluded.
+    rec : 1D array
+        Array of events recurrence interval, time before the next event.
+        Dimension is N_ev - 1
+    log : bool (default=`True`)
+        Option to have the y-axis (recurrence intervals) in log scale. Set to
+        logarithmic (`True`) by default, to linear otherwise.
+    tlim : tuple (default `None`)
+        Option to plot in between specific time limits, specified as a tuple.
+    plot_params : dictionnary (default is {}, empty dic.)
+        A dictionnary of plotting parameters. Implemented:
+        linecolor (any matplotlib ways of indicating color) default = &#39;act_lc&#39;
+        : &#39;k&#39;)
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : line object from matplotlib
+        The line object created in this function.
+    &#34;&#34;&#34;
+    # Define plot time window
+    # -----------------------
+    event_t = event_t[:-1]  # time before next event, exclude last
+    if tlim is not None:
+        t_win = (tlim[0] &lt; event_t) &amp; (event_t &lt; tlim[1])
+        event_t = event_t[t_win]
+        rec = rec[t_win]
+
+    if len(event_t) &gt; 1e4:
+        rasterize=True
+    else:
+        rasterize=False
+
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;act_lc&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Plot the events
+    # ---------------
+    ev_l, = ax.plot(event_t, rec, &#39;o&#39;, c=plot_params[&#39;act_lc&#39;], ms=1,
+                    rasterized=rasterize)
+    if log:
+        ax.set_yscale(&#39;log&#39;)
+
+    if tlim is not None:
+        ax.set_xlim(tlim)
+
+    # Set labels and title
+    # --------------------
+    ax.set_title(&#34;Events recurrence interval (time before next event)&#34;)
+    ax.set_xlabel(&#34;Time (scaled)&#34;)
+    ax.set_ylabel(&#34;Rec. interval (scaled)&#34;, c=plot_params[&#39;act_lc&#39;])
+
+    plt.tight_layout()
+
+    g_objs = ev_l
+
+    return fig, ax, g_objs</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.elements.valve_markers"><code class="name flex">
+<span>def <span class="ident">valve_markers</span></span>(<span>X, VALVES, states_override=None, fig=None, ax=None, X_axis='x', plot_params={})</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A function to plot valves in existing figure/axes.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Space position array.</dd>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valve parameters dictionnary.</dd>
+<dt><strong><code>states_override</code></strong> :&ensp;<code>1D array (default to None)</code></dt>
+<dd>Boolean array overriding VALVE['open'] to plot states. Each element is
+the state of a valve, True is open, False is closed.</dd>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the valves. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+<dt><strong><code>X_axis</code></strong> :&ensp;<code>str (default is 'x')</code></dt>
+<dd>Which axis corresponds to physical X axis. 'x' for horizontal axis, 'y'
+for vertical axis</dd>
+</dl>
+<p>plot_params : dictionnary (default is {}, empty dic.)
+a dictionnary of plotting parameters for the valves. Implemented:
+facecolor (any matplotlib ways of indicating color) for both open and
+close state (default = 'v_op_fc' : 'lightgray', 'v_cl_fc' :
+'darkgray'), zorder (default 'zorder' : 0).</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>valves_op_m</code></strong> :&ensp;<code>matplotlib PathCollection object</code></dt>
+<dd>Valves open markers.</dd>
+<dt><strong><code>valves_cl_m</code></strong> :&ensp;<code>matplotlib PathCollection object</code></dt>
+<dd>Valves closed markers.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def valve_markers(X, VALVES, states_override=None, fig=None, ax=None, X_axis=&#39;x&#39;, plot_params={}):
+    &#34;&#34;&#34;
+    A function to plot valves in existing figure/axes.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space position array.
+    VALVES : dictionnary
+        Valve parameters dictionnary.
+    states_override : 1D array (default to None)
+        Boolean array overriding VALVE[&#39;open&#39;] to plot states. Each element is
+        the state of a valve, True is open, False is closed.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    X_axis : str (default is &#39;x&#39;)
+        Which axis corresponds to physical X axis. &#39;x&#39; for horizontal axis, &#39;y&#39;
+        for vertical axis
+    plot_params : dictionnary (default is {}, empty dic.)
+        a dictionnary of plotting parameters for the valves. Implemented:
+        facecolor (any matplotlib ways of indicating color) for both open and
+        close state (default = &#39;v_op_fc&#39; : &#39;lightgray&#39;, &#39;v_cl_fc&#39; :
+        &#39;darkgray&#39;), zorder (default &#39;zorder&#39; : 0).
+
+    Returns
+    -------
+    valves_op_m : matplotlib PathCollection object
+        Valves open markers.
+    valves_cl_m : matplotlib PathCollection object
+        Valves closed markers.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for valve states,
+    # figure and axis
+    # ------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+    if ax is None:
+        ax = plt.gca()
+
+    if states_override is None:
+        open_valves = VALVES[&#39;open&#39;].astype(bool)
+    else:
+        open_valves = states_override.astype(bool)
+
+    # Tweak boundaries to make space for markers
+    # ------------------------------------------
+    dy_bottom = -0.21
+    if X_axis == &#39;x&#39;:
+        ax.set_ylim(dy_bottom, ax.get_ylim()[1])
+    elif X_axis == &#39;y&#39;:
+        ax.set_xlim(dy_bottom, ax.get_xlim()[1])
+
+    # Set up default parameters when no input
+    # ---------------------------------------
+    needed_params = [&#39;v_op_mc&#39;, &#39;v_cl_mc&#39;, &#39;v_zorder&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Set valve marker colors, and positions
+    # --------------------------------------
+    m_op_c, m_cl_c = set_valve_mc(open_valves, plot_params)
+    X_marker = X[VALVES[&#39;idx&#39;]] + .5 * VALVES[&#39;width&#39;]  # center of valve
+    Y_cl_marker = np.ones(len(VALVES[&#39;idx&#39;])) * 1/3*dy_bottom  # bottom
+    Y_op_marker = np.ones(len(VALVES[&#39;idx&#39;])) * 2/3*dy_bottom  # bottom +
+
+    # Build valve patches and colors as a function of valve states
+    # ------------------------------------------------------------
+    if X_axis == &#39;x&#39;:
+        valves_cl_pc = ax.scatter(X_marker, Y_cl_marker, marker=&#39;x&#39;, ec=m_cl_c,
+                                  s=10, zorder=plot_params[&#39;v_zorder&#39;]+1, lw=.8)
+        valves_op_pc = ax.scatter(X_marker, Y_op_marker,
+                                  marker=[(-1, -1), (1, 0), (-1, 1)], lw=.8,
+                                  s=10, ec=m_op_c, zorder=plot_params[&#39;v_zorder&#39;]+1,
+                                  fc=[0, 0, 0 ,0])
+    elif X_axis == &#39;y&#39;:
+        valves_cl_pc = ax.scatter(Y_cl_marker, X_marker, marker=&#39;x&#39;, ec=m_cl_c,
+                                  zorder=plot_params[&#39;v_zorder&#39;]+1)
+        valves_op_pc = ax.scatter(Y_op_marker, X_marker,
+                                  marker=[(-1, -1), (1, 0), (-1, 1)], lw=1.5,
+                                  ec=m_op_c, zorder=plot_params[&#39;v_zorder&#39;]+1,
+                                  fc=[0, 0, 0 ,0])
+
+    return valves_op_pc, valves_cl_pc</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.plots.elements.valves"><code class="name flex">
+<span>def <span class="ident">valves</span></span>(<span>X, VALVES, states_override=None, fig=None, ax=None, X_axis='x', plot_params={})</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A function to plot valves in existing figure/axes.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Space position array.</dd>
+<dt><strong><code>VALVES</code></strong> :&ensp;<code>dictionnary</code></dt>
+<dd>Valve parameters dictionnary.</dd>
+<dt><strong><code>states_override</code></strong> :&ensp;<code>1D array (default to None)</code></dt>
+<dd>Boolean array overriding VALVE['open'] to plot states. Each element is
+the state of a valve, True is open, False is closed.</dd>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib figure object (default to None)</code></dt>
+<dd>Figure where to plot the valves. If not specified, takes output of
+plt.gcf(): current active figure.</dd>
+<dt><strong><code>ax</code></strong> :&ensp;<code>matplotlib axes object (default to None)</code></dt>
+<dd>Axes where to plot the valves. If not specified, takes output of
+plt.gca(): current active axes.</dd>
+<dt><strong><code>X_axis</code></strong> :&ensp;<code>str (default is 'x')</code></dt>
+<dd>Which axis corresponds to physical X axis. 'x' for horizontal axis, 'y'
+for vertical axis</dd>
+</dl>
+<p>plot_params : dictionnary (default is {}, empty dic.)
+a dictionnary of plotting parameters for the valves. Implemented:
+facecolor (any matplotlib ways of indicating color) for both open and
+close state (default = 'v_op_fc' : 'lightgray', 'v_cl_fc' :
+'darkgray'), zorder (default 'zorder' : 0).</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>valves_pc</code></strong> :&ensp;<code>matplotlib PatchCollection object</code></dt>
+<dd>Valves patches.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def valves(X, VALVES, states_override=None, fig=None, ax=None, X_axis=&#39;x&#39;, plot_params={}):
+    &#34;&#34;&#34;
+    A function to plot valves in existing figure/axes.
+
+    Parameters
+    ----------
+    X : 1D array
+        Space position array.
+    VALVES : dictionnary
+        Valve parameters dictionnary.
+    states_override : 1D array (default to None)
+        Boolean array overriding VALVE[&#39;open&#39;] to plot states. Each element is
+        the state of a valve, True is open, False is closed.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    X_axis : str (default is &#39;x&#39;)
+        Which axis corresponds to physical X axis. &#39;x&#39; for horizontal axis, &#39;y&#39;
+        for vertical axis
+    plot_params : dictionnary (default is {}, empty dic.)
+        a dictionnary of plotting parameters for the valves. Implemented:
+        facecolor (any matplotlib ways of indicating color) for both open and
+        close state (default = &#39;v_op_fc&#39; : &#39;lightgray&#39;, &#39;v_cl_fc&#39; :
+        &#39;darkgray&#39;), zorder (default &#39;zorder&#39; : 0).
+
+    Returns
+    -------
+    valves_pc : matplotlib PatchCollection object
+        Valves patches.
+    &#34;&#34;&#34;
+    # As a function of input, point to correct objects for valve states,
+    # figure and axis
+    # ------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+    if ax is None:
+        ax = plt.gca()
+
+    if states_override is None:
+        open_valves = VALVES[&#39;open&#39;].astype(bool)
+    else:
+        open_valves = states_override.astype(bool)
+
+    # Check which parameters are default and which are defined by user
+    # ----------------------------------------------------------------
+    needed_params = [&#39;v_op_fc&#39;, &#39;v_cl_fc&#39;, &#39;v_st_marker&#39;, &#39;v_zorder&#39;]
+    plot_params = set_plot_params(plot_params, needed_params)
+
+    # Add state markers before plotting patches underneath
+    # ----------------------------------------------------
+    if plot_params[&#39;v_st_marker&#39;]:
+        v_op_pc, v_cl_pc = valve_markers(X, VALVES,
+                                         states_override=states_override,
+                                         fig=fig, ax=ax, X_axis=X_axis,
+                                         plot_params=plot_params)
+
+    # Check which axis is physical X_axis
+    # -----------------------------------
+    if X_axis == &#39;x&#39;:
+        zlim = ax.get_ylim()
+#        print(zlim)
+    elif X_axis == &#39;y&#39;:
+        zlim = ax.get_xlim()
+#        print(zlim)
+
+    # Build valve patches and colors as a function of valve states
+    # ------------------------------------------------------------
+    if X_axis == &#39;x&#39;:
+        valve_patches = [Rectangle((x_v, zlim[0]), w_v, zlim[1]-zlim[0])
+                         for x_v, w_v in zip(X[VALVES[&#39;idx&#39;]], VALVES[&#39;width&#39;])]
+    elif X_axis == &#39;y&#39;:
+        valve_patches = [Rectangle((zlim[0], x_v), zlim[1]-zlim[0], w_v)
+                         for x_v, w_v in zip(X[VALVES[&#39;idx&#39;]], VALVES[&#39;width&#39;])]
+
+    valve_facecolors = set_valve_fc(open_valves, plot_params)
+
+    # Wrap patches in collection and plot it
+    # --------------------------------------
+    valves_pc = PatchCollection(valve_patches,
+                                facecolor=valve_facecolors,
+                                edgecolor=None,
+                                axes=ax, zorder=plot_params[&#39;v_zorder&#39;])
+    ax.add_collection(valves_pc)
+
+    if plot_params[&#39;v_st_marker&#39;]:
+        return valves_pc, v_op_pc, v_cl_pc
+
+    return valves_pc</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PPvalves.plots" href="index.html">PPvalves.plots</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="PPvalves.plots.elements.activity_dip" href="#PPvalves.plots.elements.activity_dip">activity_dip</a></code></li>
+<li><code><a title="PPvalves.plots.elements.activity_rate" href="#PPvalves.plots.elements.activity_rate">activity_rate</a></code></li>
+<li><code><a title="PPvalves.plots.elements.bound_gauge" href="#PPvalves.plots.elements.bound_gauge">bound_gauge</a></code></li>
+<li><code><a title="PPvalves.plots.elements.bound_in" href="#PPvalves.plots.elements.bound_in">bound_in</a></code></li>
+<li><code><a title="PPvalves.plots.elements.bounds" href="#PPvalves.plots.elements.bounds">bounds</a></code></li>
+<li><code><a title="PPvalves.plots.elements.mass_balance" href="#PPvalves.plots.elements.mass_balance">mass_balance</a></code></li>
+<li><code><a title="PPvalves.plots.elements.perm_eq" href="#PPvalves.plots.elements.perm_eq">perm_eq</a></code></li>
+<li><code><a title="PPvalves.plots.elements.pp_profile" href="#PPvalves.plots.elements.pp_profile">pp_profile</a></code></li>
+<li><code><a title="PPvalves.plots.elements.q_profile" href="#PPvalves.plots.elements.q_profile">q_profile</a></code></li>
+<li><code><a title="PPvalves.plots.elements.recurrence" href="#PPvalves.plots.elements.recurrence">recurrence</a></code></li>
+<li><code><a title="PPvalves.plots.elements.valve_markers" href="#PPvalves.plots.elements.valve_markers">valve_markers</a></code></li>
+<li><code><a title="PPvalves.plots.elements.valves" href="#PPvalves.plots.elements.valves">valves</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>PPvalves.theory API documentation</title>
+<meta name="description" content="A module to compare PPvalves numerical resolution of diffusion processes
+with theoretical ones" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PPvalves.theory</code></h1>
+</header>
+<section id="section-intro">
+<p>A module to compare PPvalves numerical resolution of diffusion processes
+with theoretical ones</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34; A module to compare PPvalves numerical resolution of diffusion processes
+with theoretical ones &#34;&#34;&#34;
+
+# Imports
+# =======
+
+import numpy as np
+import scipy.special as ssp
+
+# Core
+# ====
+
+def calc_trans_ramp(t, X, x1, x2, D):
+    &#34;&#34;&#34;Computes the solution of the diffusion of a ramp: a linear step from
+    `x1` to `x2`. Before `x1`, the initial condition is 1, after `x2`, it&#39;s 0.
+
+    Parameters
+    ----------
+    t : float
+        Given time to compute the solution at.
+    X : 1D array
+        Space array to compute the solution on.
+    x1 : float
+        Location of the beginning of the ramp.
+    x2 : float
+        Location of the end of the ramp.
+
+    Returns
+    -------
+    p : 1D array
+        Diffusive transient at time t, over X. Same dimension as X.
+
+    &#34;&#34;&#34;
+    # Compute transient for step
+    # --------------------------
+    S = 1/2 * (1 - ssp.erf((X - x1)/(np.sqrt(4*D*t))))
+
+    # Compute transient for ramp
+    # --------------------------
+    I0 = x2 * 1/2 * (ssp.erf((X - x1)/np.sqrt(4*D*t)) \
+                     - ssp.erf((X - x2)/np.sqrt(4*D*t)))
+    I1 = np.sqrt(D*t/np.pi) * np.exp(-1*(X - x1)**2/(4*D*t)) \
+         + X * 1/2 * (1 + ssp.erf((X - x1)/np.sqrt(4*D*t)))
+    I2 = np.sqrt(D*t/np.pi) * np.exp(-1*(X - x2)**2/(4*D*t)) \
+         + X * 1/2 * (1 + ssp.erf((X - x2)/np.sqrt(4*D*t)))
+
+    R = 1 / (x2 - x1) * (I0 - (I1 - I2))
+
+    p = S + R
+
+    return p
+
+
+def Perf(X, T, X0, D, dP):
+    &#34;&#34;&#34;Computes diffusion of pressure step in time (infinite domain : erf
+    function)
+
+    Parameters
+    ----------
+    X : 1D array
+        Space array to compute the solution on.
+    T : 1D array
+        Time vector.
+    X0 : float
+        Step location.
+    L : float
+        The domain extent in space.
+    D : float
+        Diffusivity coefficient.
+    dP : float
+        Step amplitude.
+
+    Returns
+    -------
+    erfP: 2D array
+        The theoretical solution for bounded diffusion, dimensions `(Ntime,
+        Nspace)`.
+
+    &#34;&#34;&#34;
+
+    print(&#39;Perf -- Computing infinite domain solution...&#39;)
+    erfP = np.zeros((len(T),len(X)))
+
+    for itt, tt in enumerate(T):
+        v = (X - X0) / np.sqrt(4. * D * tt)
+        erfP[itt, :] = dP / 2. * ssp.erf(v)
+
+    print(&#39;Perf -- Done !\n&#39;)
+
+    return erfP
+
+# -----------------------------------------------------------------------------
+
+
+
+def Perf_bounded(X, T, X0, L, D, dP, n=5):
+    &#34;&#34;&#34;Computes the diffusion of a step in a bounded domain, with no-flux
+    boundaries.
+
+    To cancel the flux at each boundary, the domain is considered cyclic and
+    infinite with mirrored pressure across each boundary.
+    Based on the method described in:
+    http://web.mit.edu/1.061/www/dream/FOUR/FOURTHEORY.PDF
+    http://www.dartmouth.edu/~cushman/courses/engs43/Diffusion-variations.pdf
+
+    Parameters
+    ----------
+    X : 1D array
+        Space array to compute the solution on.
+    T : 1D array
+        Time vector.
+    X0 : float
+        Step location.
+    L : float
+        The domain extent in space.
+    D : float
+        Diffusivity coefficient.
+    dP : float
+        Step amplitude.
+    n : interger
+        Number of mirror solutions to compute no-flux boundary, keep odd, less
+        than 7 is always enough.
+
+    Returns
+    -------
+    erfP: 2D array
+        The theoretical solution for bounded diffusion, dimensions `(Ntime,
+        Nspace)`.
+
+    &#34;&#34;&#34;
+    print(&#39;Perf_bounded -- Computing no-flux boundaries solution...&#39;)
+    m = n//2
+    if m &gt; 0:
+        sign_x = np.ones(m)
+        sign_x[::2] = -1
+
+    erfP = np.zeros((len(T), len(X)))
+    for itt, tt in enumerate(T):
+        v = (X - X0) / np.sqrt(4*D*tt)
+        erfP[itt,:] = dP/2. * ssp.erf(v)
+        if m &gt; 0:
+            for mm,sign in zip(range(m),sign_x):
+                m1 = (mm+1)//2
+                v1 = sign*(X - (sign*X0 - 2*m1*L)) / np.sqrt(4*D*tt)
+                m2 = (mm+2)//2
+                v2 = sign*(X - (sign*X0 + 2*m2*L)) / np.sqrt(4*D*tt)
+                erfP[itt, :] = erfP[itt, :] + dP/2.*ssp.erf(v1) + dP/2.*ssp.erf(v2)
+
+    print(&#39;Perf_bounded -- Done&#39;)
+
+    return erfP
+# ------------------------------------------------------------------</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="PPvalves.theory.Perf"><code class="name flex">
+<span>def <span class="ident">Perf</span></span>(<span>X, T, X0, D, dP)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes diffusion of pressure step in time (infinite domain : erf
+function)</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Space array to compute the solution on.</dd>
+<dt><strong><code>T</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Time vector.</dd>
+<dt><strong><code>X0</code></strong> :&ensp;<code>float</code></dt>
+<dd>Step location.</dd>
+<dt><strong><code>L</code></strong> :&ensp;<code>float</code></dt>
+<dd>The domain extent in space.</dd>
+<dt><strong><code>D</code></strong> :&ensp;<code>float</code></dt>
+<dd>Diffusivity coefficient.</dd>
+<dt><strong><code>dP</code></strong> :&ensp;<code>float</code></dt>
+<dd>Step amplitude.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>erfP</code></strong> :&ensp;<code>2D array</code></dt>
+<dd>The theoretical solution for bounded diffusion, dimensions <code>(Ntime,
+Nspace)</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def Perf(X, T, X0, D, dP):
+    &#34;&#34;&#34;Computes diffusion of pressure step in time (infinite domain : erf
+    function)
+
+    Parameters
+    ----------
+    X : 1D array
+        Space array to compute the solution on.
+    T : 1D array
+        Time vector.
+    X0 : float
+        Step location.
+    L : float
+        The domain extent in space.
+    D : float
+        Diffusivity coefficient.
+    dP : float
+        Step amplitude.
+
+    Returns
+    -------
+    erfP: 2D array
+        The theoretical solution for bounded diffusion, dimensions `(Ntime,
+        Nspace)`.
+
+    &#34;&#34;&#34;
+
+    print(&#39;Perf -- Computing infinite domain solution...&#39;)
+    erfP = np.zeros((len(T),len(X)))
+
+    for itt, tt in enumerate(T):
+        v = (X - X0) / np.sqrt(4. * D * tt)
+        erfP[itt, :] = dP / 2. * ssp.erf(v)
+
+    print(&#39;Perf -- Done !\n&#39;)
+
+    return erfP</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.theory.Perf_bounded"><code class="name flex">
+<span>def <span class="ident">Perf_bounded</span></span>(<span>X, T, X0, L, D, dP, n=5)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the diffusion of a step in a bounded domain, with no-flux
+boundaries.</p>
+<p>To cancel the flux at each boundary, the domain is considered cyclic and
+infinite with mirrored pressure across each boundary.
+Based on the method described in:
+<a href="http://web.mit.edu/1.061/www/dream/FOUR/FOURTHEORY.PDF">http://web.mit.edu/1.061/www/dream/FOUR/FOURTHEORY.PDF</a>
+<a href="http://www.dartmouth.edu/~cushman/courses/engs43/Diffusion-variations.pdf">http://www.dartmouth.edu/~cushman/courses/engs43/Diffusion-variations.pdf</a></p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Space array to compute the solution on.</dd>
+<dt><strong><code>T</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Time vector.</dd>
+<dt><strong><code>X0</code></strong> :&ensp;<code>float</code></dt>
+<dd>Step location.</dd>
+<dt><strong><code>L</code></strong> :&ensp;<code>float</code></dt>
+<dd>The domain extent in space.</dd>
+<dt><strong><code>D</code></strong> :&ensp;<code>float</code></dt>
+<dd>Diffusivity coefficient.</dd>
+<dt><strong><code>dP</code></strong> :&ensp;<code>float</code></dt>
+<dd>Step amplitude.</dd>
+<dt><strong><code>n</code></strong> :&ensp;<code>interger</code></dt>
+<dd>Number of mirror solutions to compute no-flux boundary, keep odd, less
+than 7 is always enough.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>erfP</code></strong> :&ensp;<code>2D array</code></dt>
+<dd>The theoretical solution for bounded diffusion, dimensions <code>(Ntime,
+Nspace)</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def Perf_bounded(X, T, X0, L, D, dP, n=5):
+    &#34;&#34;&#34;Computes the diffusion of a step in a bounded domain, with no-flux
+    boundaries.
+
+    To cancel the flux at each boundary, the domain is considered cyclic and
+    infinite with mirrored pressure across each boundary.
+    Based on the method described in:
+    http://web.mit.edu/1.061/www/dream/FOUR/FOURTHEORY.PDF
+    http://www.dartmouth.edu/~cushman/courses/engs43/Diffusion-variations.pdf
+
+    Parameters
+    ----------
+    X : 1D array
+        Space array to compute the solution on.
+    T : 1D array
+        Time vector.
+    X0 : float
+        Step location.
+    L : float
+        The domain extent in space.
+    D : float
+        Diffusivity coefficient.
+    dP : float
+        Step amplitude.
+    n : interger
+        Number of mirror solutions to compute no-flux boundary, keep odd, less
+        than 7 is always enough.
+
+    Returns
+    -------
+    erfP: 2D array
+        The theoretical solution for bounded diffusion, dimensions `(Ntime,
+        Nspace)`.
+
+    &#34;&#34;&#34;
+    print(&#39;Perf_bounded -- Computing no-flux boundaries solution...&#39;)
+    m = n//2
+    if m &gt; 0:
+        sign_x = np.ones(m)
+        sign_x[::2] = -1
+
+    erfP = np.zeros((len(T), len(X)))
+    for itt, tt in enumerate(T):
+        v = (X - X0) / np.sqrt(4*D*tt)
+        erfP[itt,:] = dP/2. * ssp.erf(v)
+        if m &gt; 0:
+            for mm,sign in zip(range(m),sign_x):
+                m1 = (mm+1)//2
+                v1 = sign*(X - (sign*X0 - 2*m1*L)) / np.sqrt(4*D*tt)
+                m2 = (mm+2)//2
+                v2 = sign*(X - (sign*X0 + 2*m2*L)) / np.sqrt(4*D*tt)
+                erfP[itt, :] = erfP[itt, :] + dP/2.*ssp.erf(v1) + dP/2.*ssp.erf(v2)
+
+    print(&#39;Perf_bounded -- Done&#39;)
+
+    return erfP</code></pre>
+</details>
+</dd>
+<dt id="PPvalves.theory.calc_trans_ramp"><code class="name flex">
+<span>def <span class="ident">calc_trans_ramp</span></span>(<span>t, X, x1, x2, D)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes the solution of the diffusion of a ramp: a linear step from
+<code>x1</code> to <code>x2</code>. Before <code>x1</code>, the initial condition is 1, after <code>x2</code>, it's 0.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>t</code></strong> :&ensp;<code>float</code></dt>
+<dd>Given time to compute the solution at.</dd>
+<dt><strong><code>X</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Space array to compute the solution on.</dd>
+<dt><strong><code>x1</code></strong> :&ensp;<code>float</code></dt>
+<dd>Location of the beginning of the ramp.</dd>
+<dt><strong><code>x2</code></strong> :&ensp;<code>float</code></dt>
+<dd>Location of the end of the ramp.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>p</code></strong> :&ensp;<code>1D array</code></dt>
+<dd>Diffusive transient at time t, over X. Same dimension as X.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calc_trans_ramp(t, X, x1, x2, D):
+    &#34;&#34;&#34;Computes the solution of the diffusion of a ramp: a linear step from
+    `x1` to `x2`. Before `x1`, the initial condition is 1, after `x2`, it&#39;s 0.
+
+    Parameters
+    ----------
+    t : float
+        Given time to compute the solution at.
+    X : 1D array
+        Space array to compute the solution on.
+    x1 : float
+        Location of the beginning of the ramp.
+    x2 : float
+        Location of the end of the ramp.
+
+    Returns
+    -------
+    p : 1D array
+        Diffusive transient at time t, over X. Same dimension as X.
+
+    &#34;&#34;&#34;
+    # Compute transient for step
+    # --------------------------
+    S = 1/2 * (1 - ssp.erf((X - x1)/(np.sqrt(4*D*t))))
+
+    # Compute transient for ramp
+    # --------------------------
+    I0 = x2 * 1/2 * (ssp.erf((X - x1)/np.sqrt(4*D*t)) \
+                     - ssp.erf((X - x2)/np.sqrt(4*D*t)))
+    I1 = np.sqrt(D*t/np.pi) * np.exp(-1*(X - x1)**2/(4*D*t)) \
+         + X * 1/2 * (1 + ssp.erf((X - x1)/np.sqrt(4*D*t)))
+    I2 = np.sqrt(D*t/np.pi) * np.exp(-1*(X - x2)**2/(4*D*t)) \
+         + X * 1/2 * (1 + ssp.erf((X - x2)/np.sqrt(4*D*t)))
+
+    R = 1 / (x2 - x1) * (I0 - (I1 - I2))
+
+    p = S + R
+
+    return p</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PPvalves" href="index.html">PPvalves</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="PPvalves.theory.Perf" href="#PPvalves.theory.Perf">Perf</a></code></li>
+<li><code><a title="PPvalves.theory.Perf_bounded" href="#PPvalves.theory.Perf_bounded">Perf_bounded</a></code></li>
+<li><code><a title="PPvalves.theory.calc_trans_ramp" href="#PPvalves.theory.calc_trans_ramp">calc_trans_ramp</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
