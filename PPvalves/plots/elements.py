@@ -11,6 +11,7 @@ from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.collections import PatchCollection
+import matplotlib.ticker as tk
 
 # My packages
 # -----------
@@ -1159,5 +1160,81 @@ def bound_in(T, bound_0, PARAM, smoothed=None, tlim=None, v_eff=None, plot_param
     g_objs = bound_0_l
     if smoothed is not None:
         g_objs = [bound_0_l, smoothed_l]
+
+    return fig, ax, g_objs
+
+# -----------------------------------------------------------------------------
+
+def valve_system(X, VALVES, fc='k', ec=[0, 0, 0, 0], fs=None, fig=None, ax=None):
+    """
+    Plot simple valve system (code bar).
+
+    Parameters
+    ----------
+    X : 1D array
+        Space position array.
+    VALVES : dictionnary
+        Valve parameters dictionnary.
+    fc : color (default `fc = 'k'`)
+        Valve patch facecolor.
+    ec : color (default `ec = [0, 0, 0, 0]`)
+        Valve patch edgecolor.
+    fs : int (default `fs = None`)
+        Controls fontsizes.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : patch collection
+        The patch collection of valves.
+
+    """
+    # As a function of input, point to correct objects for figure and axis
+    # --------------------------------------------------------------------
+    if fig is None:
+        fig = plt.gcf()
+
+    if ax is None:
+        ax = plt.gca()
+
+    # Fix bounds of plot
+    # ------------------
+    dX = X.max() - X.min()
+    ax.set_xlim(X.min() - 0.02*dX, X.max() + 0.02*dX)
+
+    # Build valve patch collection
+    # ----------------------------
+    xv = X[VALVES['idx']]
+    wv = VALVES['width']
+
+    v_pcoll = []
+    for x, w in zip(xv, wv):
+        p = ax.axvspan(x, x+w, fc=fc, ec=ec)
+        v_pcoll.append(p)
+
+    # Labels and axes
+    # ---------------
+    ax.set_xlabel(r"$x$", fontsize=fs)
+    ax.tick_params(left=False, labelleft=False, labelsize=fs-1)
+    # --> Better ticks
+    ax.xaxis.set_major_locator(tk.MultipleLocator(0.5))
+    ax.xaxis.set_minor_locator(tk.MultipleLocator(0.1))
+
+    for tlabels in [ax.get_xticklabels(which='both'), ax.get_yticklabels(which='both')]:
+        for txt in tlabels:
+            txt.set_fontname('Roboto Condensed')
+
+    plt.tight_layout()
+
+    g_objs = v_pcoll
 
     return fig, ax, g_objs

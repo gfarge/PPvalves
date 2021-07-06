@@ -22,7 +22,7 @@ from PPvalves.plots.utility import set_plot_params
 from PPvalves.plots.elements import valves, q_profile, pp_profile, bounds, \
                                     bound_gauge, recurrence, activity_dip, \
                                     perm_eq, activity_rate, mass_balance, \
-                                    bound_in
+                                    bound_in, valve_system
 
 from PPvalves.utility import calc_k, calc_Q
 import PPvalves.equilibrium as equi
@@ -989,3 +989,58 @@ def deltap_1v_fig(time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}
 
     return fig, axes
 
+# -----------------------------------------------------------------------------
+def valve_system_fig(X, VALVES, fc='k', ec=[0, 0, 0, 0], figsize=None, fs=None, save_name=None):
+    """
+    Plot simple valve system (code bar).
+
+    Parameters
+    ----------
+    X : 1D array
+        Space position array.
+    VALVES : dictionnary
+        Valve parameters dictionnary.
+    fc : color (default `fc = 'k'`)
+        Valve patch facecolor.
+    ec : color (default `ec = [0, 0, 0, 0]`)
+        Valve patch edgecolor.
+    fs : int (default `fs = None`)
+        Controls fontsizes.
+    fig : matplotlib figure object (default to None)
+        Figure where to plot the valves. If not specified, takes output of
+        plt.gcf(): current active figure.
+    ax : matplotlib axes object (default to None)
+        Axes where to plot the valves. If not specified, takes output of
+        plt.gca(): current active axes.
+    save_name : str or None (default)
+        Path for the figure to save.
+
+    Returns
+    -------
+    fig : figure object from matplotlib.
+        The figure created in this function.
+    ax : ax object from matplotlib.
+        The axis created in this function.
+    g_objs : patch collection
+        The patch collection of valves.
+
+    """
+    # Defaults
+    # --------
+    if figsize is None:
+        figsize=(10/2.54, 2/2.54)
+
+    # Make figure
+    # -----------
+    fig, ax = plt.subplots(figsize=figsize)
+    fig, ax, g_objs = valve_system(X, VALVES, fc=fc, ec=ec, fs=fs, fig=fig, ax=ax)
+
+    # Saving?
+    # -------
+    if save_name is not None:
+        print('Saving figure at {:}'.format(save_name))
+        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
+    else:
+        plt.show()
+
+    return fig, ax, g_objs
