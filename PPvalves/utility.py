@@ -124,24 +124,24 @@ def calc_bound_0(P0, PARAM):
     Only 'PP' and 'QP' boundary conditions are implemented.
 
     """
-    # In the case where input pressure is fixed: bound_0 = q0
-#    bound_0 = False * PARAM['k_bg']*PARAM['rho']/PARAM['mu'] \
-#                 * (PARAM['p0_'] - P0)/PARAM['hb_'] \
-#                 * PARAM['P_scale']/PARAM['X_scale']/PARAM['q_scale'] \
-#             + True * (P0 + PARAM['qin_'] * PARAM['hb_'] \
-#                  * PARAM['mu']/PARAM['rho']/PARAM['k_bg'] \
-#                  * PARAM['q_scale']*PARAM['X_scale']/PARAM['P_scale'])
-
-    if np.isnan(PARAM['qin_']):
-        bound_0 = PARAM['k_bg']*PARAM['rho']/PARAM['mu'] \
+    # >> Dirichlet : pressure is fixed: bound_0 = qin
+    isdir0 = (PARAM['qin_'] == -1)
+    bound_dir0 = PARAM['k_bg']*PARAM['rho']/PARAM['mu'] \
                  * (PARAM['p0_'] - P0)/PARAM['hb_'] \
                  * PARAM['P_scale']/PARAM['X_scale']/PARAM['q_scale']
 
-    # In the case where input flux is fixed: bound_0 = p0
-    elif np.isnan(PARAM['p0_']):
-        bound_0 = P0 + PARAM['qin_'] * PARAM['hb_'] \
-                  * PARAM['mu']/PARAM['rho']/PARAM['k_bg'] \
-                  * PARAM['q_scale']*PARAM['X_scale']/PARAM['P_scale']
+    # >> Neuman : flux is fixed: bound_0 = p0
+    isneu0 = (PARAM['p0_'] == -1)
+    bound_neu0 = P0 + PARAM['qin_'] * PARAM['hb_'] \
+             * PARAM['mu']/PARAM['rho']/PARAM['k_bg'] \
+             * PARAM['q_scale']*PARAM['X_scale']/PARAM['P_scale']
+
+    # >> Check if boundary is correctly fixed
+    if ~isneu0 & ~isdir0:
+        raise ValueError("Boundary in 0 is wrongly fixed.")
+
+    # >> Compute input bound
+    bound_0 = isneu0 * bound_neu0 + isdir0 * bound_dir0
 
     return bound_0
 
@@ -172,16 +172,23 @@ def calc_bound_L(PL, PARAM):
     Only 'PP' and 'QP' boundary conditions are implemented.
 
     """
-    # In the case where output pressure is fixed: bound_L = qout_
-    if np.isnan(PARAM['qout_']):
-        bound_L = PARAM['k_bg']*PARAM['rho']/PARAM['mu'] \
-                 * (PL - PARAM['pL_'])/PARAM['hb_'] \
-                 * PARAM['P_scale']/PARAM['X_scale']/PARAM['q_scale']
+    # >> Dirichlet : pressure is fixed: bound_L = qout
+    isdirL = (PARAM['qout_'] == -1)
+    bound_dirL = PARAM['k_bg']*PARAM['rho']/PARAM['mu'] \
+                * (PL - PARAM['pL_'])/PARAM['hb_'] \
+                * PARAM['P_scale']/PARAM['X_scale']/PARAM['q_scale']
 
-    # In the case where input flux is fixed: bound_L = pL
-    elif np.isnan(PARAM['pL_']):
-        bound_L = PL - PARAM['qout_'] * PARAM['hb_'] \
-                  * PARAM['mu']/PARAM['rho']/PARAM['k_bg'] \
-                  * PARAM['q_scale']*PARAM['X_scale']/PARAM['P_scale']
+    # >> Neuman : input flux is fixed: bound_L = pL
+    isneuL = (PARAM['pL_'] == -1)
+    bound_neuL = PL - PARAM['qout_'] * PARAM['hb_'] \
+                * PARAM['mu']/PARAM['rho']/PARAM['k_bg'] \
+                * PARAM['q_scale']*PARAM['X_scale']/PARAM['P_scale']
+
+    # >> Check if boundary is correctly fixed
+    if ~isneuL & ~isdirL:
+        raise ValueError("Boundary in L is wrongly fixed.")
+
+    # >> Compute input bound
+    bound_L = isneuL * bound_neuL + isdirL * bound_dirL
 
     return bound_L
