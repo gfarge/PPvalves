@@ -340,21 +340,15 @@ def update_k(VALVES, active_valves, PARAM):
         Updated permeability.
 
     """
-    # >> Unpack
-    h = PARAM['h_']
-    k = PARAM['k']
-    k_bg = k[0] # ensure that your k is always k_bg at the 2 1st and 2 last pts
-
-
     # Visit every valve that was active and change its permeability to its
     #  updated value
     v_iterable = zip(VALVES['open'][active_valves], VALVES['idx'][active_valves],\
             VALVES['width'][active_valves], VALVES['klo'][active_valves])
 
     for v_is_open, idx, w, klo in v_iterable:
-        k[idx+1 : int(idx+w/h+1)] = k_bg*v_is_open + ~v_is_open*klo
+        PARAM['k'][idx+1 : int(idx+w/PARAM['h_']+1)] = PARAM['k'][0]*v_is_open + ~v_is_open*klo
 
-    return k
+    return PARAM['k']
 
 # Alternate, to avoid to loop, but not really more efficient at first sight,
 # maybe when more valves ?
