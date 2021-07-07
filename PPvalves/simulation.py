@@ -148,7 +148,7 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         runtime.
     """
     trun = {'total' : -time.time(), 'prod' : 0, 'solve' : 0,
-            'valves_inner' : 0, 'valves' : 0}  # runtime dictionnary
+            'valves_inner' : 0, 'valves' : 0, 'sys_build' : 0}  # runtime dictionnary
 
     if verbose: print('simulation.run_light -- initialization...')
     # Create variables for useful values
@@ -160,8 +160,8 @@ def run_light(P0, PARAM, VALVES, verbose=True):
     # ====================
 
     # --> Locate valves, initialize valve activity
-    v_activity = np.zeros((Nt+1,2, len(VALVES['idx'])))
-    v_activity[0, 0, :] = VALVES['open']  # initialize valve states
+#    v_activity = np.zeros((Nt+1,2, len(VALVES['idx'])))
+#    v_activity[0, 0, :] = VALVES['open']  # initialize valve states
 
     v_id1 = VALVES['idx']  # Pressure pt. right before valves
     v_id2 = VALVES['idx'] + VALVES['width']/h  # Pr. pt. right after valves
@@ -214,14 +214,16 @@ def run_light(P0, PARAM, VALVES, verbose=True):
                                    #  needed, but should be optimized...)
             tin0 = time.time()
             PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
+            tbuild0 = time.time()
             A, B, b = init.build_sys(PARAM) # update system with new permeab.
+            trun['sys_build'] += time.time() - tbuild0  # add elapsed t
             trun['valves_inner'] += time.time() - tin0  # add elapsed t
 
         trun['valves'] += time.time() - tvalve0  # add elapsed t
 
         # --> Update v_activity
-        v_activity[tt+1, 0, :] = VALVES['open']
-        v_activity[tt+1, 1, :] = VALVES['dP']
+#        v_activity[tt+1, 0, :] = VALVES['open']
+#        v_activity[tt+1, 1, :] = VALVES['dP']
 
     if verbose: print('simulation.run_light -- Done!')
 
