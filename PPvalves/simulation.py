@@ -215,7 +215,8 @@ def run_light(P0, PARAM, VALVES, verbose=True):
             tin0 = time.time()
             PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
             tbuild0 = time.time()
-            A, B, b = init.build_sys(PARAM) # update system with new permeab.
+#            A, B, b = init.build_sys(PARAM) # update system with new permeab.
+            A, B = init.update_sys(A, B, PARAM) # update system with new permeab.
             trun['sys_build'] += time.time() - tbuild0  # add elapsed t
             trun['valves_inner'] += time.time() - tin0  # add elapsed t
 

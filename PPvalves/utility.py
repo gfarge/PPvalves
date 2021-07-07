@@ -137,7 +137,7 @@ def calc_bound_0(P0, PARAM):
              * PARAM['q_scale']*PARAM['X_scale']/PARAM['P_scale']
 
     # >> Check if boundary is correctly fixed
-    if ~isneu0 & ~isdir0:
+    if isdir0 == isneu0:
         raise ValueError("Boundary in 0 is wrongly fixed.")
 
     # >> Compute input bound
@@ -185,7 +185,7 @@ def calc_bound_L(PL, PARAM):
                 * PARAM['q_scale']*PARAM['X_scale']/PARAM['P_scale']
 
     # >> Check if boundary is correctly fixed
-    if ~isneuL & ~isdirL:
+    if isneuL == isdirL:
         raise ValueError("Boundary in L is wrongly fixed.")
 
     # >> Compute input bound
