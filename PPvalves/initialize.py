@@ -145,24 +145,24 @@ def boundary(bound, bound_value, PARAM, verbose=False):
     if bound == 'PP':
         p0_ = bound_value
         pL_ = 0
-        qin_ = np.nan
-        qout_ = np.nan
+        qin_ = -1 #np.nan
+        qout_ = -1 #np.nan
         if verbose:
             print('init.boundary -- Border conditions : p0_ = {0:.4f}, pL_ = {1:.4f}'.format(p0_, pL_))
 
     elif bound == 'QQ':
-        p0_ = np.nan
-        pL_ = np.nan
+        p0_ = -1 #np.nan
+        pL_ = -1 #np.nan
         qin_ = bound_value
         qout_ = bound_value
         if verbose:
             print('init.boundary -- Border conditions : qin = {0:.4f}, qout = {1:.4f}'.format(qin_, qout_))
 
     elif bound == 'QP':
-        p0_ = np.nan
+        p0_ = -1 #np.nan
         pL_ = 0
         qin_ = bound_value
-        qout_ = np.nan
+        qout_ = -1 #np.nan
         if verbose:
             print('init.boundary -- Border conditions : qin = {0:.4f}, pL = {1:.4f}'.format(qin_, pL_))
 
@@ -227,14 +227,14 @@ def init_cond(VALVES, PARAM, q0=1, dp0=None, states_override=None):
     # --> First use PARAM structure but using q0/dp0 as boundary conditions
     PARAM_pp_prof = copy.copy(PARAM)
     if (q0 is None) and (dp0 is not None):
-        PARAM_pp_prof['qin_'] = np.nan
-        PARAM_pp_prof['qout_'] = np.nan
+        PARAM_pp_prof['qin_'] = -1 #np.nan
+        PARAM_pp_prof['qout_'] = -1 #np.nan
         PARAM_pp_prof['p0_'] = dp0
         PARAM_pp_prof['pL_'] = 0
     elif (q0 is not None) and (dp0 is None):
         PARAM_pp_prof['qin_'] = q0
-        PARAM_pp_prof['qout_'] = np.nan
-        PARAM_pp_prof['p0_'] = np.nan
+        PARAM_pp_prof['qout_'] = -1 #np.nan
+        PARAM_pp_prof['p0_'] = -1 #np.nan
         PARAM_pp_prof['pL_'] = 0
     else:
         raise ValueError('One and only one of dp0/q0 should be specified, the other left to None')
@@ -395,10 +395,10 @@ def sys_boundary(A, B, PARAM):
         PARAM : dictionnary
             Physical parameters of the system. Boundary conditions
             specifications must figure in it:
-                - if `PARAM['p0_']` (resp `PARAM['pL_']`) is NaN and
+                - if `PARAM['p0_']` (resp `PARAM['pL_']`) is -1 and
                 `PARAM['qin_']` (resp `PARAM['qout_']) is not, then apply
                 Neuman boundary conditions in matrices.
-                - if `PARAM['qin_'] (resp `PARAM['qout_']) is NaN and
+                - if `PARAM['qin_'] (resp `PARAM['qout_']) is -1 and
                   `PARAM['p0_']` (resp `PARAM['pL_']`) is not, then apply
                 Dirichlet boundary conditions in matrices.
 
@@ -445,69 +445,138 @@ def sys_boundary(A, B, PARAM):
     P_scale = PARAM['P_scale']
     q_scale = PARAM['q_scale']
 
-
     # >> Initialize b and deltas
     D = k[0]/phi/mu/beta # permeability should be the same at -1, 0, N and N+1
     b = np.zeros(len(A[1]))
 
-    # >> x = 0 boundary
-    # --> Neuman : fixing flux
-    if (np.isnan(p0)) & (not np.isnan(qin)):
-    	# --> factors of p0_ : Ab[0] and Bb[0]
-    	A[1][0] = 1. + D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
-    	B[1][0] = 1. - D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+    # -----------------------  x = 0 boundary --------------------------------
+    # >> Neuman : fixing flux
+    isneu0 = (p0 == -1) & (qin != -1)
+    # -> factors of p0_ : Ab[0] and Bb[0]
+    Ab_neu0 = 1. + D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+    Bb_neu0 = 1. - D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+    # ->  factors of p1_ : Ac[0] and Bc[0]
+    Ac_neu0 = - 1.* D * dt / (h * (hb+h)) * T_scale/X_scale**2
+    Bc_neu0 = D * dt / (h * (hb+h)) * T_scale/X_scale**2
+    # -> constant terms (b_n = b_n+1, hence the 2)
+    b_neu0 = 2. * D * dt / (h + hb) * T_scale/X_scale**2 *(mu/rho/k[0] * qin * q_scale) * X_scale/P_scale
 
-    	# --> factors of p1_ : Ac[0] and Bc[0]
-    	A[2][0] = - 1.* D * dt / (h * (hb+h)) * T_scale/X_scale**2
-    	B[2][0] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
+    # >> Dirichlet : fixing pressure
+    isdir0 = (qin == -1) & (p0 != -1)
+    # -> factors of p0_ : Ab[0] and Bb[0]
+    Ab_dir0 = 1. + D*dt/h/hb * T_scale/X_scale**2
+    Bb_dir0 = 1. - D*dt/h/hb * T_scale/X_scale**2
+    # ->  factors of p1_ : Ac[0] and Bc[0]
+    Ac_dir0 =  -1. *  D*dt / (h * (h + hb)) * T_scale/X_scale**2
+    Bc_dir0 = D*dt / (h * (h + hb)) * T_scale/X_scale**2
+    # -> constant terms (b_n = b_n+1, hence the 2)
+    b_dir0 = 2. * p0 * D*dt / (hb * (h + hb)) * T_scale/X_scale**2 # * P_scale/P_scale
 
-    	# --> constant terms (b = b_n - b_n+1)
-    	b[0] = 2. * D * dt / (h + hb) * T_scale/X_scale**2 *(mu/rho/k[0] * qin * q_scale) * X_scale/P_scale
-
-    # --> Dirichlet : fixing pressure
-    elif (np.isnan(qin)) & (not np.isnan(p0)):
-    	# --> factors of p0_ : Ab[0] and Bb[0]
-    	A[1][0] = 1. + D*dt/h/hb * T_scale/X_scale**2
-    	B[1][0] = 1. - D*dt/h/hb * T_scale/X_scale**2
-
-    	# -->  factors of p1_ : Ac[0] and Bc[0]
-    	A[2][0] =  -1. *  D*dt / (h * (h + hb)) * T_scale/X_scale**2
-    	B[2][0] = D*dt / (h * (h + hb)) * T_scale/X_scale**2
-
-    	# --> constant terms (b_n = b_n+1, hence the 2)
-    	b[0] = 2. * p0 * D*dt / (hb * (h + hb)) * T_scale/X_scale**2 # * P_scale/P_scale
-
-    else:
+    # >> Check if boundary is correctly set
+    if ~isneu0 & ~isdir0:
     	raise ValueError("boundary -- /!\\ x = 0 boundary conditions wrongly set")
 
-    # >> x = L boundary
-    # -->  Neuman : fixing flux
-    if (np.isnan(pL)) & (not np.isnan(qout)):
-    	# --> factors of pN_: Ab[-1] and Bb[-1]
-    	A[1][-1] = 1. + D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
-    	B[1][-1] = 1. - D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+    # >> Set boundary
+    # -> factors of p0_ : Ab[0] and Bb[0]
+    A[1][0] = isneu0 * Ab_neu0 + isdir0 * Ab_dir0
+    B[1][0] = isneu0 * Bb_neu0 + isdir0 * Bb_dir0
+    # -> factors of p1_ : Ac[0] and Bc[0]
+    A[2][0] = isneu0 * Ac_neu0 + isdir0 * Ac_dir0
+    B[2][0] = isneu0 * Bc_neu0 + isdir0 * Bc_dir0
+    # -> constant terms (b = b_n - b_n+1)
+    b[0] = isneu0 * b_neu0 + isdir0 * b_dir0
 
-    	# --> factors of pN-1_: Aa[-1] and Ba[-1]
-    	A[0][-1] = -1. * D * dt / (h * (hb+h)) * T_scale/X_scale**2
-    	B[0][-1] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
+    # -----------------------  x = L boundary --------------------------------
+    # >> Neuman : fixing flux
+    isneuL =  (pL == -1) & (qout != -1)
+    # -> factors of pN_: Ab[-1] and Bb[-1]
+    Ab_neuL = 1. + D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+    Bb_neuL = 1. - D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+    # -> factors of pN-1_: Aa[-1] and Ba[-1]
+    Aa_neuL = -1. * D * dt / (h * (hb+h)) * T_scale/X_scale**2
+    Ba_neuL = D * dt / (h * (hb+h)) * T_scale/X_scale**2
+    # -> constant terms (b_n = b_n+1, hence the 2)
+    b_neuL = -2. * D * dt / (h + hb) * T_scale/X_scale**2 *(mu/rho/k[-1] * qout * q_scale) * X_scale/P_scale
 
-    	# --> constant terms (b_n = b_n+1, hence the 2)
-    	b[-1] = -2. * D * dt / (h + hb) * T_scale/X_scale**2 *(mu/rho/k[-1] * qout * q_scale) * X_scale/P_scale
+    # >> Dirichlet : fixing pressure
+    isdirL =  (pL != -1) & (qout == -1)
+    # -> factors of pN_: Ab[-1] and Bb[-1]
+    Ab_dirL = 1. + D * dt / hb / h * T_scale/X_scale**2
+    Bb_dirL = 1. - D * dt / hb / h * T_scale/X_scale**2
+    # -> factors of pN-1_: Aa[-1] and Ba[-1]
+    Aa_dirL = -1. * D * dt / (h * (hb+h)) * T_scale/X_scale**2
+    Ba_dirL = D * dt / (h * (hb+h)) * T_scale/X_scale**2
+    # -> constant terms (b_n = b_n+1, hence the 2)
+    b_dirL = 2. * pL * D*dt / (hb * (h+hb)) * T_scale/X_scale**2 # * P_scale/P_scale
 
-    # --> Dirichlet : fixing pressure
-    elif (np.isnan(qout)) & (not np.isnan(pL)):
-    	# --> factors of pN_: Ab[-1] and Bb[-1]
-    	A[1][-1] = 1. + D * dt / hb / h * T_scale/X_scale**2
-    	B[1][-1] = 1. - D * dt / hb / h * T_scale/X_scale**2
-
-    	# --> factors of pN-1_: Aa[-1] and Ba[-1]
-    	A[0][-1] = -1. * D * dt / (h * (hb+h)) * T_scale/X_scale**2
-    	B[0][-1] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
-
-    	# --> constant terms (b_n = b_n+1, hence the 2)
-    	b[-1] = 2. * pL * D*dt / (hb * (h+hb)) * T_scale/X_scale**2 # * P_scale/P_scale
-
-    else:
+    # >> Check if boundary is correctly set
+    if ~isneuL & ~isdirL:
     	raise ValueError("sys_boundary -- /!\\ x = L boundary conditions wrongly set")
 
+    # >> Set boundary
+    # --> factors of pN_: Ab[-1] and Bb[-1]
+    A[1][-1] = isneuL * Ab_neuL + isdirL * Ab_dirL
+    B[1][-1] = isneuL * Bb_neuL + isdirL * Bb_dirL
+    # --> factors of pN-1_: Aa[-1] and Ba[-1]
+    A[0][-1] = isneuL * Aa_neuL + isdirL * Aa_dirL
+    B[0][-1] = isneuL * Ba_neuL + isdirL * Ba_dirL
+    # --> constant terms (b_n = b_n+1, hence the 2)
+    b[-1] = isneuL * b_neuL + isdirL * b_dirL
+
     return A, B, b
+
+#    if (np.isnan(p0)) & (not np.isnan(qin)):
+#    	# --> factors of p0_ : Ab[0] and Bb[0]
+#    	A[1][0] = 1. + D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+#    	B[1][0] = 1. - D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+#
+#    	# --> factors of p1_ : Ac[0] and Bc[0]
+#    	A[2][0] = - 1.* D * dt / (h * (hb+h)) * T_scale/X_scale**2
+#    	B[2][0] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
+#
+#    	# --> constant terms (b = b_n - b_n+1)
+#    	b[0] = 2. * D * dt / (h + hb) * T_scale/X_scale**2 *(mu/rho/k[0] * qin * q_scale) * X_scale/P_scale
+#
+#    # --> Dirichlet : fixing pressure
+#    elif (np.isnan(qin)) & (not np.isnan(p0)):
+#    	# --> factors of p0_ : Ab[0] and Bb[0]
+#    	A[1][0] = 1. + D*dt/h/hb * T_scale/X_scale**2
+#    	B[1][0] = 1. - D*dt/h/hb * T_scale/X_scale**2
+#
+#    	# -->  factors of p1_ : Ac[0] and Bc[0]
+#    	A[2][0] =  -1. *  D*dt / (h * (h + hb)) * T_scale/X_scale**2
+#    	B[2][0] = D*dt / (h * (h + hb)) * T_scale/X_scale**2
+#
+#    	# --> constant terms (b_n = b_n+1, hence the 2)
+#    	b[0] = 2. * p0 * D*dt / (hb * (h + hb)) * T_scale/X_scale**2 # * P_scale/P_scale
+#
+#    else:
+#    	raise ValueError("boundary -- /!\\ x = 0 boundary conditions wrongly set")
+#
+#    # >> x = L boundary
+#    # -->  Neuman : fixing flux
+#    if (np.isnan(pL)) & (not np.isnan(qout)):
+#    	# --> factors of pN_: Ab[-1] and Bb[-1]
+#    	A[1][-1] = 1. + D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+#    	B[1][-1] = 1. - D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+#
+#    	# --> factors of pN-1_: Aa[-1] and Ba[-1]
+#    	A[0][-1] = -1. * D * dt / (h * (hb+h)) * T_scale/X_scale**2
+#    	B[0][-1] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
+#
+#    	# --> constant terms (b_n = b_n+1, hence the 2)
+#    	b[-1] = -2. * D * dt / (h + hb) * T_scale/X_scale**2 *(mu/rho/k[-1] * qout * q_scale) * X_scale/P_scale
+
+#    # --> Dirichlet : fixing pressure
+#    elif (np.isnan(qout)) & (not np.isnan(pL)):
+#    	# --> factors of pN_: Ab[-1] and Bb[-1]
+#    	A[1][-1] = 1. + D * dt / hb / h * T_scale/X_scale**2
+#    	B[1][-1] = 1. - D * dt / hb / h * T_scale/X_scale**2
+#
+#    	# --> factors of pN-1_: Aa[-1] and Ba[-1]
+#    	A[0][-1] = -1. * D * dt / (h * (hb+h)) * T_scale/X_scale**2
+#    	B[0][-1] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
+#
+#    	# --> constant terms (b_n = b_n+1, hence the 2)
+#    	b[-1] = 2. * pL * D*dt / (hb * (h+hb)) * T_scale/X_scale**2 # * P_scale/P_scale
+

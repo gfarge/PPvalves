@@ -64,14 +64,16 @@ def calc_pp_inf(VALVES, PARAM, states_override=None):
     # Deal with case where all valves are open
     # ----------------------------------------
     if not any(closed_valves):
-        if np.isnan(qin_) & np.isnan(qout_):
+        # >> PP conditions
+        if (qin_==-1) & (qout_==-1):
             dP_ = (p0_ - pL_)  # pressure diff across domain
             L_ = 1. + 2 * hb_  # domain lenght
             grad_bg = dP_ / L_  # pressure gradient without a valve
 
             P_eq = p0_ - (X_+hb_) * grad_bg
 
-        elif np.isnan(p0_) & np.isnan(qout_):
+        # >> QP conditions
+        elif (p0_==-1) & (qout_==-1):
             print(pL_)
             L_ = 1. + 2 * hb_
             dP_ = mu / rho / k_bg * qin_ * L_ * q_scale*X_scale/P_scale
@@ -92,7 +94,8 @@ def calc_pp_inf(VALVES, PARAM, states_override=None):
 
     # Compute pressure profile
     # ------------------------
-    if np.isnan(p0_) & np.isnan(qout_):
+    # >> QP conditions
+    if (p0_==-1) & (qout_==-1):
     # --> Flux boundary condition in 0
     #     pressure boundary condition in L
     #     -->> Define various parameters
@@ -127,7 +130,8 @@ def calc_pp_inf(VALVES, PARAM, states_override=None):
             p0_ = P_eq[idx_s_0]
             P_eq[ idx_s_0 + 1 : idx_s_n + 1] = p0_ - grad_bg * s_X_
 
-    elif np.isnan(qin_) & np.isnan(qout_):
+    # >> PP conditions
+    elif (qin_==-1) & (qout_==-1):
     # --> Pressure boundary conditions
     #	-->> Define various parameters
         dP_ = (p0_ - pL_)
@@ -286,13 +290,13 @@ def calc_dP_inf(VALVES, PARAM, states_override=None):
     # --------------
     L_ = 1 + 2*hb_
     # --> For 'QP' boundary
-    if np.isnan(p0_) & np.isnan(qout_):
+    if (p0_==-1) & (qout_==-1):
         # -->> Equivalent hydraulic resistance of the system
         R_eq = [L_ - np.sum(wid_v[closed_valves])/k_bg + np.sum(R_v[closed_valves])]
         dP_inf = mu / rho * qin_ * R_eq * q_scale*X_scale/P_scale
 
     # --> For 'PP' boundary
-    elif np.isnan(qin_) & np.isnan(qout_):
+    elif (qin_==-1) & (qout_==-1):
         dP_inf = p0_ - pL_
 
     return dP_inf
@@ -352,12 +356,12 @@ def calc_q_inf(VALVES, PARAM, states_override=None):
     # --------------
     L_ = 1 + 2*hb_
     # --> For 'QP' boundary
-    if np.isnan(p0_) & np.isnan(qout_):
+    if (p0_==-1) & (qout_==-1):
         # -->> Equivalent hydraulic resistance of the system
         q_inf = qin_
 
     # --> For 'PP' boundary
-    elif np.isnan(qin_) & np.isnan(qout_):
+    elif (qin_==-1) & (qout_==-1):
         dP_inf = p0_ - pL_
         R_eq = ((L_ - np.sum(wid_v))/k_bg + np.sum(R_v)) * X_scale
         q_inf = rho/mu * dP_inf / R_eq * P_scale/q_scale

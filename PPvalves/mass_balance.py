@@ -75,22 +75,22 @@ def in_out(IN, PARAM, bounds=False, int_t=True, verbose=False):
 
     # According to boundary, compute in/out flux
     # ------------------------------------------
-    if np.isnan(qin_) and (not np.isnan(p0_)):
+    if (qin_==-1) and (p0_!=-1):
         # --> Fixed pressure in 0
         if bounds:
             qin_ = bounds_in_t[:, 0]
         else:
             qin_ = rho*k_bg/mu * (p0_ - P[:, 0])/hb_ * P_scale/X_scale / q_scale
-    elif (not np.isnan(qin_)) and np.isnan(p0_):
+    elif (qin_!=-1) and (p0_==-1):
         # --> Fixed flux in 0
         pass
-    if np.isnan(qout_) and (not np.isnan(pL_)):
+    if (qout_==-1) and (pL_!=-1):
         # --> Fixed pressure in L
         if bounds:
             qout_ = bounds_in_t[:, -1]
         else:
             qout_ = rho*k_bg/mu * (P[:, -1] - pL_)/hb_ * P_scale/X_scale / q_scale
-    elif (not np.isnan(qout_)) and np.isnan(pL_):
+    elif (qout_!=-1) and (pL_==-1):
         # --> Fixed flux in L
         pass
 
@@ -374,7 +374,7 @@ def calc_dmdt_dflux(Pprev, Pnext, k, PARAM):
 
     # --> At boundaries (pbs with variable space step)
     # -->> Fixed flux in 0
-    if np.isnan(p0_) and (not np.isnan(qin_)):
+    if p0_ == -1 and (qin_ != -1):
         p0_ = Pnext[0] + qin_ * hb_ * mu / rho / k[0] * q_scale*X_scale / P_scale
         d2pdx2_0 = (h_*p0_ - (h_+hb_)*Pnext[0] + hb_*Pnext[1])\
                 / (h_*hb_ * (h_+hb_)/2)
@@ -382,21 +382,21 @@ def calc_dmdt_dflux(Pprev, Pnext, k, PARAM):
                   * P_scale/X_scale**2 * T_scale/M_scale
 
     # -->> Fixed pressure in 0
-    elif (not np.isnan(p0_)) and (np.isnan(qin_)):
+    elif (p0_ != -1) and (qin_==-1):
         d2pdx2_0 = (h_*p0_ - (h_+hb_)*Pnext[0] + hb_*Pnext[1])\
                 / (h_*hb_ * (h_+hb_)/2)
         dmdt[0] = d2pdx2_0 * k[0] * rho / mu\
                   *P_scale/X_scale**2 * T_scale/M_scale
 
     # -->> Fixed flux in L
-    if np.isnan(pL_) and (not np.isnan(qout_)):
+    if (pL_ == -1) and (qout_ != -1):
         pL_ = Pnext[-1] - qout_ * hb_ * mu / rho / k[-1] * q_scale*X_scale / P_scale
         d2pdx2_L = (hb_*Pnext[-2] - (h_+hb_)*Pnext[-1] + h_*pL_)\
                 / (h_*hb_ * (h_+hb_)/2)
         dmdt[-1] = d2pdx2_L * k[-1] * rho / mu\
                   * P_scale/X_scale**2 * T_scale/M_scale
     # -->> Fixed pressure in L
-    elif (not np.isnan(pL_)) and (np.isnan(qout_)):
+    elif (pL_ != -1) and (qout_==-1):
         d2pdx2_L = (hb_*Pnext[-2] - (h_+hb_)*Pnext[-1] + h_*pL_)\
                 / (h_*hb_ * (h_+hb_)/2)
         dmdt[-1] = d2pdx2_L * k[-1] * rho / mu\

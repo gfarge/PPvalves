@@ -160,8 +160,8 @@ def run_light(P0, PARAM, VALVES, verbose=True):
     # ====================
 
     # --> Locate valves, initialize valve activity
-#    v_activity = np.zeros((Nt+1,2, len(VALVES['idx'])))
-#    v_activity[0, 0, :] = VALVES['open']  # initialize valve states
+    v_activity = np.zeros((Nt+1,2, len(VALVES['idx'])))
+    v_activity[0, 0, :] = VALVES['open']  # initialize valve states
 
     v_id1 = VALVES['idx']  # Pressure pt. right before valves
     v_id2 = VALVES['idx'] + VALVES['width']/h  # Pr. pt. right after valves
@@ -222,8 +222,8 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         trun['valves'] += time.time() - tvalve0  # add elapsed t
 
         # --> Update v_activity
-#        v_activity[tt+1, 0, :] = VALVES['open']
-#        v_activity[tt+1, 1, :] = VALVES['dP']
+        v_activity[tt+1, 0, :] = VALVES['open']
+        v_activity[tt+1, 1, :] = VALVES['dP']
 
     if verbose: print('simulation.run_light -- Done!')
 
