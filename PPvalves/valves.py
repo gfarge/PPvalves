@@ -29,7 +29,7 @@ def comb(dx, v_wid, PARAM):
         Array of valve indices, index of P(x) just before valve.
 
     """
-    v_idx_0 = 1  # first possible valve index
+    v_idx_0 = 10  # first possible valve index is 1
     v_idx_N = PARAM['Nx'] - int(v_wid/PARAM['h_'])  # last possible valve index
     d_idx = int((dx + v_wid)/PARAM['h_'])  # distance between valve indices
 
