@@ -223,8 +223,8 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         trun['valves'] += time.time() - tvalve0  # add elapsed t
 
         # --> Update v_activity
-        v_activity[tt+1, 0, :] = VALVES['open']
-        v_activity[tt+1, 1, :] = VALVES['dP']
+#        v_activity[tt+1, 0, :] = VALVES['open']
+#        v_activity[tt+1, 1, :] = VALVES['dP']
 
     if verbose: print('simulation.run_light -- Done!')
 

@@ -382,6 +382,57 @@ def build_sys(PARAM):
 
     return A, B, b
 
+# ------------------------------------------------------------------------------
+def update_sys(A, B, PARAM):
+    """Updates the matrices after a change.
+
+    Parameters
+    ----------
+    A, B : lists
+        List for of `A` and `B` matrices: `[a, b, c]`, where `b` is
+        diagonal, `a` and `b` lower and upper diagonals, all as arrays.
+    PARAM : dictionnary
+        Physical parameters dictionnary. Recquired keys: `'h_'` (scaled space
+        step), `'dt_'` (scaled time step), `'k'` (vector of permeability in
+        space), `'beta'` (matrix-fluid compressibility), 'mu' (fluid
+        viscosity), `'phi'`.  (porosity), `'T_scale'` and `'X_scale'` (time and
+        space scales).
+
+    Returns
+    -------
+    A, B : lists
+        List for of `A` and `B` matrices: `[a, b, c]`, where `b` is
+        diagonal, `a` and `b` lower and upper diagonals, all as arrays.
+
+    Notes
+    -----
+        - When using `[a, b, c]` to represent a tridiagonal matrix, by convention:
+        `len(a) = len(b) = len(c)`, `a[0] = 0`, `c[-1] = 0`.
+    """
+    # >> Build A and B core structure
+    delta_minus = PARAM['k'][:-1]/PARAM['phi']/PARAM['mu']/PARAM['beta'] \
+                * PARAM['dt_']/2./PARAM['h_']**2  \
+                * PARAM['T_scale']/PARAM['X_scale']**2
+    delta_plus = PARAM['k'][1:]/PARAM['phi']/PARAM['mu']/PARAM['beta'] \
+                * PARAM['dt_']/2./PARAM['h_']**2 \
+                * PARAM['T_scale']/PARAM['X_scale']**2
+
+    # > A lower diag
+    A[0][1:-1] = -1. * delta_minus[1:-1]
+    # > A diag
+    A[1][1:-1] = 1. + delta_plus[1:-1] + delta_minus[1:-1]
+    # > A upper diag
+    A[2][1:-1] = -1. * delta_plus[1:-1]
+
+    # > A lower diag
+    B[0][1:-1] = delta_minus[1:-1]
+    # > A diag
+    B[1][1:-1] = 1. - delta_plus[1:-1] - delta_minus[1:-1]
+    # > A upper diag
+    B[2][1:-1] = delta_plus[1:-1]
+
+    return A, B
+
 #-----------------------------------------------------------------------------
 
 def sys_boundary(A, B, PARAM):
@@ -582,54 +633,4 @@ def sys_boundary(A, B, PARAM):
 
     return A, B, b
 
-# ------------------------------------------------------------------------------
-def update_sys(A, B, PARAM):
-    """Updates the matrices after a change.
-
-    Parameters
-    ----------
-    A, B : lists
-        List for of `A` and `B` matrices: `[a, b, c]`, where `b` is
-        diagonal, `a` and `b` lower and upper diagonals, all as arrays.
-    PARAM : dictionnary
-        Physical parameters dictionnary. Recquired keys: `'h_'` (scaled space
-        step), `'dt_'` (scaled time step), `'k'` (vector of permeability in
-        space), `'beta'` (matrix-fluid compressibility), 'mu' (fluid
-        viscosity), `'phi'`.  (porosity), `'T_scale'` and `'X_scale'` (time and
-        space scales).
-
-    Returns
-    -------
-    A, B : lists
-        List for of `A` and `B` matrices: `[a, b, c]`, where `b` is
-        diagonal, `a` and `b` lower and upper diagonals, all as arrays.
-
-    Notes
-    -----
-        - When using `[a, b, c]` to represent a tridiagonal matrix, by convention:
-        `len(a) = len(b) = len(c)`, `a[0] = 0`, `c[-1] = 0`.
-    """
-    # >> Build A and B core structure
-    delta_minus = PARAM['k'][:-1]/PARAM['phi']/PARAM['mu']/PARAM['beta'] \
-                * PARAM['dt_']/2./PARAM['h_']**2  \
-                * PARAM['T_scale']/PARAM['X_scale']**2
-    delta_plus = PARAM['k'][1:]/PARAM['phi']/PARAM['mu']/PARAM['beta'] \
-                * PARAM['dt_']/2./PARAM['h_']**2 \
-                * PARAM['T_scale']/PARAM['X_scale']**2
-
-    # > A lower diag
-    A[0][1:] = -1. * delta_minus[1:]
-    # > A diag
-    A[1] = 1. + delta_plus + delta_minus
-    # > A upper diag
-    A[2][:-1] = -1. * delta_plus[:-1]
-
-    # > A lower diag
-    B[0][1:] = delta_minus[1:]
-    # > A diag
-    B[1] = 1. - delta_plus - delta_minus
-    # > A upper diag
-    B[2][:-1] = delta_plus[:-1]
-
-    return A, B
 
