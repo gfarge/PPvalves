@@ -15,11 +15,13 @@ import copy
 import time
 import numpy as np
 import pickle
+import tables as tb
 
 import PPvalves.initialize as init
 import PPvalves.valves as valv
-import PPvalves.utility as util
+from PPvalves.utility import calc_bound_0, calc_bound_L
 import PPvalves.trid_math.tmath as tm
+from PPvalves.equilibrium import calc_k_eq
 
 
 def run_nov(P, PARAM, verbose=True):
@@ -172,8 +174,8 @@ def run_light(P0, PARAM, VALVES, verbose=True):
     # Initialize bound 0
     # ------------------
     bounds_in_t = np.zeros((Nt+1, 2))
-    bounds_in_t[0, 0] = util.calc_bound_0(P0[0], PARAM)
-    bounds_in_t[0, 1] = util.calc_bound_L(P0[-1], PARAM)
+    bounds_in_t[0, 0] = calc_bound_0(P0[0], PARAM)
+    bounds_in_t[0, 1] = calc_bound_L(P0[-1], PARAM)
 
     # Set up matrix system
     # --------------------
@@ -200,8 +202,8 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         trun['solve'] += time.time() - tsolve0 # add elapsed t
 
         # this takes time also
-        bounds_in_t[tt+1, 0] = util.calc_bound_0(Pnext[0], PARAM)  # get bound 0
-        bounds_in_t[tt+1, 1] = util.calc_bound_L(Pnext[-1], PARAM) # get bound L
+        bounds_in_t[tt+1, 0] = calc_bound_0(Pnext[0], PARAM)  # get bound 0
+        bounds_in_t[tt+1, 1] = calc_bound_L(Pnext[-1], PARAM) # get bound L
 
         # Manage valve evolution
         # ----------------------
@@ -232,6 +234,145 @@ def run_light(P0, PARAM, VALVES, verbose=True):
     trun['total'] += time.time()
 
     return Plast, bounds_in_t, v_activity, trun
+
+# ----------------------------------------------------------------------------
+def run_light_memory(P0, PARAM, VALVES, outpath, chunk=1e5, verbose=True):
+    r"""Runs PPv, and uses HDF5 structures to save results to manage even the
+    largest system sizes.
+
+    Solves diffusion equation and actions valves. Does not store
+    pressure history, simply previous and next times. Used to deal with memory
+    issues.
+
+    Parameters
+    ----------
+    P0 : 1D array
+        Initial state of pore pressure in the system, dimension
+        `PARAM['Nx'] + 1`.
+    VALVES : dict
+        Valves parameters dictionnary.
+    PARAM : dict.
+        Dictionnary of physical parameters describing the system.
+    outpath : str
+        Absolute path and filename for the hdf5 output file, containing time
+        series of `valve_states` and `valve_dP` for all valves, `k_eq` and
+        `bounds`.
+    chunk : int (default `chunk = 1e5`)
+        Number of timesteps to wait before saving chunks of results. For 260
+        valves, we have something of around 500Mb with the default, which is
+        good.
+    verbose : bool, optional
+        Have the function print what it's doing.
+
+    Returns
+    -------
+    Plast : 1D array
+        Last state of pore pressure across the domain, dimension
+        `PARAM['Nx'] + 1`.
+    trun : dict.
+        Dictionnary with the details of the time spent on computing the product
+        for the knowns (`trun['prod']`), the time spent on solving for next
+        state of pressure (`trun['solve']`), the time spent on actionning
+        valves (`trun['valve']`).  The sum of all three is the complete
+        runtime.
+    """
+    trun = {'total' : -time.time(), 'prod' : 0, 'solve' : 0,
+            'valves_inner' : 0, 'valves' : 0, 'sys_build' : 0}  # runtime dictionnary
+
+    if verbose: print('simulation.run_light -- initialization...')
+    # Create variables for useful values
+    # ==================================
+    Nt = PARAM['Nt']  # number of time steps for this simulation
+    h = PARAM['h_']  # space step
+
+    # Initialization steps
+    # ====================
+    # -> Create output data structure
+    output = np.dtype([
+        ("valve_states", np.uint8, (len(VALVES['idx']),)),
+        ("valve_dP", np.float64, (len(VALVES['idx']),)),
+        ("bounds", np.float64, (2,)),
+        ("k_eq", np.float64)
+        ])
+
+    fileh = tb.open_file(outpath+'.h5', mode="w")  # h5file
+    table = fileh.create_table(fileh.root, "data", output, "Output data",
+                               expectedrows=PARAM['Nt']+1) # table
+
+    # -> Locate valves
+    v_id1 = VALVES['idx']  # Pressure pt. right before valves
+    v_id2 = VALVES['idx'] + VALVES['width']/h  # Pr. pt. right after valves
+    v_id2 = v_id2.astype(int)
+
+    # -> Initialize valve activity, bounds, and k_eq
+    table.row['valve_states'] = VALVES['open'].astype(np.uint8)  # initialize valve states
+    table.row['valve_dP'] = P0[v_id1] - P0[v_id2]
+    table.row['bounds'] = [calc_bound_0(P0[0], PARAM), calc_bound_L(P0[-1], PARAM)]
+    table.row['k_eq'] = calc_k_eq(VALVES, PARAM)
+    table.row.append()  # write values
+
+    # Set up matrix system
+    # --------------------
+    if verbose: print('simulation.run_light -- building system...')
+    A, B, b = init.build_sys(PARAM)
+
+    # Solving in time
+    # ===============
+    if verbose: print('simulation.run_light -- starting run...')
+    Pnext = P0
+    for tt in range(Nt):
+        Pprev = Pnext  # Stepping forward
+
+        # Compute knowns (context)
+        # ------------------------
+        tprod0 = time.time()  # start timer for product
+        r = tm.prod(B[0], B[1], B[2], Pprev, len(Pprev)) + b # calc knowns (right hand side)
+        trun['prod'] += time.time() - tprod0  # add elapsed t
+
+        # Solve for next time
+        # -------------------
+        tsolve0 = time.time()  # start timer for solver
+        Pnext = tm.solve(A[0], A[1], A[2], r, len(r)) # solve system
+        trun['solve'] += time.time() - tsolve0 # add elapsed t
+
+        # Manage valve evolution
+        # ----------------------
+        tvalve0 = time.time()  # start timer for valves
+
+        VALVES, active_valves = valv.evolve(Pnext, h, VALVES)
+
+        #--> Build new system according to new valve states
+        if np.any(active_valves):  # (much more efficient to do it only when
+                                   #  needed, but should be optimized...)
+            tin0 = time.time()
+            PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
+            tbuild0 = time.time()
+            A, B = init.update_sys(A, B, PARAM) # update system with new permeab.
+            trun['sys_build'] += time.time() - tbuild0  # add elapsed t
+            trun['valves_inner'] += time.time() - tin0  # add elapsed t
+
+        trun['valves'] += time.time() - tvalve0  # add elapsed t
+
+        # Save outputs and flush buffer if too big
+        # ----------------------------------------
+        table.row['valve_states'] = VALVES['open']
+        table.row['valve_dP'] = VALVES['dP']
+        table.row['bounds'] = [calc_bound_0(Pnext[0], PARAM),
+                               calc_bound_L(Pnext[-1], PARAM)]
+        table.row['k_eq'] = calc_k_eq(VALVES, PARAM)
+        table.row.append()
+
+        if (tt%int(chunk) == 0) & (tt != 0): # flush in chunks
+            table.flush() ; table = fileh.root.data
+
+    table.flush() ; fileh.close()  # flush and close results
+
+    if verbose: print('simulation.run_light -- Done!')
+
+    Plast = Pnext
+    trun['total'] += time.time()
+
+    return Plast, trun
 
 # ----------------------------------------------------------------------------
 
