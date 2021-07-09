@@ -201,21 +201,18 @@ def run_light(P0, PARAM, VALVES, verbose=True):
         Pnext = tm.solve(A[0], A[1], A[2], r, len(r)) # solve system
         trun['solve'] += time.time() - tsolve0 # add elapsed t
 
-        # this takes time also
-        bounds_in_t[tt+1, 0] = calc_bound_0(Pnext[0], PARAM)  # get bound 0
-        bounds_in_t[tt+1, 1] = calc_bound_L(Pnext[-1], PARAM) # get bound L
 
         # Manage valve evolution
         # ----------------------
         tvalve0 = time.time()  # start timer for valves
 
-        VALVES, active_valves = valv.evolve(Pnext, h, VALVES)
+        VALVES, opening, closing = valv.evolve(Pnext, h, VALVES)
 
         #--> Build new system according to new valve states
-        if np.any(active_valves):  # (much more efficient to do it only when
+        if np.any(opening | closing):  # (much more efficient to do it only when
                                    #  needed, but should be optimized...)
             tin0 = time.time()
-            PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
+            PARAM['k'] = valv.update_k(VALVES, opening | closing, PARAM)
             tbuild0 = time.time()
 #            A, B, b = init.build_sys(PARAM) # update system with new permeab.
             A, B = init.update_sys(A, B, PARAM) # update system with new permeab.
@@ -224,9 +221,11 @@ def run_light(P0, PARAM, VALVES, verbose=True):
 
         trun['valves'] += time.time() - tvalve0  # add elapsed t
 
-        # --> Update v_activity
-#        v_activity[tt+1, 0, :] = VALVES['open']
-#        v_activity[tt+1, 1, :] = VALVES['dP']
+        # --> Update v_activity and bounds
+        v_activity[tt+1, 0, :] = VALVES['open']
+        v_activity[tt+1, 1, :] = VALVES['dP']
+        bounds_in_t[tt+1, 0] = calc_bound_0(Pnext[0], PARAM)  # get bound 0
+        bounds_in_t[tt+1, 1] = calc_bound_L(Pnext[-1], PARAM) # get bound L
 
     if verbose: print('simulation.run_light -- Done!')
 
@@ -277,7 +276,8 @@ def run_light_memory(P0, PARAM, VALVES, outpath, chunk=1e5, verbose=True):
         runtime.
     """
     trun = {'total' : -time.time(), 'prod' : 0, 'solve' : 0,
-            'valves_inner' : 0, 'valves' : 0, 'sys_build' : 0}  # runtime dictionnary
+            'valves_inner' : 0, 'valves' : 0, 'sys_build' : 0,
+            'save_events' : 0}  # runtime dictionnary
 
     if verbose: print('simulation.run_light -- initialization...')
     # Create variables for useful values
@@ -288,28 +288,18 @@ def run_light_memory(P0, PARAM, VALVES, outpath, chunk=1e5, verbose=True):
     # Initialization steps
     # ====================
     # -> Create output data structure
-    output = np.dtype([
-        ("valve_states", np.uint8, (len(VALVES['idx']),)),
-        ("valve_dP", np.float64, (len(VALVES['idx']),)),
-        ("bounds", np.float64, (2,)),
-        ("k_eq", np.float64)
-        ])
-
+    outvar = np.dtype([ ("bounds", np.float64, (2,)), ("k_eq", np.float64)])
+    catalog = np.dtype([("op_t", np.float64), ("op_i", np.uint8)])
     fileh = tb.open_file(outpath+'.h5', mode="w")  # h5file
-    table = fileh.create_table(fileh.root, "data", output, "Output data",
-                               expectedrows=PARAM['Nt']+1) # table
-
-    # -> Locate valves
-    v_id1 = VALVES['idx']  # Pressure pt. right before valves
-    v_id2 = VALVES['idx'] + VALVES['width']/h  # Pr. pt. right after valves
-    v_id2 = v_id2.astype(int)
+    outvar = fileh.create_table(fileh.root, "outvar", outvar, "Output variables",
+                                expectedrows=PARAM['Nt']+1) # variables table
+    catalog = fileh.create_table(fileh.root, "catalog", catalog, "Event catalog",
+                                 expectedrows=PARAM['Nt']*2) # catalog table
 
     # -> Initialize valve activity, bounds, and k_eq
-    table.row['valve_states'] = VALVES['open'].astype(np.uint8)  # initialize valve states
-    table.row['valve_dP'] = P0[v_id1] - P0[v_id2]
-    table.row['bounds'] = [calc_bound_0(P0[0], PARAM), calc_bound_L(P0[-1], PARAM)]
-    table.row['k_eq'] = calc_k_eq(VALVES, PARAM)
-    table.row.append()  # write values
+    outvar.row['bounds'] = [calc_bound_0(P0[0], PARAM), calc_bound_L(P0[-1], PARAM)]
+    outvar.row['k_eq'] = calc_k_eq(VALVES, PARAM)
+    outvar.row.append()  # write values
 
     # Set up matrix system
     # --------------------
@@ -339,33 +329,39 @@ def run_light_memory(P0, PARAM, VALVES, outpath, chunk=1e5, verbose=True):
         # ----------------------
         tvalve0 = time.time()  # start timer for valves
 
-        VALVES, active_valves = valv.evolve(Pnext, h, VALVES)
+        VALVES, opening, closing = valv.evolve(Pnext, h, VALVES)
 
         #--> Build new system according to new valve states
-        if np.any(active_valves):  # (much more efficient to do it only when
+        if np.any(opening | closing):  # (much more efficient to do it only when
                                    #  needed, but should be optimized...)
             tin0 = time.time()
-            PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
+            PARAM['k'] = valv.update_k(VALVES, opening | closing, PARAM)
             tbuild0 = time.time()
             A, B = init.update_sys(A, B, PARAM) # update system with new permeab.
             trun['sys_build'] += time.time() - tbuild0  # add elapsed t
-            trun['valves_inner'] += time.time() - tin0  # add elapsed t
 
+            # -> Save events
+            tevents0 = time.time()
+            for ii in range(np.sum(opening)):
+                catalog.row['op_t'] = (tt+1) * PARAM['dt_']
+                catalog.row['op_i'] = np.where(opening)[0][ii]
+                catalog.row.append()
+            trun['save_events'] += time.time() - tevents0  # add elapsed t
+            trun['valves_inner'] += time.time() - tin0  # add elapsed t
         trun['valves'] += time.time() - tvalve0  # add elapsed t
 
         # Save outputs and flush buffer if too big
         # ----------------------------------------
-        table.row['valve_states'] = VALVES['open']
-        table.row['valve_dP'] = VALVES['dP']
-        table.row['bounds'] = [calc_bound_0(Pnext[0], PARAM),
+        outvar.row['bounds'] = [calc_bound_0(Pnext[0], PARAM),
                                calc_bound_L(Pnext[-1], PARAM)]
-        table.row['k_eq'] = calc_k_eq(VALVES, PARAM)
-        table.row.append()
+        outvar.row['k_eq'] = calc_k_eq(VALVES, PARAM)
+        outvar.row.append()
 
         if (tt%int(chunk) == 0) & (tt != 0): # flush in chunks
-            table.flush() ; table = fileh.root.data
+            outvar.flush() ; outvar = fileh.root.outvar
+            catalog.flush() ; ocatalog= fileh.root.catalog
 
-    table.flush() ; fileh.close()  # flush and close results
+    outvar.flush() ; catalog.flush() ; fileh.close()  # flush and close results
 
     if verbose: print('simulation.run_light -- Done!')
 
@@ -453,12 +449,12 @@ def run(P, PARAM, VALVES, verbose=True):
         # ----------------------
         tvalve0 = time.time()  # start timer for valves
 
-        VALVES, active_valves = valv.evolve(P[tt+1, :], h, VALVES)
+        VALVES, opening, closing = valv.evolve(P[tt+1, :], h, VALVES)
 
         #--> Build new system according to new valve states
-        if np.any(active_valves):
-            PARAM['k'] = valv.update_k(VALVES, active_valves, PARAM)
-            A, B, b = init.build_sys(PARAM) # update system with new permeab.
+        if np.any(opening | closing):
+            PARAM['k'] = valv.update_k(VALVES, opening | closing, PARAM)
+            A, B = init.update_sys(A, B, PARAM) # update system with new permeab.
         trun['valves'] += time.time() - tvalve0  # add elapsed t
 
         # --> Update v_activity
