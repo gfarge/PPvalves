@@ -64,8 +64,9 @@ def read_input(input_args, verbose=False):
 
         'init_v_state' : 'closed',  # initial valve state
 
-        'vdist' : 'first'  # valve distribution, either a file _name_,
+        'vdist' : 'first',  # valve distribution, either a file _name_,
                            # or 'first' for the first distribution we tested
+        'criticality' : 0.99,  # How close to threshold valves start
         }
 
     for arg_str in input_args:
