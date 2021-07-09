@@ -9,6 +9,7 @@ from scipy.signal import savgol_filter
 
 import sys
 import os
+import tables as tb
 sys.path.append(os.path.abspath('../../my_modules/'))
 #import stats as ms
 
@@ -37,14 +38,81 @@ def open_ratio(states):
     Parameter `states` is usually taken from `run_ppv` output: `v_activity[times,0,valve_idx]`, where
     `valve_idx` selects the indices of the valves you want an event count f.
     """
-    Nv = np.shape(states)[1]  # Total number of valves
+    Nv = np.shape(states)[1]  # Total number of valves
     ratio = np.sum(states, axis=1) / Nv
 
     return ratio
 
 #------------------------------------------------------------------------------
+def open_count_large(filename, time, VALVES, X):
+    """Produces a catalog of valve events (openings or closings), but based on
+    reading the h5 file for states.
 
-def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):
+    Parameters
+    ----------
+    filename: 2D array (or str)
+        Path to output file of simulation. History of valve states, dimension
+        `Ntimes, Nvalves`.  `False` is closed, `True` is open.
+    time : 1D array
+        Array of physical times, same shape as first dimension of `states`.
+    VALVES : dictionnary
+        Valve characteristics dictionnary.
+    X : 1D array
+        Physical sppace array.
+
+    Returns
+    -------
+    events_t : 1D array
+        Event times.
+    events_x : 1D array
+        Event locations, if catalog is True.
+
+    """
+    # >> Initialize
+    fileh = tb.open_file(filename, mode='r')
+    Nt = len(fileh.root.data)
+    n_valves = fileh.root.data[:]['valve_states'].shape[0]
+    v_x = X[VALVES['idx']] + VALVES['width']/2 # location of valves
+
+    all_events_i = []  # init: time indices of events
+    all_events_x = []  # init: locations of events
+
+    # >> Run through valves, for each, compute (t, x)
+    for iv in range(n_valves):
+        print("\nv1")
+        v_states = fileh.root.data[:]['valve_states'][:, iv] # states for this valve
+
+        # -> build event time vector
+        print("getting times")
+        v_events_i = [ii+1 for ii in range(Nt-1) \
+                      if ((v_states[1:][ii]-v_states[:-1][ii]) == 1)]
+        all_events_i.extend(v_events_i)  # add valve events t to all events
+
+        # -> build event location vector
+        print("getting locations")
+        v_events_x = [v_x[iv] for ii in range(len(v_events_i))]
+        all_events_x.extend(v_events_x) # add valve events t to all events
+
+    print("Flushing")
+    fileh.root.data.flush()
+    fileh.close()
+    # >> Convert event time idx to time
+    print("Conversions")
+    events_t = time[all_events_i]
+
+    events_x = np.array(all_events_x)
+
+    # >> Sort events t, x in chronological order and return
+    print("Sorting")
+    id_sort = np.argsort(events_t)
+    events_t = events_t[id_sort]
+    events_x = events_x[id_sort]
+
+    return events_t, events_x
+
+
+#------------------------------------------------------------------------------
+def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):#, large=False):
     """Produces a catalog of valve events (openings or closings).
 
     Produces a catalog of events in time --- and optionally space. The time of
@@ -55,19 +123,24 @@ def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):
     ----------
     ev_type : str
         type of event to count, either `"close"`, or `"open"`.
-    states: 2D array
+    states: 2D array (or str)
         History of valve states, dimension `Ntimes, Nvalves`.  `False` is
-        closed, `True` is open.
+        closed, `True` is open. If `large` is `True`, path to h5 file of
+        outputs.
     time : 1D array
         Array of physical times, same shape as first dimension of `states`.
     catalog : bool, optional
         If `catalog=True`, the allows `event_count` to return
         the position of events `x_events` in addition to their time `t_event`.
         Then, it recquires that `VALVES` and `X` are specified.
-    VALVES : dictionnary, optional
+    VALVES : dictionnary, optional
         Valve characteristics dictionnary. Needed for `catalog` option.
     X : 1D array, optional
         Physical sppace array. Needed for `catalog` option.
+    large : bool (default `large = False`)
+        For simulations with fine discretization, we directly write
+        `v_activity` on disk. In this case, use `large = True` and insteand of
+        `v_activity`, input the path to the result file written in simulation.
 
     Returns
     -------
@@ -94,7 +167,7 @@ def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):
         all_events_i = []  # init: time indices of events
         if catalog:
             v_x = X[VALVES['idx']] + VALVES['width']/2 # location of valves
-            all_events_x = []  # init: locations of events
+            all_events_x = []  # init: locations of events
 
         for iv in range(n_valves):
             # -> Run through valves, for each, compute (t, x)
@@ -161,7 +234,7 @@ def open_count(states, time, catalog=False, VALVES=None, X=None):
         If `catalog=True`, the allows `event_count` to return
         the position of events `x_events` in addition to their time `t_event`.
         Then, it recquires that `VALVES` and `X` are specified.
-    VALVES : dictionnary, optional
+    VALVES : dictionnary, optional
         Valve characteristics dictionnary. Needed for `catalog` option.
     X : 1D array, optional
         Physical sppace array. Needed for `catalog` option.
@@ -205,7 +278,7 @@ def close_count(states, time, catalog=False, VALVES=None, X=None):
         If `catalog=True`, the allows `event_count` to return
         the position of events `x_events` in addition to their time `t_event`.
         Then, it recquires that `VALVES` and `X` are specified.
-    VALVES : dictionnary, optional
+    VALVES : dictionnary, optional
         Valve characteristics dictionnary. Needed for `catalog` option.
     X : 1D array, optional
         Physical sppace array. Needed for `catalog` option.
@@ -291,7 +364,7 @@ def open_duration(states, time):
         icl0 = 1
 
     # >> If last event is closing :
-    # --> no problem of ordering : last t_op is before last t_cl
+    # --> no problem of ordering : last t_op is before last t_cl
     if t_op[-1] < t_cl[-1]:
         iopN = len(t_cl)
     # >> If last event is opening :
@@ -340,7 +413,7 @@ def closed_duration(states, time):
         iop0 = 1
 
     # >> If last event is opening :
-    # --> no problem of ordering : last t_cl is before last t_op
+    # --> no problem of ordering : last t_cl is before last t_op
     if t_op[-1] > t_cl[-1]:
         iclN = len(t_cl)
     # >> If last event is closing :
@@ -432,7 +505,7 @@ def act_interval_frac(event_t, tau):
         tau_win = np.ones(len_tau_win)  # sweeping window to count events
         tau[ii] = len_tau_win * tau_min
 
-        # >> Second: correlate to count intervals with activity
+        # >> Second: correlate to count intervals with activity
         corr = np.correlate(count, tau_win, mode='valid')
 
         X_tau[ii] = 1 - np.sum(corr == 0) / len(corr)  # compute fraction
@@ -447,7 +520,7 @@ def correlation_matrix(event_t, event_x, dt, X):
 
     Parameters
     ----------
-    event_t : 1D array
+    event_t : 1D array
         Array of event times, dimension `N_ev`.
     event_x : 1D array
         Array of event positions, dimension `N_ev`.
@@ -507,11 +580,11 @@ def calc_alpha(ev_count, dt, per_max):
 
     Returns
     -------
-    sp : 1D array
+    sp : 1D array
         Multi-taper spectrum of the event count auto-correlation.
     per : 1D array
         Periods at which the amplitude spectrum is computed.
-    alpha : float
+    alpha : float
         The log-log slope of the spectrum of event count auto-correlation,
         along period, not frequency.
 
@@ -527,7 +600,7 @@ def calc_alpha(ev_count, dt, per_max):
     sp, fq = mtspec(a_corr, dt, time_bandwidth=3.5, number_of_tapers=5)
     sp = np.sqrt(sp) * len(sp)  # convert PSD into amplitude
 
-    # -> Get rid of 0 frequency
+    # -> Get rid of 0 frequency
     sp = sp[fq > 0]
     fq = fq[fq > 0]
 

@@ -316,9 +316,7 @@ def evolve(P, h, VALVES):
     # because the first one accounts for when an open valve stays open (resp. a
     # closed valve stays closed) and not the latter.
 
-    active_valves = opening | closing
-
-    return VALVES, active_valves
+    return VALVES, opening, closing
 
 #---------------------------------------------------------------------------------
 
