@@ -4,10 +4,64 @@
 # =======
 
 import numpy as np
+from scipy.stats import weibull_min
+from scipy.special import gamma
 
 
 # Core
 # ====
+def weibull(u, N, v_wid, PARAM, xvmin=0, xvmax=1):
+    """
+    Distributes valves according to a Weibull distribution.
+
+    Parameters
+    ----------
+    u : float
+        Shape parameter of the Weibull distribution, controlling how clustered
+        (`0 < u < 1`), Poissonian (`u = 1`), or regular (`u > 1`) the
+        distribution is.
+    N : float
+        Number of valves in the distribution.
+    v_wid : float
+        Valve width.
+    PARAM : dict
+        Parameters dictionnary.
+    xvmin, xvmax : floats (default `xvmin = 0`, `xvmax = 1`)
+        Position of the extrema of the distribution.
+
+    Returns
+    -------
+    v_idx : 1D array
+        Array of valve indices, index of P(x) just before valve.
+
+    """
+    # >> Unpack
+    Nx = PARAM['Nx']
+    h_ = PARAM['h_']
+
+    # >> Build distribution
+    loc = 0
+    iv_mean = (xvmax - xvmin)/N - v_wid  # mean intervalve distance
+    x0 = iv_mean*u / gamma(1/u)
+    W = weibull_min(u, loc=loc, scale=x0)
+
+    # >> Draw intervalve distances until it fits
+    fits = False
+    while not fits:
+        iv_d = W.rvs(N)  # intervalve distance
+        iv_d[0] = xvmin  # first valve at xvmin
+        iv_d[1:] = iv_d[1:] + v_wid  # distance between valve centers
+        xv = np.cumsum(iv_d)
+
+        # >> Update fitting criterion
+        fits = (xv[-1] + v_wid + h_) < xvmax
+
+    v_idx = np.round(xv / h_).astype(int)
+
+    return v_idx
+
+# ----------------------------------------------------------------------------
+
 def comb(dx, v_wid, PARAM):
     """
     Scatters valve at a constant distance along the domain.
