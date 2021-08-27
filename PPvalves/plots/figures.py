@@ -26,7 +26,6 @@ from PPvalves.plots.elements import valves, q_profile, pp_profile, bounds, \
 
 from PPvalves.utility import calc_k, calc_Q
 import PPvalves.equilibrium as equi
-import PPvalves.catalog as cat
 
 
 # Core
@@ -847,6 +846,7 @@ def corr_mats(reg_bounds, corr_mat, lag_mat, X_valves=None, txt=True, \
 
 # -----------------------------------------------------------------------------
 def deltap_1v_fig(time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}, save_name=None):
+    import PPvalves.catalog as cat
     """
     Plots the correlation matrices: cross-correlation coefficient and
     cross-correlation lag.
