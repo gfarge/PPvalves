@@ -41,20 +41,23 @@ def weibull(u, N, v_wid, PARAM, xvmin=0, xvmax=1):
 
     # >> Build distribution
     loc = 0
-    iv_mean = (xvmax - xvmin)/N - v_wid  # mean intervalve distance
+    iv_mean = (xvmax - xvmin - N*v_wid)/(N-1) # mean intervalve distance
     x0 = iv_mean*u / gamma(1/u)
     W = weibull_min(u, loc=loc, scale=x0)
 
     # >> Draw intervalve distances until it fits
     fits = False
-    while not fits:
+    off = True
+    while (not fits) or (off):
         iv_d = W.rvs(N)  # intervalve distance
         iv_d[0] = xvmin  # first valve at xvmin
         iv_d[1:] = iv_d[1:] + v_wid  # distance between valve centers
         xv = np.cumsum(iv_d)
 
-        # >> Update fitting criterion
+        # >> Update fitting and off criterion
         fits = (xv[-1] + v_wid + h_) < xvmax
+        off = (np.mean(iv_d[1:]) - iv_mean) < 0.1*iv_mean
+
 
     v_idx = np.round(xv / h_).astype(int)
 
