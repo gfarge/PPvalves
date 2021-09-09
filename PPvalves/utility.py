@@ -192,3 +192,71 @@ def calc_bound_L(PL, PARAM):
     bound_L = isneuL * bound_neuL + isdirL * bound_dirL
 
     return bound_L
+
+# ----------------------------------------------------------------------------
+
+def keq2opratio(k_eq, VALVES, PARAM):
+    """
+    Converts equivalent permeability to proportion of open valves.
+
+    Parameters
+    ----------
+    k_eq : float or array
+        Equivalent permeability.
+    VALVES : dictionnary
+        Dictionnary description of valve system.
+    PARAM : dictionnary
+        Dictionnary description of physical system.
+
+    Returns
+    -------
+    op_ratio : float or array
+        Proportion of open valves, same size and type as k_eq.
+
+    """
+    N = len(VALVES['idx'])
+    kcl = VALVES['klo'][0]
+    kop = PARAM['k_bg']
+    w = VALVES['width'][0]
+    L = 1 + 2*PARAM['hb_']
+
+    alpha = w * (kcl - kop)/(kcl * kop) * N
+    C = (L - N*w)/kop + N*w/kcl
+
+    op_ratio = (L/k_eq - C)/alpha
+
+    return op_ratio
+
+# ----------------------------------------------------------------------------
+
+def opratio2keq(op_ratio, VALVES, PARAM):
+    """
+    Converts proportion of open valves to equivalent permeability.
+
+    Parameters
+    ----------
+    op_ratio : float or array
+        Proportion of open valves.
+    VALVES : dictionnary
+        Dictionnary description of valve system.
+    PARAM : dictionnary
+        Dictionnary description of physical system.
+
+    Returns
+    -------
+    k_eq : float or array
+        Equivalent permeability, same size and type as k_eq.
+
+    """
+    N = len(VALVES['idx'])
+    kcl = VALVES['klo'][0]
+    kop = PARAM['k_bg']
+    w = VALVES['width'][0]
+    L = 1 + 2*PARAM['hb_']
+
+    alpha = w * (kcl - kop)/(kcl * kop) * N
+    C = (L - N*w)/kop + N*w/kcl
+
+    k_eq = L / (alpha*op_ratio + C)
+
+    return k_eq
