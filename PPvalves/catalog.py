@@ -3,7 +3,7 @@ r"""Module used to produce and analyze synthetic activity catalogs.
 """
 # >> Imports
 import numpy as np
-from mtspec import mtspec
+#from mtspec import mtspec
 from scipy.special import erfinv
 from scipy.signal import savgol_filter
 
@@ -593,6 +593,7 @@ def calc_alpha(ev_count, dt, per_max):
     .. [1] Lowen, S. B., & Teich, M. C. (2005). Fractal-Based Point Processes
        (Vol. 366). John Wiley and Sons, Inc.
     """
+    from mtspec import mtspec
     # >> Compute un-bias autocorrelation
     a_corr, _ = ms.cross_corr(ev_count, ev_count, dt, norm=True, no_bias=True)
 
