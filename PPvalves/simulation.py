@@ -70,7 +70,7 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
         runtime.
     """
     trun = {'total': -time.time(), 'prod': 0, 'solve': 0,
-            'valves': 0, 'saving': 0}  # runtime dictionnary
+            'valves': 0, 'save': 0}  # runtime dictionnary
 
     if verbose: print('simulation.run_light -- initialization...')
     # Create variables for useful values
@@ -101,6 +101,7 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
     if save_which['dP_valves']:
         data_structure.append(("dP_valves", np.float64, (Nv,)))
 
+    data_structure = np.dtype(data_structure)
     outvar = fileh.create_table(fileh.root, "outvar", data_structure,
                                 "outvar", expectedrows=PARAM['Nt']+1)
 
