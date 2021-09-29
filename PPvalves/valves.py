@@ -20,7 +20,7 @@ def weibull(u, N, v_wid, PARAM, xvmin=0, xvmax=1):
         Shape parameter of the Weibull distribution, controlling how clustered
         (`0 < u < 1`), Poissonian (`u = 1`), or regular (`u > 1`) the
         distribution is.
-    N : float
+    N : int
         Number of valves in the distribution.
     v_wid : float
         Valve width.

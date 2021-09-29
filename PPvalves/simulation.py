@@ -46,7 +46,7 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
         Dictionnary of physical parameters describing the system.
     save_which : dictionnary
         Dictionnary of boolean values for large variable that we might want to
-        track and save: 'P' for full pressure history, 'dP_valve' for dP at
+        track and save: 'P' for full pressure history, 'dP_valves' for dP at
         valves. Variables always saved are: k_eq (channel equivalent
         permeability), bounds (free boundary variables), catalog (opening valve
         index, and time at which it opens).

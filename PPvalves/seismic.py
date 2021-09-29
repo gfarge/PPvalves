@@ -149,7 +149,7 @@ def rad_pat_S_xyz(alpha, x, y, z):
         Horizontal distance of station from source across channel direction.
         Arbitrary units, same as x.
     z : float
-        Source depth. Arbitrary units, same as x.
+        Source depth. Arbitrary units, same as x. Always positive.
 
     Returns
     -------
