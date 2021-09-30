@@ -6,6 +6,106 @@ import numpy as np
 
 
 # ----------------------------------------------------------------------------
+def multi_source_wvf(xyz_station, xyz_sources, dp_sources, PARAM, Vp=6500, Vs=3500):
+    """
+    Computes waveforms from the `dp` history at a source (valve), recorded at
+    specified station.
+
+    Parameters
+    ==========
+    xyz_station : array-like
+        x, y, z coordinates of station (in m).
+    xyz_sources : list of array-likes
+        List of x, y, z coordinates of sources (in m).
+    dp_sources : list of 1D arrays
+        List of histories of pressure differential at source (in Pa). Should
+        have the same number of `dp` as there are sources in the coordinates.
+    PARAM : dict
+        Dictionnary of physical parameters.
+    Vp, Vs : floats
+        P and S waves velocities.
+
+    Returns
+    =======
+    u : 1D arrays
+        Three components of displacement at station (in physical units),
+        contribution from all sources.
+    """
+    # >> Initialize displacement
+    u = np.zeros((3, len(dp_sources[0])))
+
+    # >> Compute and add contribution of each source
+    for xyz_s, dp in zip(xyz_sources, dp_sources):
+        u += waveforms(xyz_station, xyz_s, dp, PARAM, Vp=Vp, Vs=Vs)
+
+    return u
+
+# ----------------------------------------------------------------------------
+def waveforms(xyz_station, xyz_source, dp_source, PARAM, Vp=6500, Vs=3500):
+    """
+    Computes waveforms from the `dp` history at a source (valve), recorded at
+    specified station.
+
+    Parameters
+    ==========
+    xyz_station, xyz_source : array-like
+        x, y, z coordinates of source and station (in m).
+    dp_source : 1D array
+        History of pressure differential at source (in Pa).
+    PARAM : dict
+        Dictionnary of physical parameters.
+    Vp, Vs : floats
+        P and S waves velocities.
+
+    Returns
+    =======
+    u : 1D arrays
+        Three components of displacement at source (in physical units).
+    """
+    if not isinstance(xyz_station, np.ndarray):
+        xyz_station = np.array(xyz_station)
+    if not isinstance(xyz_source, np.ndarray):
+        xyz_source = np.array(xyz_source)
+
+    # >> Source receiver distance
+    r = np.sqrt(np.sum((xyz_source - xyz_station)**2))
+
+    # >> Compute radiation patterns
+    rp_P, _, _ = rad_pat_P_xyz(PARAM['alpha'], xyz_station[0], xyz_station[1], -xyz_source[2])
+    rp_S, _, _ = rad_pat_S_xyz(PARAM['alpha'], xyz_station[0], xyz_station[1], -xyz_source[2])
+
+    # >> Compute Force history
+    F = dp_source * PARAM['A']
+    F = F.reshape(1, len(F))
+
+    # >> Compute unshifted waveforms
+    uP = 1/(4*np.pi * Vp**2 * PARAM['rho_r']) * 1/r * np.dot(rp_P, F)
+    uS = 1/(4*np.pi * Vs**2 * PARAM['rho_r']) * 1/r * np.dot(rp_S, F)
+
+    for ii in range(3):
+        uP[ii, :] -= uP[ii, 0]
+        uS[ii, :] -= uS[ii, 0]
+
+    # >> Using correct moveouts
+    u = np.zeros((3, len(dp_source)))
+
+    trav_time_P = r / Vp ; moveout_P = int(np.round(trav_time_P / (PARAM['dt_']*PARAM['T_scale'])))
+    trav_time_S = r / Vs ; moveout_S = int(np.round(trav_time_S / (PARAM['dt_']*PARAM['T_scale'])))
+
+    u[:, moveout_P:] += uP[:, :-moveout_P]
+    u[:, moveout_S:] += uS[:, :-moveout_S]
+
+    return u
+
+# ----------------------------------------------------------------------------
+def u2v(u, PARAM):
+    """Converts displacement into velocity. Adds a zero as first element."""
+
+    v = np.hstack([np.zeros((3, 1)), (u[:, 1:] - u[:, :-1])/(PARAM['dt_']*PARAM['T_scale'])])
+
+    return v
+
+# ----------------------------------------------------------------------------
 def rad_pat_S(alpha, theta, phi):
     """
     Computes the S-wave radiation pattern in a given direction for a certain
