@@ -229,7 +229,7 @@ def keq2opratio(k_eq, VALVES, PARAM):
 
 # ----------------------------------------------------------------------------
 
-def opratio2keq(op_ratio, VALVES, PARAM):
+def opratio2keq(op_ratio, VALVES, PARAM, L=None):
     """
     Converts proportion of open valves to equivalent permeability.
 
@@ -241,6 +241,10 @@ def opratio2keq(op_ratio, VALVES, PARAM):
         Dictionnary description of valve system.
     PARAM : dictionnary
         Dictionnary description of physical system.
+    L : float (default `L = None`)
+        Length of the portion of the domain to consider. Can be used to infer
+        the permeability of just a patch of valves, from the number of open
+        valves at a given time.
 
     Returns
     -------
@@ -252,7 +256,11 @@ def opratio2keq(op_ratio, VALVES, PARAM):
     kcl = VALVES['klo'][0]
     kop = PARAM['k_bg']
     w = VALVES['width'][0]
-    L = 1 + 2*PARAM['hb_']
+
+    if L is None:
+        L = 1 + 2*PARAM['hb_']
+    else:
+        pass
 
     alpha = w * (kcl - kop)/(kcl * kop) * N
     C = (L - N*w)/kop + N*w/kcl
