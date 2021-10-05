@@ -44,8 +44,8 @@ def waveforms(xyz_station, xyz_source, dp_source, PARAM, Vp=6500, Vs=3500):
     F = F.reshape(1, len(F))
 
     # >> Compute unshifted waveforms
-    uP = 1/(4*np.pi * Vp**2 * PARAM['rho_r']) * 1/r * np.dot(rp_P, F)
-    uS = 1/(4*np.pi * Vs**2 * PARAM['rho_r']) * 1/r * np.dot(rp_S, F)
+    uP = 1/(4*np.pi * Vp**2 * PARAM['rho_r']) * np.dot(rp_P, F)
+    uS = 1/(4*np.pi * Vs**2 * PARAM['rho_r']) * np.dot(rp_S, F)
 
     for ii in range(3):
         uP[ii, :] -= uP[ii, 0]
@@ -109,7 +109,8 @@ def u2v(u, PARAM):
 def rad_pat_P_xyz(alpha, xyz_station, xyz_source):
     """
     Computes the P-waves radiation pattern in a given direction for a certain
-    dip angle of the source force, using cartesian coordinates.
+    dip angle of the source force, using cartesian coordinates. Geometric 1/r
+    attenuation included.
 
     Parameters
     ----------
@@ -134,7 +135,8 @@ def rad_pat_P_xyz(alpha, xyz_station, xyz_source):
 
     # >> Compute source-station vector gamma
     gamma = xyz_station - xyz_source
-    gamma /= np.linalg.norm(gamma)
+    r = np.linalg.norm(gamma)  # source-station distance
+    gamma /= r
 
     gamma_line = gamma.reshape((1, 3))
     gamma_colu = gamma.reshape((3, 1))
@@ -146,7 +148,7 @@ def rad_pat_P_xyz(alpha, xyz_station, xyz_source):
     g2 = np.dot(gamma_colu, gamma_line)
 
     # >> Compute radiation pattern
-    R_P = np.dot(g2, F)
+    R_P = 1/r * np.dot(g2, F)
 
     return R_P
 
@@ -154,7 +156,7 @@ def rad_pat_P_xyz(alpha, xyz_station, xyz_source):
 def rad_pat_S_xyz(alpha, xyz_station, xyz_source):
     """
     Computes the S-waves radiation pattern in a given direction for a certain
-    dip angle of the source force, using cartesian coordinates.
+    dip angle of the source force, using cartesian coordinates. Geometric 1/r attenuation included.
 
     Parameters
     ----------
@@ -179,7 +181,8 @@ def rad_pat_S_xyz(alpha, xyz_station, xyz_source):
 
     # >> Compute source-station vector gamma
     gamma = xyz_station - xyz_source
-    gamma /= np.linalg.norm(gamma)
+    r = np.linalg.norm(gamma)  # source-station distance
+    gamma /= r
 
     gamma_line = gamma.reshape((1, 3))
     gamma_colu = gamma.reshape((3, 1))
@@ -192,21 +195,23 @@ def rad_pat_S_xyz(alpha, xyz_station, xyz_source):
     Ig2 = np.diag(np.ones(3)) - g2
 
     # >> Compute radiation pattern
-    R_S = np.dot(Ig2, F)
+    R_S = 1/r * np.dot(Ig2, F)
 
     return R_S
 
 
 # ----------------------------------------------------------------------------
-def rad_pat_P_sph(alpha, theta, phi):
+def rad_pat_P_sph(alpha, r, theta, phi):
     """
     Computes the P-waves radiation pattern in a given direction for a certain
-    dip angle of the source force.
+    dip angle of the source force. Geometric 1/r attenuation included.
 
     Parameters
     ----------
     alpha : float
         Dip angle : between horizontal plane and channel. In radians.
+    r : float
+        Source-station distance.
     theta : float
         Azimuthal angle of station with regard to source: angle between
         projection of channel on horizontal plane (x,y) --- usually x axis ---
@@ -235,19 +240,21 @@ def rad_pat_P_sph(alpha, theta, phi):
     gamma2_M = np.dot(gamma_column, gamma_line)
 
     # >> Compute radiation pattern
-    R_P = np.dot(gamma2_M, u_F)
+    R_P = 1/r * np.dot(gamma2_M, u_F)
 
     return R_P
 # ----------------------------------------------------------------------------
-def rad_pat_S_sph(alpha, theta, phi):
+def rad_pat_S_sph(alpha, r, theta, phi):
     """
     Computes the S-wave radiation pattern in a given direction for a certain
-    dip angle of the source force.
+    dip angle of the source force. Geometric 1/r attenuation included.
 
     Parameters
     ----------
     alpha : float
         Dip angle : between horizontal plane and channel. In radians.
+    r : float
+        Source-station distance.
     theta : float
         Azimuthal angle of station with regard to source: angle between
         projection of channel on horizontal plane (x,y) --- usually x axis ---
@@ -278,7 +285,7 @@ def rad_pat_S_sph(alpha, theta, phi):
     M = D_F - gamma2_M
 
     # >> Compute radiation pattern
-    R_S = np.dot(M, u_F)
+    R_S = 1/r * np.dot(M, u_F)
 
     return R_S
 
@@ -338,8 +345,8 @@ def DC_waveforms(xyz_source, xyz_station, m0, PARAM):
     rp_S = DC_rad_pat_S(xyz_station, xyz_source)
 
     # >> Compute unshifted waveforms
-    uP = 1/(4*np.pi * Vp**3 * PARAM['rho_r']) * 1/r * np.dot(rp_P.reshape((3,1)), m0.reshape((1,len(m0))))
-    uS = 1/(4*np.pi * Vs**3 * PARAM['rho_r']) * 1/r * np.dot(rp_S.reshape((3,1)), m0.reshape((1,len(m0))))
+    uP = 1/(4*np.pi * Vp**3 * PARAM['rho_r']) * np.dot(rp_P.reshape((3,1)), m0.reshape((1,len(m0))))
+    uS = 1/(4*np.pi * Vs**3 * PARAM['rho_r']) * np.dot(rp_S.reshape((3,1)), m0.reshape((1,len(m0))))
 
     for ii in range(3):
         uP[ii, :] -= uP[ii, 0]
@@ -359,7 +366,8 @@ def DC_waveforms(xyz_source, xyz_station, m0, PARAM):
 # ----------------------------------------------------------------------------
 def DC_rad_pat_P(xyz_source, xyz_station):
     """
-    Computes the radiation of a double couple source at xyz_source.
+    Computes the radiation of a double couple source at xyz_source. Geometric
+    1/r attenuation included.
 
     Dislocation is in the (x,y) plane, slip in the x direction, top goes
     to the right (positive x).
@@ -369,14 +377,14 @@ def DC_rad_pat_P(xyz_source, xyz_station):
     gamma = xyz_station - xyz_source
     gamma /= np.linalg.norm(gamma)
 
-    r, theta, phi = my_util.cart2sph(gamma)
+    r, theta, phi = cart2sph(gamma)
 
     vec_r = gamma
     vec_phi = np.array([np.cos(phi)*np.cos(theta), np.cos(phi)*np.sin(theta), -np.sin(phi)])
     vec_theta = np.array([-np.sin(theta), np.cos(theta), 0])
 
     # >> Computing radiation pattern
-    R_P = np.sin(2*phi)*np.cos(theta) * vec_r
+    R_P = 1/r * np.sin(2*phi)*np.cos(theta) * vec_r
 
     return R_P
 
@@ -384,7 +392,9 @@ def DC_rad_pat_P(xyz_source, xyz_station):
 
 def DC_rad_pat_S(xyz_source, xyz_station):
     """
-    Computes the radiation of a double couple source at xyz_source.
+    Computes the radiation of a double couple source at xyz_source. Geometric
+    1/r attenuation included.
+
 
     Dislocation is in the (x,y) plane, slip in the x direction, top goes
     to the right (positive x).
@@ -394,13 +404,13 @@ def DC_rad_pat_S(xyz_source, xyz_station):
     gamma = xyz_station - xyz_source
     gamma /= np.linalg.norm(gamma)
 
-    r, theta, phi = my_util.cart2sph(gamma)
+    r, theta, phi = cart2sph(gamma)
 
     vec_r = gamma
     vec_phi = np.array([np.cos(phi)*np.cos(theta), np.cos(phi)*np.sin(theta), -np.sin(phi)])
     vec_theta = np.array([-np.sin(theta), np.cos(theta), 0])
 
     # >> Computing radiation pattern
-    R_S = np.cos(2*phi)*np.cos(theta) * vec_phi - np.cos(phi)*np.sin(theta) * vec_theta
+    R_S = 1/r * np.cos(2*phi)*np.cos(theta) * vec_phi - np.cos(phi)*np.sin(theta) * vec_theta
 
     return R_S
