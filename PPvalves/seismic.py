@@ -375,9 +375,9 @@ def DC_rad_pat_P(xyz_source, xyz_station):
 
     # >> Computes the source-station vector
     gamma = xyz_station - xyz_source
-    gamma /= np.linalg.norm(gamma)
-
     r, theta, phi = cart2sph(gamma)
+
+    gamma /= np.linalg.norm(gamma)
 
     vec_r = gamma
     vec_phi = np.array([np.cos(phi)*np.cos(theta), np.cos(phi)*np.sin(theta), -np.sin(phi)])
@@ -402,15 +402,16 @@ def DC_rad_pat_S(xyz_source, xyz_station):
 
     # >> Computes the source-station vector
     gamma = xyz_station - xyz_source
-    gamma /= np.linalg.norm(gamma)
-
     r, theta, phi = cart2sph(gamma)
+
+    gamma /= np.linalg.norm(gamma)  # make it unitary
 
     vec_r = gamma
     vec_phi = np.array([np.cos(phi)*np.cos(theta), np.cos(phi)*np.sin(theta), -np.sin(phi)])
     vec_theta = np.array([-np.sin(theta), np.cos(theta), 0])
 
     # >> Computing radiation pattern
-    R_S = 1/r * np.cos(2*phi)*np.cos(theta) * vec_phi - np.cos(phi)*np.sin(theta) * vec_theta
+    R_S = 1/r * (np.cos(2*phi)*np.cos(theta) * vec_phi
+                 - np.cos(phi)*np.sin(theta) * vec_theta)
 
     return R_S
