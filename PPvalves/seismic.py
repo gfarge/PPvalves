@@ -415,3 +415,180 @@ def DC_rad_pat_S(xyz_source, xyz_station):
                  - np.cos(phi)*np.sin(theta) * vec_theta)
 
     return R_S
+
+
+# ----------------------------------------------------------------------------
+def full_DC_rad_pat(xyz_station, xyz_source, strike, dip, rake, z_is_down=True):
+    """
+    Computes the radiation pattern of S and P waves (including geometric
+    attenuation) for a double couple mechanism.
+
+    x is North, y is East, z is down (default).
+
+    Parameters
+    ==========
+    xyz_station, xyz_source : array-like
+        x, y, z coordinates of source and station (in m).
+    strike : float
+        Angle in degrees that the fault makes clockwise with the north. From 0
+        (North) to 360 (90 = East).
+    dip : float
+        Angle in degrees that the fault plane makes down from the horizontal
+        plane. From 0 (horizontal) to 90 (vertical).
+    rake : float
+        Angle in degrees that the slip direction makes with the strike (in the
+        fault plane). From -180 to 180.
+    z_is_down : bool (optional, default `z_is_down=True`)
+        Default is a direct coordinate system, with z down. If z has to be
+        specified as posivitive at depth, make the option `False`.
+
+    Returns
+    =======
+    R_P, R_S : 1D arrays
+        P-waves and S-waves polarization vectors, including the radiation
+        pattern amplitude and geometric attenuation effects on amplitude on a
+        "unitary" slip.  (x, y, z), in same coordinates as input.
+
+    Note
+    ----
+        Normal motion : -180 < rake <= 0
+        Reverse motion : 0 < rake <= 180
+        Strike-slip : dip = 90, rake = 0 or 180
+
+    All conventions are from Aki and Richards, 2002, Chapter 4.5.
+
+    """
+    # >> Make coordinates as arrays
+    if not isinstance(xyz_station, np.ndarray):
+        xyz_station = np.array(xyz_station)
+    if not isinstance(xyz_source, np.ndarray):
+        xyz_source = np.array(xyz_source)
+
+    # >> Convert angles in radians
+    dip = np.deg2rad(dip)
+    rake = np.deg2rad(rake)
+    strike = np.deg2rad(strike)
+
+    # >> Reverse z?
+    if not z_is_down:
+        xyz_station[2] *= -1
+        xyz_source[2] *= -1
+
+    # >> Compute vectors
+    # --> Unitary source-station vector
+    sou_sta= xyz_station - xyz_source
+    r = np.linalg.norm(sou_sta)
+    sou_sta /= r  # make it unitary
+
+    # --> Normal of the fault (off hanging wall)
+    normal = np.array([-np.sin(dip)*np.sin(strike),
+                       np.sin(dip)*np.cos(strike),
+                       -np.cos(dip)])
+
+    # --> Slip vector
+    slip = np.array([
+        np.cos(rake)*np.cos(strike) + np.cos(dip)*np.sin(rake)*np.sin(strike),
+        np.cos(rake)*np.sin(strike) - np.cos(dip)*np.sin(rake)*np.cos(strike),
+        - np.sin(rake)*np.sin(dip)
+        ])
+
+    # >> Radiation patterns
+    # --> P waves
+    R_P = 2 * np.dot(sou_sta, normal) * np.dot(sou_sta, slip) * 1/r * sou_sta
+
+    # --> S waves
+    R_S = np.dot(sou_sta, normal)*slip + np.dot(sou_sta, slip)*normal \
+          - 2 * np.dot(sou_sta, normal) * np.dot(sou_sta, slip) * sou_sta
+    R_S *= 1/r
+
+    # >> Reverse z?
+    if not z_is_down:
+        R_P[2] *= -1
+        R_S[2] *= -1
+
+    return R_P, R_S
+
+# ----------------------------------------------------------------------------
+def full_SF_rad_pat(xyz_station, xyz_source, azimuth, elevation, z_is_down=True):
+    """
+    Computes the radiation pattern of S and P waves (including geometric
+    attenuation) for a single force mechanism.
+
+    x is North, y is East, z is down (default).
+
+    Parameters
+    ==========
+    xyz_station, xyz_source : array-like
+        x, y, z coordinates of source and station (in m).
+    azimuth : float
+        Angle in degrees that the force makes clockwise (anti-trigonometric
+        circle) from the North. From 0 (North) to 360 (90 = East).
+    elevation : float
+        Angle in degrees that the force makes up from the horizontal plane.
+        From -90 (straight down) to 90 (straigth up).
+    z_is_down : bool (optional, default `z_is_down=True`)
+        Default is a direct coordinate system, with z down. If z has to be
+        specified as posivitive at depth, make the option `False`.
+
+    Returns
+    =======
+    R_P, R_S : 1D arrays
+        P-waves and S-waves polarization vectors, including the radiation
+        pattern amplitude and geometric attenuation effects on amplitude on a
+        "unitary" . (x, y, z), in same coordinates as input.
+
+    All conventions are from Aki and Richards, 2002, Chapter 4.2.
+
+    """
+    # >> Make coordinates as arrays
+    if not isinstance(xyz_station, np.ndarray):
+        xyz_station = np.array(xyz_station)
+    if not isinstance(xyz_source, np.ndarray):
+        xyz_source = np.array(xyz_source)
+
+    # >> Convert angles in radians
+    azimuth = np.deg2rad(azimuth)
+    elevation = np.deg2rad(elevation)
+
+    # >> Reverse z?
+    if not z_is_down:
+        xyz_station[2] *= -1
+        xyz_source[2] *= -1
+
+    # >> Compute vectors
+    # --> Unitary source-station vector
+    sou_sta= xyz_station - xyz_source
+    r = np.linalg.norm(sou_sta)
+    sou_sta /= r  # make it unitary
+
+    sou_sta_col = sou_sta.reshape(3, 1)
+    sou_sta_line = sou_sta.reshape(1, 3)
+
+    # --> Force vector
+    force = np.array([[np.cos(elevation)*np.cos(azimuth)],
+                     [np.cos(elevation)*np.sin(azimuth)],
+                     [-np.sin(elevation)]])
+
+    # >> Radiation patterns
+    # --> Useful matrices
+    Sou_sta2 = np.dot(sou_sta_col, sou_sta_line)
+    Identity = np.diag(np.ones(3))
+
+    # --> P waves
+    R_P = 1/r * np.dot(Sou_sta2, force)
+
+    # --> S waves
+    M = Identity - Sou_sta2
+    R_S = 1/r * np.dot(M, force)
+
+    # --> Reshape them
+    R_P = R_P.reshape(3)
+    R_S = R_S.reshape(3)
+
+    # >> Reverse z?
+    if not z_is_down:
+        R_P[2] *= -1
+        R_S[2] *= -1
+
+
+    return R_P, R_S
