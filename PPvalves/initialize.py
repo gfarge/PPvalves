@@ -577,60 +577,62 @@ def sys_boundary(A, B, PARAM):
 #
 #    return A, B, b
 
-    if (p0==-1) & (qin!=-1):
-    	# --> factors of p0_ : Ab[0] and Bb[0]
-    	A[1][0] = 1. + D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
-    	B[1][0] = 1. - D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+    if (p0 == -1) & (qin != -1):
+        # --> factors of p0_ : Ab[0] and Bb[0]
+        A[1][0] = 1. + D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+        B[1][0] = 1. - D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
 
-    	# --> factors of p1_ : Ac[0] and Bc[0]
-    	A[2][0] = - 1.* D * dt / (h * (hb+h)) * T_scale/X_scale**2
-    	B[2][0] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
+        # --> factors of p1_ : Ac[0] and Bc[0]
+        A[2][0] = - 1.* D * dt / (h * (hb+h)) * T_scale/X_scale**2
+        B[2][0] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
 
-    	# --> constant terms (b = b_n - b_n+1)
-    	b[0] = 2. * D * dt / (h + hb) * T_scale/X_scale**2 *(mu/rho/k[0] * qin * q_scale) * X_scale/P_scale
+        # --> constant terms (b = b_n - b_n+1)
+        b[0] = 2. * D * dt / (h + hb) * T_scale/X_scale**2 \
+               *(mu/rho/k[0] * qin * q_scale) * X_scale/P_scale
 
     # --> Dirichlet : fixing pressure
-    elif (qin==-1) & (p0!=-1):
-    	# --> factors of p0_ : Ab[0] and Bb[0]
-    	A[1][0] = 1. + D*dt/h/hb * T_scale/X_scale**2
-    	B[1][0] = 1. - D*dt/h/hb * T_scale/X_scale**2
+    elif (qin == -1) & (p0 != -1):
+        # --> factors of p0_ : Ab[0] and Bb[0]
+        A[1][0] = 1. + D*dt/h/hb * T_scale/X_scale**2
+        B[1][0] = 1. - D*dt/h/hb * T_scale/X_scale**2
 
-    	# -->  factors of p1_ : Ac[0] and Bc[0]
-    	A[2][0] =  -1. *  D*dt / (h * (h + hb)) * T_scale/X_scale**2
-    	B[2][0] = D*dt / (h * (h + hb)) * T_scale/X_scale**2
+        # -->  factors of p1_ : Ac[0] and Bc[0]
+        A[2][0] = -1. *  D*dt / (h * (h + hb)) * T_scale/X_scale**2
+        B[2][0] = D*dt / (h * (h + hb)) * T_scale/X_scale**2
 
-    	# --> constant terms (b_n = b_n+1, hence the 2)
-    	b[0] = 2. * p0 * D*dt / (hb * (h + hb)) * T_scale/X_scale**2 # * P_scale/P_scale
+        # --> constant terms (b_n = b_n+1, hence the 2)
+        b[0] = 2. * p0 * D*dt / (hb * (h + hb)) * T_scale/X_scale**2 # * P_scale/P_scale
 
     else:
-    	raise ValueError("boundary -- /!\\ x = 0 boundary conditions wrongly set")
+        raise ValueError("boundary -- /!\\ x = 0 boundary conditions wrongly set")
 
     # >> x = L boundary
     # -->  Neuman : fixing flux
-    if (pL==-1) & (qout!=-1):
-    	# --> factors of pN_: Ab[-1] and Bb[-1]
-    	A[1][-1] = 1. + D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
-    	B[1][-1] = 1. - D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+    if (pL == -1) & (qout != -1):
+        # --> factors of pN_: Ab[-1] and Bb[-1]
+        A[1][-1] = 1. + D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
+        B[1][-1] = 1. - D * dt / hb * (1./h - 1./(hb+h)) * T_scale/X_scale**2
 
-    	# --> factors of pN-1_: Aa[-1] and Ba[-1]
-    	A[0][-1] = -1. * D * dt / (h * (hb+h)) * T_scale/X_scale**2
-    	B[0][-1] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
+        # --> factors of pN-1_: Aa[-1] and Ba[-1]
+        A[0][-1] = -1. * D * dt / (h * (hb+h)) * T_scale/X_scale**2
+        B[0][-1] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
 
-    	# --> constant terms (b_n = b_n+1, hence the 2)
-    	b[-1] = -2. * D * dt / (h + hb) * T_scale/X_scale**2 *(mu/rho/k[-1] * qout * q_scale) * X_scale/P_scale
+        # --> constant terms (b_n = b_n+1, hence the 2)
+        b[-1] = -2. * D * dt / (h + hb) * T_scale/X_scale**2 \
+                *(mu/rho/k[-1] * qout * q_scale) * X_scale/P_scale
 
     # --> Dirichlet : fixing pressure
-    elif (qout==-1) & (pL!=-1):
-    	# --> factors of pN_: Ab[-1] and Bb[-1]
-    	A[1][-1] = 1. + D * dt / hb / h * T_scale/X_scale**2
-    	B[1][-1] = 1. - D * dt / hb / h * T_scale/X_scale**2
+    elif (qout == -1) & (pL != -1):
+        # --> factors of pN_: Ab[-1] and Bb[-1]
+        A[1][-1] = 1. + D * dt / hb / h * T_scale/X_scale**2
+        B[1][-1] = 1. - D * dt / hb / h * T_scale/X_scale**2
 
-    	# --> factors of pN-1_: Aa[-1] and Ba[-1]
-    	A[0][-1] = -1. * D * dt / (h * (hb+h)) * T_scale/X_scale**2
-    	B[0][-1] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
+        # --> factors of pN-1_: Aa[-1] and Ba[-1]
+        A[0][-1] = -1. * D * dt / (h * (hb+h)) * T_scale/X_scale**2
+        B[0][-1] = D * dt / (h * (hb+h)) * T_scale/X_scale**2
 
-    	# --> constant terms (b_n = b_n+1, hence the 2)
-    	b[-1] = 2. * pL * D*dt / (hb * (h+hb)) * T_scale/X_scale**2 # * P_scale/P_scale
+        # --> constant terms (b_n = b_n+1, hence the 2)
+        b[-1] = 2. * pL * D*dt / (hb * (h+hb)) * T_scale/X_scale**2 # * P_scale/P_scale
 
     return A, B, b
 
