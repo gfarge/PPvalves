@@ -94,7 +94,7 @@ def multi_source_wvf(xyz_station, xyz_sources, dp_sources, PARAM, Vp=6500, Vs=35
 
     # >> Compute and add contribution of each source
     for xyz_s, dp in zip(xyz_sources, dp_sources):
-        u += waveforms(xyz_station, xyz_s, dp, PARAM, Vp=Vp, Vs=Vs)
+        u += SF_waveforms(xyz_station, xyz_s, dp, PARAM, Vp=Vp, Vs=Vs)
 
     return u
 
