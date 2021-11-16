@@ -10,6 +10,7 @@ from scipy.special import gamma
 
 # Core
 # ====
+
 def weibull(u, N, v_wid, PARAM, xvmin=0, xvmax=1):
     """
     Distributes valves according to a Weibull distribution.
@@ -55,9 +56,14 @@ def weibull(u, N, v_wid, PARAM, xvmin=0, xvmax=1):
         xv = np.cumsum(iv_d)
 
         # >> Update fitting and off criterion
-        fits = (xv[-1] + v_wid + h_) < xvmax
-        off = (np.mean(iv_d[1:]) - iv_mean) < 0.1*iv_mean
+        # --> tests if the distribution fits: last valve will be added to
+        # finish exactly at xvmax, so we test with the one before
+        fits = (xv[-2] + 2*v_wid) < xvmax
+        xv[-1] = xvmax - v_wid
 
+        # --> Tests if the distribution is "off": the mean is very different
+        # from the expected mean
+        off = abs(np.mean(xv[1:] - (xv[:-1]+v_wid)) - iv_mean) > 0.1*iv_mean
 
     v_idx = np.round(xv / h_).astype(int)
 
