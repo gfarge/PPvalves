@@ -4,6 +4,7 @@ r"""Module used to produce and analyze synthetic activity catalogs.
 # >> Imports
 import numpy as np
 #from mtspec import mtspec
+import scipy.fft as fft
 from scipy.special import erfinv
 from scipy.signal import savgol_filter
 
@@ -11,7 +12,7 @@ import sys
 import os
 import tables as tb
 sys.path.append(os.path.abspath('../../my_modules/'))
-#import stats as ms
+import stats as ms
 
 
 # >> Core
@@ -593,13 +594,15 @@ def calc_alpha(ev_count, dt, per_max):
     .. [1] Lowen, S. B., & Teich, M. C. (2005). Fractal-Based Point Processes
        (Vol. 366). John Wiley and Sons, Inc.
     """
-    from mtspec import mtspec
     # >> Compute un-bias autocorrelation
     a_corr, _ = ms.cross_corr(ev_count, ev_count, dt, norm=True, no_bias=True)
 
     # >> Compute its spectrum
-    sp, fq = mtspec(a_corr, dt, time_bandwidth=3.5, number_of_tapers=5)
-    sp = np.sqrt(sp) * len(sp)  # convert PSD into amplitude
+    sp = abs(fft.fft(a_corr))
+    fq = fft.fftfreq(len(a_corr), dt)
+
+    #sp, fq = mtspec(a_corr, dt, time_bandwidth=3.5, number_of_tapers=5)
+    #sp = np.sqrt(sp) * len(sp)  # convert PSD into amplitude
 
     # -> Get rid of 0 frequency
     sp = sp[fq > 0]
