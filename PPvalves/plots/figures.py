@@ -3,7 +3,7 @@
 # Imports
 # =======
 # Built-in packages
-# -----------------
+# -----------------
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -17,12 +17,12 @@ from matplotlib import ticker as tk
 
 
 # My packages
-# -----------
+# -----------
 from PPvalves.plots.utility import set_plot_params
 from PPvalves.plots.elements import valves, q_profile, pp_profile, bounds, \
                                     bound_gauge, recurrence, activity_dip, \
                                     perm_eq, activity_rate, mass_balance, \
-                                    bound_in, valve_system
+                                    bound_in
 
 from PPvalves.utility import calc_k, calc_Q
 import PPvalves.equilibrium as equi
@@ -58,7 +58,7 @@ def x_profile(X, P, PARAM, VALVES, states_override=None, plot_params={}, save_na
     ax : matplotlib axes object (default to None)
         Axes where to plot the valves. If not specified, takes output of
         plt.gca(): current active axes.
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         a dictionnary of plotting parameters for the pore pressure profile,
         flux profile and valves. See pp_profile, q_profile, and valves
         functions of this module for respective paramaters.
@@ -71,7 +71,7 @@ def x_profile(X, P, PARAM, VALVES, states_override=None, plot_params={}, save_na
         List of matplotlib objects corresponding to pore pressure profile line,
         flux profile line and valves patch collection.
     """
-    # As a function of input, point to correct objects for figure and axis
+    # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     fig, ax_q = plt.subplots(figsize=(8, 3.5))
 
@@ -148,7 +148,7 @@ def init(X, p0, states0, VALVES, PARAM, plot_params={}, save_name=None):
     ax : matplotlib axes object (default to None)
         Axes where to plot the valves. If not specified, takes output of
         plt.gca(): current active axes.
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters.
     save_name : str or None (default)
         Path for the figure to save.
@@ -519,7 +519,7 @@ def tseries_comp(T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, v_eff=None,\
         Smoothed inbound variable, same size as the main variable.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
-    show_T : list/tuple/array (default `None`)
+    show_T : list/tuple/array (default `None`)
         Option to highlight some region. If specified as an array-like object
         (2 elements long) the range in between each element will be
         highlighted.
@@ -571,7 +571,7 @@ def tseries_comp(T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, v_eff=None,\
 
     # Plot each subplot
     # -----------------
-    # a/ In-bound
+    # a/ In-bound
     _ = bound_in(T, bound_0, PARAM, smoothed=bsmooth, v_eff=v_eff, tlim=tlim, fig=fig,
                  ax=axes[0])
     axes[0].set_xlabel("")
@@ -580,7 +580,7 @@ def tseries_comp(T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, v_eff=None,\
     if show_T is not None:
         show_period(show_T, axes[0], with_txt=True)
 
-    # b/ Mass balance
+    # b/ Mass balance
     _ = mass_balance(T, deltaM, tlim=tlim, fig=fig, ax=axes[1])
     axes[1].set_xlabel("")
     axes[1].set_title("")
@@ -588,7 +588,7 @@ def tseries_comp(T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, v_eff=None,\
     if show_T is not None:
         show_period(show_T, axes[1])
 
-    # c/ Equivalent permeability
+    # c/ Equivalent permeability
     _ = perm_eq(T, k_eq, k_ref=k_ref, smoothed=ksmooth, tlim=tlim, fig=fig, ax=axes[2])
     axes[2].set_xlabel("")
     axes[2].set_title("")
@@ -596,7 +596,7 @@ def tseries_comp(T, rate_time, bound_0, deltaM, k_eq, rate, PARAM, v_eff=None,\
     if show_T is not None:
         show_period(show_T, axes[2])
 
-    # d/ Activity rate
+    # d/ Activity rate
     _ = activity_rate(rate_time, rate, tlim=tlim, fig=fig, ax=axes[3])
     axes[3].set_title("")
     axes[3].tick_params(bottom=True, labelbottom=True)
@@ -632,17 +632,17 @@ def phase_diagram(T, variables, labels, scales=('linear','linear'), tlim=None, \
     variables : list, tuple, array-like
         Array of the two variables to plot against each other, as 1D arrays of
         the same dimension, N_times.
-    labels : list, tuple
+    labels : list, tuple
         The variable labels, as strings of characters..
     scales : list, tuple (default = `('linear', 'linear')`)
         The scales used to plot the variables. Default is set to both linear
         scale. `linear` for linear scale, `log` for logarithmic scale.
-    tlim : tuple (default = `None`)
+    tlim : tuple (default = `None`)
         Option to plot in between specific time limits, specified as a tuple.
     cycle : float (default = `None`)
         Use a cyclic colormap for time to highlight cycles, cycle is the period
         of the cycle.
-    plot_params : dic (default=`{}`)
+    plot_params : dic (default=`{}`)
         A dictionnary of plotting parameters.
     save_name : str
         Path for the figure to save.
@@ -722,12 +722,12 @@ def phase_diagram(T, variables, labels, scales=('linear','linear'), tlim=None, \
 
     return fig, ax
 
-# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 def corr_mats(reg_bounds, corr_mat, lag_mat, X_valves=None, txt=True, \
               plot_params={}, save_name=None):
     """
-    Plots the correlation matrices: cross-correlation coefficient and
+    Plots the correlation matrices: cross-correlation coefficient and
     cross-correlation lag.
 
     Parameters
@@ -744,7 +744,7 @@ def corr_mats(reg_bounds, corr_mat, lag_mat, X_valves=None, txt=True, \
         Array of valve positions, dimension N_valves.
     txt : bool (default to `True`)
         Option to write the value of each cell in the cell.
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters for the pore pressure profile,
         flux profile and valves.
     save_name : str or None (default)
@@ -844,11 +844,11 @@ def corr_mats(reg_bounds, corr_mat, lag_mat, X_valves=None, txt=True, \
 
     return fig, axes
 
-# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 def deltap_1v_fig(time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}, save_name=None):
     import PPvalves.catalog as cat
     """
-    Plots the correlation matrices: cross-correlation coefficient and
+    Plots the correlation matrices: cross-correlation coefficient and
     cross-correlation lag.
 
     Parameters
@@ -867,7 +867,7 @@ def deltap_1v_fig(time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}
         Dimension Nt.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters for the pore pressure profile,
         flux profile and valves.
     save_name : str or None (default)
@@ -882,7 +882,7 @@ def deltap_1v_fig(time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}
 
     """
     # Unpack a few things
-    # ===================
+    # ===================
     # > thresholds
     dphi = VALVES['dPhi'][0]
     dplo = VALVES['dPlo'][0]
@@ -899,7 +899,7 @@ def deltap_1v_fig(time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}
     c_cl = '#ec524b'
 
     # Manage time limits and rasterization
-    # ====================================
+    # ====================================
     if tlim is not None:
         t_win = (tlim[0] < time) & (time < tlim[1])
         time = time[t_win]
@@ -988,59 +988,3 @@ def deltap_1v_fig(time, deltap, PARAM, VALVES, states, tlim=None, plot_params={}
         plt.show()
 
     return fig, axes
-
-# -----------------------------------------------------------------------------
-def valve_system_fig(X, VALVES, fc='k', ec=[0, 0, 0, 0], figsize=None, fs=None, save_name=None):
-    """
-    Plot simple valve system (code bar).
-
-    Parameters
-    ----------
-    X : 1D array
-        Space position array.
-    VALVES : dictionnary
-        Valve parameters dictionnary.
-    fc : color (default `fc = 'k'`)
-        Valve patch facecolor.
-    ec : color (default `ec = [0, 0, 0, 0]`)
-        Valve patch edgecolor.
-    fs : int (default `fs = None`)
-        Controls fontsizes.
-    fig : matplotlib figure object (default to None)
-        Figure where to plot the valves. If not specified, takes output of
-        plt.gcf(): current active figure.
-    ax : matplotlib axes object (default to None)
-        Axes where to plot the valves. If not specified, takes output of
-        plt.gca(): current active axes.
-    save_name : str or None (default)
-        Path for the figure to save.
-
-    Returns
-    -------
-    fig : figure object from matplotlib.
-        The figure created in this function.
-    ax : ax object from matplotlib.
-        The axis created in this function.
-    g_objs : patch collection
-        The patch collection of valves.
-
-    """
-    # Defaults
-    # --------
-    if figsize is None:
-        figsize=(10/2.54, 2/2.54)
-
-    # Make figure
-    # -----------
-    fig, ax = plt.subplots(figsize=figsize)
-    fig, ax, g_objs = valve_system(X, VALVES, fc=fc, ec=ec, fs=fs, fig=fig, ax=ax)
-
-    # Saving?
-    # -------
-    if save_name is not None:
-        print('Saving figure at {:}'.format(save_name))
-        plt.savefig(save_name, facecolor=[0, 0, 0, 0])
-    else:
-        plt.show()
-
-    return fig, ax, g_objs

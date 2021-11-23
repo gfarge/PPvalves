@@ -9,6 +9,7 @@ import numpy as np
 from scipy.signal import savgol_filter
 
 import matplotlib.pyplot as plt
+from matplotlib.colors import to_rgba
 from matplotlib.patches import Rectangle
 from matplotlib.collections import PatchCollection
 import matplotlib.ticker as tk
@@ -44,7 +45,7 @@ def valves(X, VALVES, states_override=None, fig=None, ax=None, X_axis='x', plot_
     X_axis : str (default is 'x')
         Which axis corresponds to physical X axis. 'x' for horizontal axis, 'y'
         for vertical axis
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         a dictionnary of plotting parameters for the valves. Implemented:
         facecolor (any matplotlib ways of indicating color) for both open and
         close state (default = 'v_op_fc' : 'lightgray', 'v_cl_fc' :
@@ -55,7 +56,7 @@ def valves(X, VALVES, states_override=None, fig=None, ax=None, X_axis='x', plot_
     valves_pc : matplotlib PatchCollection object
         Valves patches.
     """
-    # As a function of input, point to correct objects for valve states,
+    # As a function of input, point to correct objects for valve states,
     # figure and axis
     # ------------------------------------------------------------------
     if fig is None:
@@ -138,7 +139,7 @@ def valve_markers(X, VALVES, states_override=None, fig=None, ax=None, X_axis='x'
     X_axis : str (default is 'x')
         Which axis corresponds to physical X axis. 'x' for horizontal axis, 'y'
         for vertical axis
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         a dictionnary of plotting parameters for the valves. Implemented:
         facecolor (any matplotlib ways of indicating color) for both open and
         close state (default = 'v_op_fc' : 'lightgray', 'v_cl_fc' :
@@ -151,7 +152,7 @@ def valve_markers(X, VALVES, states_override=None, fig=None, ax=None, X_axis='x'
     valves_cl_m : matplotlib PathCollection object
         Valves closed markers.
     """
-    # As a function of input, point to correct objects for valve states,
+    # As a function of input, point to correct objects for valve states,
     # figure and axis
     # ------------------------------------------------------------------
     if fig is None:
@@ -221,7 +222,7 @@ def pp_profile(X, P, fig=None, ax=None, plot_params={}):
     ax : matplotlib axes object (default to None)
         Axes where to plot the valves. If not specified, takes output of
         plt.gca(): current active axes.
-    params : dictionnary (default is {}, empty dic.)
+    params : dictionnary (default is {}, empty dic.)
         a dictionnary of plotting parameters. Implemented:
         line color (any matplotlib ways of indicating color, default 'pp_lc' :
         'teal'), line width (default 'pp_lw' : 1.5), zorder (default
@@ -232,7 +233,7 @@ def pp_profile(X, P, fig=None, ax=None, plot_params={}):
     pp_line : matplotlib line object
         Line object for the pore pressure profile.
     """
-    # As a function of input, point to correct objects for figure and axis
+    # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
         fig = plt.gcf()
@@ -274,7 +275,7 @@ def q_profile(X, Q, fig=None, ax=None, plot_params={}):
     ax : matplotlib axes object (default to None)
         Axes where to plot the profile. If not specified, takes output of
         plt.gca(): current active axes.
-    params : dictionnary (default is {}, empty dic.)
+    params : dictionnary (default is {}, empty dic.)
         a dictionnary of plotting parameters. Implemented:
         line color (any matplotlib ways of indicating color, default 'q_lc' :
         'aquamarine'), line width (default 'q_lw' : 1.5), zorder (default
@@ -285,7 +286,7 @@ def q_profile(X, Q, fig=None, ax=None, plot_params={}):
     q_line : matplotlib line object
         Line object for the flux profile.
     """
-    # As a function of input, point to correct objects for figure and axis
+    # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
         fig = plt.gcf()
@@ -331,7 +332,7 @@ def bounds(p0, PARAM, fig=None, ax=None, plot_params={}):
     ax : matplotlib axes object (default to None)
         Axes where to plot the valves. If not specified, takes output of
         plt.gca(): current active axes.
-    params : dictionnary (default is {}, empty dic.)
+    params : dictionnary (default is {}, empty dic.)
         a dictionnary of plotting parameters for the pore pressure profile,
         flux profile and valves. See pp_profile, q_profile, and valves
         functions of this module for respective paramaters.
@@ -345,7 +346,7 @@ def bounds(p0, PARAM, fig=None, ax=None, plot_params={}):
         List of matplotlib objects corresponding to pore pressure profile line,
         flux profile line and valves patch collection.
     """
-    # As a function of input, point to correct objects for figure and axis
+    # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
         fig = plt.gcf()
@@ -469,7 +470,7 @@ def bound_gauge(bound, VALVES, PARAM, fig=None, ax=None, plot_params={}):
     ax : matplotlib axes object (default to None)
         Axes where to plot the valves. If not specified, takes output of
         plt.gca(): current active axes.
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters.
 
     Returns
@@ -479,7 +480,7 @@ def bound_gauge(bound, VALVES, PARAM, fig=None, ax=None, plot_params={}):
     g_objs : list
         List of graphical objects created by this function.
     """
-    # As a function of input, point to correct objects for figure and axis
+    # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
         fig = plt.gcf()
@@ -622,7 +623,7 @@ def recurrence(event_t, rec, log=True, tlim=None, plot_params={}, fig=None, ax=N
         logarithmic (`True`) by default, to linear otherwise.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters. Implemented:
         linecolor (any matplotlib ways of indicating color) default = 'act_lc'
         : 'k')
@@ -655,7 +656,7 @@ def recurrence(event_t, rec, log=True, tlim=None, plot_params={}, fig=None, ax=N
     else:
         rasterize=False
 
-    # As a function of input, point to correct objects for figure and axis
+    # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
         fig = plt.gcf()
@@ -704,7 +705,7 @@ def activity_dip(event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None)
         Array of event locations, dimension is N_event.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters. Implemented:
         linecolor (any matplotlib ways of indicating color) default = 'act_lc'
         : 'k')
@@ -736,7 +737,7 @@ def activity_dip(event_t, event_x, tlim=None, plot_params={}, fig=None, ax=None)
     else:
         rasterize=False
 
-    # As a function of input, point to correct objects for figure and axis
+    # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
         fig = plt.gcf()
@@ -784,7 +785,7 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, smoothed=None, fig
         Array of activity rate in time, dimension is N_times.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters. Implemented:
         linecolor (any matplotlib ways of indicating color) default = 'k_eq_lc'
         : 'darkturquoise')
@@ -820,7 +821,7 @@ def activity_rate(rate_time, rate, tlim=None, plot_params={}, smoothed=None, fig
     else:
         rasterize = False
 
-    # As a function of input, point to correct objects for figure and axis
+    # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
         fig = plt.gcf()
@@ -882,7 +883,7 @@ def perm_eq(T, k_eq, k_ref=None, smoothed=None, tlim=None, log=True, plot_params
     log : bool (default=`True`)
         Option to have the y-axis (permeability) in log-scale. Set to
         logarithmic (`True`) by default, to linear otherwise.
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters. Implemented:
         linecolor (any matplotlib ways of indicating color) default = 'k_eq_lc'
         : 'darkturquoise')
@@ -916,7 +917,7 @@ def perm_eq(T, k_eq, k_ref=None, smoothed=None, tlim=None, log=True, plot_params
     else:
         rasterize = False
 
-    # As a function of input, point to correct objects for figure and axis
+    # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
         fig = plt.gcf()
@@ -978,7 +979,7 @@ def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
         Array of mass balance in time, dimension is N_times.
     tlim : tuple (default `None`)
         Option to plot in between specific time limits, specified as a tuple.
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters. Implemented:
         linecolor (any matplotlib ways of indicating color) default = 'mass_lc'
         : 'darkturquoise')
@@ -1010,7 +1011,7 @@ def mass_balance(T, deltaM, tlim=None, plot_params={}, fig=None, ax=None):
     else:
         rasterize=False
 
-    # As a function of input, point to correct objects for figure and axis
+    # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
         fig = plt.gcf()
@@ -1064,7 +1065,7 @@ def bound_in(T, bound_0, PARAM, smoothed=None, tlim=None, v_eff=None, plot_param
         plotted and added as a text insert.
     smoothed : 1D array(default `None`)
         Smoothed variable, same size as the main variable.
-    plot_params : dictionnary (default is {}, empty dic.)
+    plot_params : dictionnary (default is {}, empty dic.)
         A dictionnary of plotting parameters. Implemented:
         linecolor (any matplotlib ways of indicating color) default = 'pp_lc'
         : 'crimson', 'q_lc' : 'teal')
@@ -1098,7 +1099,7 @@ def bound_in(T, bound_0, PARAM, smoothed=None, tlim=None, v_eff=None, plot_param
     else:
         rasterize=False
 
-    # As a function of input, point to correct objects for figure and axis
+    # As a function of input, point to correct objects for figure and axis
     # --------------------------------------------------------------------
     if fig is None:
         fig = plt.gcf()
@@ -1136,7 +1137,7 @@ def bound_in(T, bound_0, PARAM, smoothed=None, tlim=None, v_eff=None, plot_param
     if tlim is not None:
         ax.set_xlim(tlim)
 
-    # Add value of effective bound?
+    # Add value of effective bound?
     # -----------------------------
     if v_eff is not None:
         ax.axhline(v_eff, lw=.8, c='k', zorder=30)
@@ -1160,81 +1161,5 @@ def bound_in(T, bound_0, PARAM, smoothed=None, tlim=None, v_eff=None, plot_param
     g_objs = bound_0_l
     if smoothed is not None:
         g_objs = [bound_0_l, smoothed_l]
-
-    return fig, ax, g_objs
-
-# -----------------------------------------------------------------------------
-
-def valve_system(X, VALVES, fc='k', ec=[0, 0, 0, 0], fs=None, fig=None, ax=None):
-    """
-    Plot simple valve system (code bar).
-
-    Parameters
-    ----------
-    X : 1D array
-        Space position array.
-    VALVES : dictionnary
-        Valve parameters dictionnary.
-    fc : color (default `fc = 'k'`)
-        Valve patch facecolor.
-    ec : color (default `ec = [0, 0, 0, 0]`)
-        Valve patch edgecolor.
-    fs : int (default `fs = None`)
-        Controls fontsizes.
-    fig : matplotlib figure object (default to None)
-        Figure where to plot the valves. If not specified, takes output of
-        plt.gcf(): current active figure.
-    ax : matplotlib axes object (default to None)
-        Axes where to plot the valves. If not specified, takes output of
-        plt.gca(): current active axes.
-
-    Returns
-    -------
-    fig : figure object from matplotlib.
-        The figure created in this function.
-    ax : ax object from matplotlib.
-        The axis created in this function.
-    g_objs : patch collection
-        The patch collection of valves.
-
-    """
-    # As a function of input, point to correct objects for figure and axis
-    # --------------------------------------------------------------------
-    if fig is None:
-        fig = plt.gcf()
-
-    if ax is None:
-        ax = plt.gca()
-
-    # Fix bounds of plot
-    # ------------------
-    dX = X.max() - X.min()
-    ax.set_xlim(X.min() - 0.02*dX, X.max() + 0.02*dX)
-
-    # Build valve patch collection
-    # ----------------------------
-    xv = X[VALVES['idx']]
-    wv = VALVES['width']
-
-    v_pcoll = []
-    for x, w in zip(xv, wv):
-        p = ax.axvspan(x, x+w, fc=fc, ec=ec)
-        v_pcoll.append(p)
-
-    # Labels and axes
-    # ---------------
-    ax.set_xlabel(r"$x$", fontsize=fs)
-    ax.tick_params(left=False, labelleft=False, labelsize=fs-1)
-    # --> Better ticks
-    ax.xaxis.set_major_locator(tk.MultipleLocator(0.5))
-    ax.xaxis.set_minor_locator(tk.MultipleLocator(0.1))
-
-    for tlabels in [ax.get_xticklabels(which='both'), ax.get_yticklabels(which='both')]:
-        for txt in tlabels:
-            txt.set_fontname('Roboto Condensed')
-
-    plt.tight_layout()
-
-    g_objs = v_pcoll
 
     return fig, ax, g_objs
