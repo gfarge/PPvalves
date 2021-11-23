@@ -63,7 +63,11 @@ def weibull(u, N, v_wid, PARAM, xvmin=0, xvmax=1):
 
         # --> Tests if the distribution is "off": the mean is very different
         # from the expected mean
-        off = abs(np.mean(xv[1:] - (xv[:-1]+v_wid)) - iv_mean) > 0.1*iv_mean
+#        off = abs(np.mean(xv[1:] - (xv[:-1]+v_wid)) - iv_mean) > 0.1*iv_mean
+
+        # --> Tests if the distribution is "off": the last valve is very far
+        # from the rest of the valves
+        off = xv[-1] - (xv[-2]+v_wid) > 3*iv_mean
 
     v_idx = np.round(xv / h_).astype(int)
 
