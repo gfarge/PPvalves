@@ -723,6 +723,3 @@ def detect_period(ev_count, dt):
         validity = None
 
     return period, validity
-
-#-------------------------------------------------------------------------------
-

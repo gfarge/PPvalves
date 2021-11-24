@@ -18,6 +18,8 @@ c_k = '#00bdaa'
 c_p = '#fe346e'
 c_q = '#400082'
 
+c_act = 'k'
+
 c_mig = '#f5b461'  # color for migrations
 alpha_mig = 0.6
 
@@ -611,7 +613,7 @@ def act_t_serie(time, rate, rate_smooth, tlim=None, period=None, fs=None, fig=No
             label='Smoothed act. rate')
 
     if period is not None:
-        t0_per_patch = tlim[0] + 0.7*(tlim[1]-tlim[0])
+        t0_per_patch = time[0] + 0.7*(time[1]-time[0])
         ax.axvspan(t0_per_patch, t0_per_patch + period, fc=to_rgba('r', 0.3),
                    ec='#00000000', zorder=-1, label='Detected period')
 
