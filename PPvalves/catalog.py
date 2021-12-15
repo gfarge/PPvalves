@@ -3,7 +3,6 @@ r"""Module used to produce and analyze synthetic activity catalogs.
 """
 # >> Imports
 import numpy as np
-#from mtspec import mtspec
 import scipy.fft as fft
 from scipy.special import erfinv
 from scipy.signal import savgol_filter
@@ -13,11 +12,12 @@ import os
 import tables as tb
 sys.path.append(os.path.abspath('../../my_modules/'))
 import stats as ms
+from util import find_contiguous
 
 
 # >> Core
 
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 def open_ratio(states):
     """
@@ -36,15 +36,16 @@ def open_ratio(states):
 
     Notes
     -----
-    Parameter `states` is usually taken from `run_ppv` output: `v_activity[times,0,valve_idx]`, where
-    `valve_idx` selects the indices of the valves you want an event count f.
+    Parameter `states` is usually taken from `run_ppv` output:
+    `v_activity[times,0,valve_idx]`, where `valve_idx` selects the indices of
+    the valves you want an event count f.
     """
     Nv = np.shape(states)[1]  # Total number of valves
     ratio = np.sum(states, axis=1) / Nv
 
     return ratio
 
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 def open_count_large(filename, time, VALVES, X):
     """Produces a catalog of valve events (openings or closings), but based on
     reading the h5 file for states.
@@ -73,7 +74,7 @@ def open_count_large(filename, time, VALVES, X):
     fileh = tb.open_file(filename, mode='r')
     Nt = len(fileh.root.data)
     n_valves = fileh.root.data[:]['valve_states'].shape[0]
-    v_x = X[VALVES['idx']] + VALVES['width']/2 # location of valves
+    v_x = X[VALVES['idx']] + VALVES['width']/2  # location of valves
 
     all_events_i = []  # init: time indices of events
     all_events_x = []  # init: locations of events
@@ -81,18 +82,18 @@ def open_count_large(filename, time, VALVES, X):
     # >> Run through valves, for each, compute (t, x)
     for iv in range(n_valves):
         print("\nv1")
-        v_states = fileh.root.data[:]['valve_states'][:, iv] # states for this valve
+        v_states = fileh.root.data[:]['valve_states'][:, iv]  # states 4 valve
 
         # -> build event time vector
         print("getting times")
-        v_events_i = [ii+1 for ii in range(Nt-1) \
+        v_events_i = [ii+1 for ii in range(Nt-1)
                       if ((v_states[1:][ii]-v_states[:-1][ii]) == 1)]
         all_events_i.extend(v_events_i)  # add valve events t to all events
 
         # -> build event location vector
         print("getting locations")
         v_events_x = [v_x[iv] for ii in range(len(v_events_i))]
-        all_events_x.extend(v_events_x) # add valve events t to all events
+        all_events_x.extend(v_events_x)  # add valve events t to all events
 
     print("Flushing")
     fileh.root.data.flush()
@@ -112,8 +113,8 @@ def open_count_large(filename, time, VALVES, X):
     return events_t, events_x
 
 
-#------------------------------------------------------------------------------
-def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):#, large=False):
+# -----------------------------------------------------------------------------
+def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):
     """Produces a catalog of valve events (openings or closings).
 
     Produces a catalog of events in time --- and optionally space. The time of
@@ -157,17 +158,16 @@ def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):#, la
     """
     # >> Check if catalog option is on
     if catalog & isinstance(VALVES, type(None)) & isinstance(X, type(None)):
-        raise ValueError("When catalog option is turned on, the valves'" + \
-         'location needs to be specified with the v_x argument.')
-
+        raise ValueError("When catalog option is turned on, the valves'" +
+                         'location needs to be specified with v_x.')
 
     # >> For several valves
     if len(states.shape) > 1:
-        n_valves = states.shape[1] # number of valves
+        n_valves = states.shape[1]  # number of valves
 
         all_events_i = []  # init: time indices of events
         if catalog:
-            v_x = X[VALVES['idx']] + VALVES['width']/2 # location of valves
+            v_x = X[VALVES['idx']] + VALVES['width']/2  # location of valves
             all_events_x = []  # init: locations of events
 
         for iv in range(n_valves):
@@ -187,9 +187,8 @@ def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):#, la
 
             # -> build event location vector
             if catalog:
-                v_events_x = [v_x[iv] for ii in\
-            	 range(len(v_events_i))]
-                all_events_x.extend(v_events_x) # add valve events t to all events
+                v_events_x = [v_x[iv] for ii in range(len(v_events_i))]
+                all_events_x.extend(v_events_x) # add valve events t to all ev
 
         # >> Convert event time idx to time
         events_t = time[all_events_i]
@@ -210,16 +209,14 @@ def event_count(ev_type, states, time, catalog=False, VALVES=None, X=None):#, la
     # >> For one valve only
     else:
         if ev_type == 'close':
-            events_i = np.where(states[1:].astype(int) -\
-                        states[:-1].astype(int) == -1)[0] + 1
+            events_i = np.where(states[1:].astype(int) - states[:-1].astype(int) == -1)[0] + 1
         if ev_type == 'open':
-            events_i = np.where(states[1:].astype(int) -\
-    	                states[:-1].astype(int) == 1)[0] + 1
+            events_i = np.where(states[1:].astype(int) - states[:-1].astype(int) == 1)[0] + 1
         events_i = events_i.tolist()
         t_events = time[events_i]
         return t_events
 
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 def open_count(states, time, catalog=False, VALVES=None, X=None):
     """Counts and makes a catalog of valve opening events.
@@ -259,11 +256,12 @@ def open_count(states, time, catalog=False, VALVES=None, X=None):
     event_count : General event count.
     """
     # >> Call event count
-    out = event_count('open', states, time, catalog=catalog, VALVES=VALVES, X=X)
+    out = event_count('open', states, time, catalog=catalog, VALVES=VALVES,
+                      X=X)
 
     return out
 
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 def close_count(states, time, catalog=False, VALVES=None, X=None):
     """Counts and makes a catalog of valve opening events.
@@ -303,11 +301,13 @@ def close_count(states, time, catalog=False, VALVES=None, X=None):
     event_count : General event count.
     """
     # >> Call event count
-    out = event_count('close', states, time, catalog=catalog, VALVES=VALVES, X=X)
+    out = event_count('close', states, time, catalog=catalog, VALVES=VALVES,
+                      X=X)
 
     return out
 
-#---------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------
 
 def recurrence(event_time):
     """Computes time before next event for a sequence of events.
@@ -328,7 +328,8 @@ def recurrence(event_time):
 
     return time_before_next
 
-#------------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 
 def open_duration(states, time):
     """open_times computes the duration a valve spends open each time it
@@ -377,7 +378,8 @@ def open_duration(states, time):
 
     return durations
 
-#------------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 
 def closed_duration(states, time):
     """closed_times computes the duration a valve spends closed each time it
@@ -427,7 +429,7 @@ def closed_duration(states, time):
     return durations
 
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def event_count_signal(event_time, dt, t0=0., tn=None):
     """Computes the event count signal.
@@ -468,7 +470,7 @@ def event_count_signal(event_time, dt, t0=0., tn=None):
 
     return ev_count, bin_edges
 
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 def act_interval_frac(event_t, tau):
@@ -514,7 +516,7 @@ def act_interval_frac(event_t, tau):
     return X_tau, tau
 
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def correlation_matrix(event_t, event_x, dt, X):
     """Computes the correlation of activity in different zones in space.
@@ -538,11 +540,11 @@ def correlation_matrix(event_t, event_x, dt, X):
         regions specified by `X`, dimensions `N_X - 1`, `N_X - 1`.
     lag_mat : 2D array
         Lag time matrix corresponding to the maximum cross-correlation for the
-        activity of different regions specified by `X`, dimensions `N_X - 1`, `N_X -
-        1`.
+        activity of different regions specified by `X`, dimensions `N_X - 1`,
+        `N_X - 1`.
     """
     # >> Compute the activity in each region
-    activities = []  #  List of regional activities
+    activities = []  # List of regional activities
     for ix in range(len(X)-1):
         region = (event_x >= X[ix]) & (event_x < X[ix + 1])
         regional_act, _ = event_count_signal(event_t[region], dt,
@@ -555,13 +557,13 @@ def correlation_matrix(event_t, event_x, dt, X):
 
     for ix in range(len(X) - 1):
         for jx in range(ix, len(X) - 1):
-            cc, cc_lag = corr_coeff(activities[ix], activities[jx], dt)
+            cc, cc_lag = ms.corr_coeff(activities[ix], activities[jx], dt)
             corr_mat[ix, jx] = corr_mat[jx, ix] = cc
             lag_mat[ix, jx] = lag_mat[jx, ix] = cc_lag
 
     return corr_mat, lag_mat
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def calc_alpha(ev_count, dt, per_max):
     """Computes the slope of the event count auto-correlation spectrum.
@@ -601,8 +603,8 @@ def calc_alpha(ev_count, dt, per_max):
     sp = abs(fft.fft(a_corr))
     fq = fft.fftfreq(len(a_corr), dt)
 
-    #sp, fq = mtspec(a_corr, dt, time_bandwidth=3.5, number_of_tapers=5)
-    #sp = np.sqrt(sp) * len(sp)  # convert PSD into amplitude
+    # sp, fq = mtspec(a_corr, dt, time_bandwidth=3.5, number_of_tapers=5)
+    # sp = np.sqrt(sp) * len(sp)  # convert PSD into amplitude
 
     # -> Get rid of 0 frequency
     sp = sp[fq > 0]
@@ -619,17 +621,49 @@ def calc_alpha(ev_count, dt, per_max):
 
     return sp, per, alpha
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+def acf_peak_width(rate, delta, thr=0.1):
+    """
+    Computes the half-width of the autocorrelation peak.
+
+    Good proxy for a duration of correlation?
+
+    Parameters
+    ----------
+    rate : 1D array
+        Activity rate time series
+    delta : float
+        Activity rate time sampling increment.
+    thr : float (default `thr = 0.1`)
+        Value of the autocorrelation score at which to measure the peak width.
+
+    Returns
+    -------
+    peak_width : float
+        Width of the 0 peak of autocorrelation function, at threshold.
+    """
+    acf, lag = ms.cross_corr(rate, rate, delta)
+    acf = acf[lag >= 0]
+    lag = lag[lag >= 0]
+
+    peak_lags = lag[find_contiguous(acf > thr)[0]]
+
+    peak_width = peak_lags.max()
+    return peak_width
+
+
+# ------------------------------------------------------------------------------
 
 def detect_period(ev_count, dt):
-    """Detect a periodicity in an event count signal (or activity rate time
+    """
+    Detect a periodicity in an event count signal (or activity rate time
     series).
 
     The period is computed using the autocorrelation of the event count signal
-    (smoothed over 0.01 scaled units).
-    It corresponds to the lag of the first peak (more than 1 ponit) that is above
-    the 99.99% confidence interval (null hypothesis: autocorrelation is
-    autocorrelation of white noise).
+    (smoothed over 0.01 scaled units). It corresponds to the lag of the first
+    peak (more than 1 ponit) that is above the 99.99% confidence interval (null
+    hypothesis: autocorrelation is autocorrelation of white noise).
 
     Parameters
     ----------
@@ -660,7 +694,8 @@ def detect_period(ev_count, dt):
     """
     # Compute un-bias autocorrelation
     # -------------------------------
-    a_corr, lag = ms.cross_corr(ev_count, ev_count, dt, norm=True, no_bias=False)
+    a_corr, lag = ms.cross_corr(ev_count, ev_count, dt, norm=True,
+                                no_bias=False)
 
     # Smooth it
     # ---------
@@ -678,8 +713,8 @@ def detect_period(ev_count, dt):
     lag = lag[lag >= 0]
 
     if np.any(a_corr > conf):
-    # --> If some non-white noise points (above confidence interval), locate
-    # them
+        # --> If some non-white noise points (above confidence interval),
+        # locate them
         above = a_corr > conf
         bumps_idx = []  # list of the bumps indices above conf. int.
         bump = []  # indices of each bump above conf. int.
@@ -713,7 +748,7 @@ def detect_period(ev_count, dt):
                 bumps_idx = bumps_idx[1:]   # ... remove it and carry on
 
         if (len(bumps_idx) == 0) and not done:
-        # --> If no long bumps, no significant period
+            # --> If no long bumps, no significant period
             period = None
             validity = None
 
