@@ -24,7 +24,7 @@ def read_input(input_args, verbose=False):
 
     Parameters
     ----------
-    input_args : list
+    input_args : list
         List of strings of characters, that will be parsed and interpreted.
         To choose the value 6.8e-6 for parameter Xi, "Xi=6.8e-6" must
         be present in the list. Any parameter for which no value is specified
@@ -34,12 +34,12 @@ def read_input(input_args, verbose=False):
 
     Returns
     -------
-    PARAM : dictionnary
+    PARAM : dictionnary
         Numerical and physical parameters dictionnary.
     """
     # Default parameters
     # ------------------
-    # NB: here, only the parameters that do not depend on others. With those,
+    # NB: here, only the parameters that do not depend on others. With those,
     # scales, numerical parameters etc are defined.
     PARAM = {
         'g' : 9.81,  # gravity acceleration (m.s-2)
@@ -635,5 +635,3 @@ def sys_boundary(A, B, PARAM):
         b[-1] = 2. * pL * D*dt / (hb * (h+hb)) * T_scale/X_scale**2 # * P_scale/P_scale
 
     return A, B, b
-
-
