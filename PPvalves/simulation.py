@@ -47,9 +47,9 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
     save_which : dictionnary
         Dictionnary of boolean values for large variable that we might want to
         track and save: 'P' for full pressure history, 'dP_valves' for dP at
-        valves. Variables always saved are: k_eq (channel equivalent
-        permeability), bounds (free boundary variables), catalog (opening valve
-        index, and time at which it opens).
+        valves, 'closing' for catalog of closing valves. Variables always saved
+        are: k_eq (channel equivalent permeability), bounds (free boundary
+        variables), catalog (opening valve index, and time at which it opens).
     outpath : str
         Absolute path and filename for the hdf5 output file, containing time
         series of `valve_states` and `valve_dP` for all valves, `k_eq` and
@@ -90,6 +90,20 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
     catalog = fileh.create_table(fileh.root, "catalog", catalog_dt, "catalog",
                                  expectedrows=PARAM['Nt']+1)
 
+    # -> Create closing catalog table if requested
+    if save_which['closing']:
+        closing_cat_dt = np.dtype([("cl_t", np.float64), ("cl_i", np.uint8)])
+        closing_cat = fileh.create_table(fileh.root, "closing_cat",
+                                         closing_cat_dt, "closing_cat",
+                                         expectedrows=PARAM['Nt']+1)
+
+    # -> Create closing catalog table if requested
+    if save_which['P_last']:
+        P_last_dt = np.dtype([("P_last", np.float64, (Nx+1,))])
+        P_last = fileh.create_table(fileh.root, "P_last",
+                                    P_last_dt, "P_last",
+                                    expectedrows=int(2e-3 / PARAM['dt_']))
+
     # -> Create output variables data structure and tables
     data_structure = []
     data_structure.append(("bounds", np.float64, (2,)))
@@ -117,7 +131,7 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
         v_id2 = v_id2.astype(int)
         outvar.row['dP_valves'] = P0[v_id1] - P0[v_id2]
 
-    outvar.row.append()  # write values
+    outvar.row.append()  # write values
 
     # Set up matrix system
     # --------------------
@@ -160,6 +174,11 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
                 catalog.row['op_t'] = (tt+1) * PARAM['dt_']
                 catalog.row['op_i'] = np.where(opening)[0][ii]
                 catalog.row.append()
+            if save_which['closing']:
+                for ii in range(np.sum(closing)):
+                    closing_cat.row['cl_t'] = (tt+1) * PARAM['dt_']
+                    closing_cat.row['cl_i'] = np.where(closing)[0][ii]
+                    closing_cat.row.append()
             trun['save'] += time.time() - tsave0  # add elapsed t
         trun['valves'] += time.time() - tvalve0  # add elapsed t
 
@@ -175,10 +194,20 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
             outvar.row['dP_valves'] = VALVES['dP']
         outvar.row.append()
 
+        if save_which['P_last'] & (tt*PARAM['dt_'] > PARAM['Ttot_']-2.e-3):
+            P_last.row['P_last'] = Pnext
+            P_last.row.append()
+
         if (tt % int(1e5) == 0) & (tt != 0):  # flush in chunks
             outvar.flush(); outvar = fileh.root.outvar
-            catalog.flush(); catalog= fileh.root.catalog
+            catalog.flush(); catalog = fileh.root.catalog
+            if save_which['closing']:
+                closing_cat.flush(); closing_cat = fileh.root.closing_cat
+            if save_which['P_last']:
+                P_last.flush(); P_last = fileh.root.P_last
 
+    if save_which['closing']: closing_cat.flush()
+    if save_which['P_last']: P_last.flush()
     outvar.flush() ; catalog.flush() ; fileh.close()  # flush and close results
 
     if verbose: print('simulation.run_light -- Done!')
@@ -189,7 +218,7 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
     return Plast, trun
 
 # ---------------------------------------------------------------------------
-#                           SMALLER RUNS
+#                           SMALLER RUNS
 # ---------------------------------------------------------------------------
 
 def run(P0, PARAM, VALVES, save_P=False, verbose=True):
@@ -335,7 +364,7 @@ def run_no_valves(P, PARAM, verbose=True):
     P : 2D array
         Initialized pore pressure array `P[0, :] = P0`. First dimension should
         be time, second is space.
-    PARAM : dict
+    PARAM : dict
         Physical parameters dictionnary. Permeability in space can be input as
         an array in `PARAM['k']` --- as it is defined in between and around
         pressure points, its space dimension is 1 element longer than that of
@@ -380,7 +409,7 @@ def save(path, dic, verbose=True):
        Path and filename where to save the file. No extension needed.
     dic : dictionnary
         Dictionnary packaging all output to be saved. Be careful to use
-        stereotypical names for the keys: 'PARAM', 'VALVES', 'v_activity',
+        stereotypical names for the keys: 'PARAM', 'VALVES', 'v_activity',
         'P0', 'Plast', 'bounds', 't_ev', 'x_ev', 'k_eq'...
     verbose : bool, optional
         Option to have the function print what it's doing.

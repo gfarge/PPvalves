@@ -184,11 +184,6 @@ def summary_t_series(time, rate_time, Vars, Smooth_vars, Mean_vars, Eff_vars, PA
     """
     # >> Unpack variables
     # -------------------
-    q = Vars['q']; k = Vars['k']; dp = Vars['dp']; rate = Vars['rate']
-
-    q_smooth = Smooth_vars['q']; k_smooth = Smooth_vars['k']
-    dp_smooth = Smooth_vars['dp']; rate_smooth = Smooth_vars['rate']
-
     q_mean = Mean_vars['q']; k_mean = Mean_vars['k']; dp_mean = Mean_vars['dp']
     q_eff = Eff_vars['q']; k_eff = Eff_vars['k']; dp_eff = Eff_vars['dp']
 
@@ -200,23 +195,23 @@ def summary_t_series(time, rate_time, Vars, Smooth_vars, Mean_vars, Eff_vars, PA
     # --------
     # --> Flux
     ax = axes[0]
-    fig, ax = q_t_serie(time, q, q_smooth, q_mean, q_eff, tlim=tlim, fs=fs,
-                        fig=fig, ax=ax)
+    fig, ax = q_t_serie(time, Vars['q'], Smooth_vars['q'], q_mean, q_eff,
+                        tlim=tlim, fs=fs, fig=fig, ax=ax)
 
     # --> Permeability
     ax = axes[1]
-    fig, ax = k_t_serie(time, k, k_smooth, k_mean, k_eff, PARAM, VALVES,
-                        tlim=tlim, fs=fs, fig=fig, ax=ax)
+    fig, ax = k_t_serie(time, Vars['k'], Smooth_vars['k'], k_mean, k_eff,
+                        PARAM, VALVES, tlim=tlim, fs=fs, fig=fig, ax=ax)
 
     # --> Pressure loss
     ax = axes[2]
-    fig, ax = dp_t_serie(time, dp, dp_smooth, dp_mean, dp_eff, tlim=tlim,
-                         fs=fs, fig=fig, ax=ax)
+    fig, ax = dp_t_serie(time, Vars['dp'], Smooth_vars['dp'], dp_mean, dp_eff,
+                         tlim=tlim, fs=fs, fig=fig, ax=ax)
 
     # --> Activity rate
     ax = axes[3]
-    fig, ax = act_t_serie(rate_time, rate, rate_smooth, period=period,
-                          tlim=tlim, fs=fs, fig=fig, ax=ax)
+    fig, ax = act_t_serie(rate_time, Vars['rate'], Smooth_vars['rate'],
+                          period=period, tlim=tlim, fs=fs, fig=fig, ax=ax)
 
     # >> Format the plot
     # ------------------

@@ -457,14 +457,16 @@ def event_count_signal(event_time, dt, t0=0., tn=None):
     bin_edges : 1D array
         Boundaries of time bins, one element longer than event_count_signal.
     """
-
     # >> Check if tn is 'max' and if so set it to its value
+    if t0 is None:
+        t0 = np.floor(event_time.min()/dt) * dt
     if tn is None:
-        tn = max(event_time)
+        tn = np.ceil(event_time.max()/dt) * dt
 
     # >> The evenly spaced count is in fact a simple histogram
-    ev_count, bin_edges = np.histogram(event_time, bins=int((tn-t0)//dt+2),
-                                       range=(t0, tn+dt))
+    ev_count, bin_edges = np.histogram(event_time,
+                                       bins=np.linspace(t0-dt/2, tn+dt/2,
+                                                        num=int((tn-t0+2*dt)/dt)))
 
     # /!\ bin_edges length is 1 unit longer than event_count
 
@@ -623,7 +625,7 @@ def calc_alpha(ev_count, dt, per_max):
 
 # ------------------------------------------------------------------------------
 
-def acf_peak_width(rate, delta, thr=0.1):
+def acf_peak_width(rate, delta, thr=None):
     """
     Computes the half-width of the autocorrelation peak.
 
@@ -635,21 +637,30 @@ def acf_peak_width(rate, delta, thr=0.1):
         Activity rate time series
     delta : float
         Activity rate time sampling increment.
-    thr : float (default `thr = 0.1`)
+    thr : float (default `thr = None`)
         Value of the autocorrelation score at which to measure the peak width.
+        By default, 99.9% confidence threshold computed on white noise
+        autocorrelation is used.
 
     Returns
     -------
     peak_width : float
         Width of the 0 peak of autocorrelation function, at threshold.
     """
-    acf, lag = ms.cross_corr(rate, rate, delta)
+    acf, lag = ms.cross_corr(rate, rate, delta, no_bias=False)
     acf = acf[lag >= 0]
     lag = lag[lag >= 0]
+
+    if thr is None:
+        lvl = 99.9
+        v_crit = erfinv(lvl/100) * np.sqrt(2)
+        thr = v_crit * np.sqrt(1/len(rate) * (len(rate) - lag/delta)
+                               / (len(rate) + 2))
 
     peak_lags = lag[find_contiguous(acf > thr)[0]]
 
     peak_width = peak_lags.max()
+
     return peak_width
 
 
