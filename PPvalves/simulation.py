@@ -117,7 +117,7 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
         v_id2 = v_id2.astype(int)
         outvar.row['dP_valves'] = P0[v_id1] - P0[v_id2]
 
-    outvar.row.append()  # write values
+    outvar.row.append()  # write values
 
     # Set up matrix system
     # --------------------
@@ -189,7 +189,7 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
     return Plast, trun
 
 # ---------------------------------------------------------------------------
-#                           SMALLER RUNS
+#                           SMALLER RUNS
 # ---------------------------------------------------------------------------
 
 def run(P0, PARAM, VALVES, save_P=False, verbose=True):
@@ -335,7 +335,7 @@ def run_no_valves(P, PARAM, verbose=True):
     P : 2D array
         Initialized pore pressure array `P[0, :] = P0`. First dimension should
         be time, second is space.
-    PARAM : dict
+    PARAM : dict
         Physical parameters dictionnary. Permeability in space can be input as
         an array in `PARAM['k']` --- as it is defined in between and around
         pressure points, its space dimension is 1 element longer than that of
@@ -380,7 +380,7 @@ def save(path, dic, verbose=True):
        Path and filename where to save the file. No extension needed.
     dic : dictionnary
         Dictionnary packaging all output to be saved. Be careful to use
-        stereotypical names for the keys: 'PARAM', 'VALVES', 'v_activity',
+        stereotypical names for the keys: 'PARAM', 'VALVES', 'v_activity',
         'P0', 'Plast', 'bounds', 't_ev', 'x_ev', 'k_eq'...
     verbose : bool, optional
         Option to have the function print what it's doing.

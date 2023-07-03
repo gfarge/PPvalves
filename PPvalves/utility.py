@@ -24,7 +24,7 @@ def calc_k(VALVES, PARAM, states_override=None):
 
     Returns
     -------
-    k : 1D array
+    k : 1D array
         Updated permeability in space. Dimension Nx + 1.
 
     """

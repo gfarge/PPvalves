@@ -27,7 +27,7 @@ def weibull(u, N, v_wid, PARAM, xvmin=0, xvmax=1):
         Valve width.
     PARAM : dict
         Parameters dictionnary.
-    xvmin, xvmax : floats (default `xvmin = 0`, `xvmax = 1`)
+    xvmin, xvmax : floats (default `xvmin = 0`, `xvmax = 1`)
         Position of the extrema of the distribution.
 
     Returns
@@ -84,7 +84,7 @@ def comb(dx, v_wid, PARAM):
     dx : float
         Inter-valve distance to maintain across the domain, in non-dimensional
         unit of length (fraction of total domain length).
-    v_wid : float
+    v_wid : float
         Width of the valve as a fraction of the total length of the domain
         (non-dimensional length of valve).
     PARAM : dict
@@ -98,7 +98,7 @@ def comb(dx, v_wid, PARAM):
     """
     v_idx_0 = 10  # first possible valve index is 1
     v_idx_N = PARAM['Nx'] - int(v_wid/PARAM['h_'])  # last possible valve index
-    d_idx = int((dx + v_wid)/PARAM['h_'])  # distance between valve indices
+    d_idx = int((dx + v_wid)/PARAM['h_'])  # distance between valve indices
 
     v_idx = np.arange(v_idx_0, v_idx_N, d_idx)
 
@@ -196,17 +196,17 @@ def patch_scatter(patch, scale, v_wid, PARAM):
 
     while v_id + 2*v_wid/h_ < pid2: # last valve must be before the closing valve
         print(v_idx)
-        dist = np.random.exponential(scale)  # draw intervalve distance
+        dist = np.random.exponential(scale)  # draw intervalve distance
 
         v_id = np.floor(dist/h_) + prev_end  # add valve at dist from end of
                                              # previous valve
-        v_idx.append(v_id)          # add a new valve to our list
+        v_idx.append(v_id)          # add a new valve to our list
         prev_end = v_id + v_wid/h_  # change previous valve end to the new one
 
-    v_idx.remove(v_idx[-1]) # remove the last valve
+    v_idx.remove(v_idx[-1]) # remove the last valve
 
     last_v_id = pid2 - v_wid/h_
-    v_idx.append(last_v_id) # add the closing valve
+    v_idx.append(last_v_id) # add the closing valve
     v_idx = np.array(v_idx).astype(int)
 
     return v_idx
@@ -363,10 +363,10 @@ def evolve(P, h, VALVES):
         Which valve has either opened or closed.
 
     """
-    # >> Update pressure differential
+    # >> Update pressure differential
     VALVES['dP'] = P[VALVES['idx']] - P[(VALVES['idx']+VALVES['width']/h).astype(int)]
 
-    # >> Compute boolean for above/below opening/closing criteria
+    # >> Compute boolean for above/below opening/closing criteria
     above_dpop = VALVES['dP'] > VALVES['dPhi']
     below_dpcl = VALVES['dP'] < VALVES['dPlo']
 
@@ -379,7 +379,7 @@ def evolve(P, h, VALVES):
     closing = VALVES['open'] & below_dpcl
     VALVES['open'] = VALVES['open'] & ~below_dpcl
 
-    # NB : condition to update state is different than opening (resp. closing) detector
+    # NB : condition to update state is different than opening (resp. closing) detector
     # because the first one accounts for when an open valve stays open (resp. a
     # closed valve stays closed) and not the latter.
 
@@ -418,7 +418,7 @@ def update_k(VALVES, active_valves, PARAM):
 # Alternate, to avoid to loop, but not really more efficient at first sight,
 # maybe when more valves ?
 #
-#     >> Make slices of space domain to isolate their permeability
+#     >> Make slices of space domain to isolate their permeability
 #    slices = [np.arange(VALVES['idx'][active_valves][ii]+1,
 #              int(VALVES['idx'][active_valves][ii]+VALVES['width'][active_valves][ii]/h) + 1)
 #              for ii in range(len(VALVES['idx'][active_valves]))]
