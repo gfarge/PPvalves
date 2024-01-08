@@ -2,7 +2,7 @@
 PPvalves
 ========
 
-*WIP*
+*This package is still in development*
 
 Welcome!
 --------
