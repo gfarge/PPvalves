@@ -95,7 +95,8 @@ def read_input(input_args, verbose=False):
     PARAM['P_scale'] = (PARAM['rho_r'] - PARAM['rho']) * PARAM['g']\
                       * PARAM['X_scale'] * np.sin(PARAM['alpha'])
     PARAM['q_scale'] = PARAM['k_bg'] * PARAM['rho'] / PARAM['mu']\
-                      * PARAM['P_scale'] / PARAM['X_scale']
+                      * PARAM['P_scale'] / PARAM['X_scale']  # here I think I
+                                                             # forgot porosity...
     PARAM['M_scale'] = PARAM['q_scale'] * PARAM['T_scale']
 
     PARAM['Z0_'] = PARAM['Z0']/PARAM['X_scale']

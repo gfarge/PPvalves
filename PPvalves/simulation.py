@@ -50,6 +50,8 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
         valves, 'closing' for catalog of closing valves. Variables always saved
         are: k_eq (channel equivalent permeability), bounds (free boundary
         variables), catalog (opening valve index, and time at which it opens).
+        Add `tmin_save` and `tmax_save` when setting `P = True` to limit how
+        long you save `P(x,t)` for.
     outpath : str
         Absolute path and filename for the hdf5 output file, containing time
         series of `valve_states` and `valve_dP` for all valves, `k_eq` and
@@ -189,7 +191,9 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
         outvar.row['k_eq'] = calc_k_eq(VALVES, PARAM)
         # -> Optionnal outputs
         if save_which['P']:
-            outvar.row['P'] = Pnext
+            save_time = (Nt*PARAM['dt_'] >= save_which['tmin_save']) & (Nt*PARAM['dt_'] < save_which['tmax_save'])
+            if save_time:
+                outvar.row['P'] = Pnext
         if save_which['dP_valves']:
             outvar.row['dP_valves'] = VALVES['dP']
         outvar.row.append()
