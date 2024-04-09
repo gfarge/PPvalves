@@ -63,24 +63,31 @@ def calc_pp_inf(VALVES, PARAM, states_override=None):
 
     # Deal with case where all valves are open
     # ----------------------------------------
+    L = 1. + 2*hb_  # domain lenght (taking into account that boundaries are set at fictive points)
     if not any(closed_valves):
         # >> PP conditions
         if (qin_==-1) & (qout_==-1):
             dP_ = (p0_ - pL_)  # pressure diff across domain
-            L_ = 1. + 2 * hb_  # domain lenght
             grad_bg = dP_ / L_  # pressure gradient without a valve
-
-            P_eq = p0_ - (X_+hb_) * grad_bg
 
         # >> QP conditions
         elif (p0_==-1) & (qout_==-1):
-            print(pL_)
-            L_ = 1. + 2 * hb_
             dP_ = mu / rho / k_bg * qin_ * L_ * q_scale*X_scale/P_scale
             p0_ = pL_ + dP_  # pore pressure in 0
             grad_bg = qin_ * mu / rho / k_bg * q_scale*X_scale/P_scale
 
-            P_eq = p0_ - (X_+hb_)*grad_bg
+        # >> PQ conditions
+        elif (qin_==-1) & (pL_==-1):
+            dP_ = mu / rho / k_bg * qout_ * L_ * q_scale*X_scale/P_scale
+            grad_bg = qout_ * mu / rho / k_bg * q_scale*X_scale/P_scale
+
+        # >> QQ conditions (same as QP because we choose to have pout=0 for convenience, and qin=qout for QQ)
+        elif (p0_==-1) & (pL_==-1):
+            dP_ = mu / rho / k_bg * qin_ * L_ * q_scale*X_scale/P_scale
+            p0_ = pL_ + dP_
+            grad_bg = qin_ * mu / rho / k_bg * q_scale*X_scale/P_scale
+
+        P_eq = p0_ - (X_+hb_)*grad_bg
 
         return P_eq
         # ------------------------------------
@@ -94,16 +101,30 @@ def calc_pp_inf(VALVES, PARAM, states_override=None):
 
     # Compute pressure profile
     # ------------------------
-    # >> QP conditions
-    if (p0_==-1) & (qout_==-1):
-    # --> Flux boundary condition in 0
-    #     pressure boundary condition in L
-    #     -->> Define various parameters
+    # >> QP, QQ, PQ conditions
+    if (qin_ != -1) | (qout_ != -1):
+    # For those conditions, the fixed flux is imposed through the system, starting from the x=0 input boundary
+        #  -->> Define various parameters, according to what is fixed or not
         L_ = 1. + 2 * hb_
-        dP_ = mu / rho * qin_ * ((L_ - np.sum(wid_v))/k_bg \
+        
+        # define forced input flux
+        if qin_ != -1:  
+            q0 = qin_  # for QP, and QQ
+        if qout_ != -1:
+            q0 = qout_  # for PQ (and QQ, but fine, because qin=qout)
+
+        # define the total pressure drop across the domain
+        dP_ = mu / rho * q0 * ((L_ - np.sum(wid_v))/k_bg \
               + np.sum(R_v)) * q_scale*X_scale/P_scale
-        p0_ = pL_ + dP_  # pore pressure in 0
-        grad_bg = qin_ * mu / rho / k_bg * q_scale*X_scale/P_scale
+        
+        # set the input and output pressure
+        if (pL_ != -1):  # QP & QQ
+            p0_ = pL_ + dP_  # pore pressure in 0
+        elif pL_ == -1:  # PQ and QQ, by convention pL = 0 in QQ
+            p0_ = dP_
+
+        # define the background pressure gradient
+        grad_bg = q0 * mu / rho / k_bg * q_scale*X_scale/P_scale
 
         # -->> Initialize: fill the first empty segment of the domain
         P_eq = np.zeros(Nx+1)
@@ -120,7 +141,7 @@ def calc_pp_inf(VALVES, PARAM, states_override=None):
 
             p0_ = P_eq[idx_v_0 - 1]
             v_X_ = np.linspace(h_, wid_v[iv], int(wid_v[iv]/h_))
-            grad_v = qin_ * mu / rho / k_v[iv] * X_scale/P_scale*q_scale
+            grad_v = q0 * mu / rho / k_v[iv] * X_scale/P_scale*q_scale
 
             s_X_ = np.linspace(h_, (idx_s_n - idx_s_0)*h_, idx_s_n - idx_s_0 )
 
@@ -289,11 +310,15 @@ def calc_dP_inf(VALVES, PARAM, states_override=None):
     # Compute dP_inf
     # --------------
     L_ = 1 + 2*hb_
-    # --> For 'QP' boundary
-    if (p0_==-1) & (qout_==-1):
+    # --> For QP, QQ or PQ boundary (a flux is fixed, a pressure bound is not)
+    if (qin_!=-1) | (qout_!=-1):
+        if qin_ != -1:
+            q0 = qin_
+        elif qout_ != -1:
+            q0 = qout_
         # -->> Equivalent hydraulic resistance of the system
         R_eq = [L_ - np.sum(wid_v[closed_valves])/k_bg + np.sum(R_v[closed_valves])]
-        dP_inf = mu / rho * qin_ * R_eq * q_scale*X_scale/P_scale
+        dP_inf = mu / rho * q0 * R_eq * q_scale*X_scale/P_scale
 
     # --> For 'PP' boundary
     elif (qin_==-1) & (qout_==-1):
