@@ -221,7 +221,8 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
 
     if save_which['closing']: closing_cat.flush()
     if save_which['P_last']: P_last.flush()
-    outvar.flush() ; outvar_P.flush() ; catalog.flush() ; fileh.close()  # flush and close results
+    if save_which['P']: outvar_P.flush()
+    outvar.flush() ; catalog.flush() ; fileh.close()  # flush and close results
 
     if verbose: print('simulation.run_light -- Done!')
 
