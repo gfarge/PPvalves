@@ -112,21 +112,28 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
     data_structure.append(("k_eq", np.float64))
 
     # optionnal output variables
-    if save_which['P']:
-        data_structure.append(("P", np.float64, (Nx+1,)))
     if save_which['dP_valves']:
         data_structure.append(("dP_valves", np.float64, (Nv,)))
 
     data_structure = np.dtype(data_structure)
+    print('Nt is ', PARAM['Nt'])
     outvar = fileh.create_table(fileh.root, "outvar", data_structure,
                                 "outvar", expectedrows=PARAM['Nt']+1)
+    if save_which['P']:
+        PARAM['tmin_save'] = save_which['tmin_save']  # save those
+        PARAM['tmax_save'] = save_which['tmax_save']
+        data_structure_P = np.dtype([("P", np.float64, (Nx+1,))])
+
+        expected_rows = int((save_which['tmax_save']-save_which['tmin_save'])/PARAM['dt_'])
+        outvar_P = fileh.create_table(fileh.root, "outvar_P", data_structure_P, "outvar_P", expectedrows=expected_rows)
 
     # initialize the outputs with initial state
     outvar.row['bounds'] = [calc_bound_0(P0[0], PARAM),
                             calc_bound_L(P0[-1], PARAM)]
     outvar.row['k_eq'] = calc_k_eq(VALVES, PARAM)
-    if save_which['P']:
-        outvar.row['P'] = P0
+    if save_which['P'] and (save_which['tmin_save'] <= 0):
+        outvar_P.row['P'] = P0
+        outvar_P.row.append()
     if save_which['dP_valves']:
         v_id1 = VALVES['idx']  # Pressure pt. right before valves
         v_id2 = VALVES['idx'] + VALVES['width']/h  # Pr. pt. right after valves
@@ -189,14 +196,15 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
         outvar.row['bounds'] = [calc_bound_0(Pnext[0], PARAM),
                                 calc_bound_L(Pnext[-1], PARAM)]
         outvar.row['k_eq'] = calc_k_eq(VALVES, PARAM)
-        # -> Optionnal outputs
-        if save_which['P']:
-            save_time = (Nt*PARAM['dt_'] >= save_which['tmin_save']) & (Nt*PARAM['dt_'] < save_which['tmax_save'])
-            if save_time:
-                outvar.row['P'] = Pnext
         if save_which['dP_valves']:
             outvar.row['dP_valves'] = VALVES['dP']
         outvar.row.append()
+
+        if save_which['P']:
+            save_time = ((tt+1)*PARAM['dt_'] >= save_which['tmin_save']) & ((tt+1)*PARAM['dt_'] < save_which['tmax_save'])
+            if save_time:
+                outvar_P.row['P'] = Pnext
+                outvar_P.row.append()
 
         if save_which['P_last'] & (tt*PARAM['dt_'] > PARAM['Ttot_']-2.e-3):
             P_last.row['P_last'] = Pnext
@@ -205,6 +213,8 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
         if (tt % int(1e5) == 0) & (tt != 0):  # flush in chunks
             outvar.flush(); outvar = fileh.root.outvar
             catalog.flush(); catalog = fileh.root.catalog
+            if save_which['P']:
+                outvar_P.flush(); outvar_P = fileh.root.outvar_P
             if save_which['closing']:
                 closing_cat.flush(); closing_cat = fileh.root.closing_cat
             if save_which['P_last']:
@@ -212,7 +222,7 @@ def run_light(P0, PARAM, VALVES, save_which, outpath, verbose=True):
 
     if save_which['closing']: closing_cat.flush()
     if save_which['P_last']: P_last.flush()
-    outvar.flush() ; catalog.flush() ; fileh.close()  # flush and close results
+    outvar.flush() ; outvar_P.flush() ; catalog.flush() ; fileh.close()  # flush and close results
 
     if verbose: print('simulation.run_light -- Done!')
 
