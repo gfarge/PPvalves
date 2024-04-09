@@ -380,11 +380,12 @@ def calc_q_inf(VALVES, PARAM, states_override=None):
     # Compute dP_inf
     # --------------
     L_ = 1 + 2*hb_
-    # --> For 'QP' boundary
-    if (p0_==-1) & (qout_==-1):
-        # -->> Equivalent hydraulic resistance of the system
+    # --> For 'QP', 'QQ'
+    if (qin_!=-1):
         q_inf = qin_
-
+    # --> For 'PQ', 'QQ'
+    elif (qout_!=-1):
+        q_inf = qout_
     # --> For 'PP' boundary
     elif (qin_==-1) & (qout_==-1):
         dP_inf = p0_ - pL_
@@ -521,17 +522,20 @@ def calc_k_eff(bounds_eff, PARAM):
     k_eff : float
         Effective value of permeability.
 
-    Note
-    ----
-    For now, only 'QP' and 'PP' are implemented.
     """
     # According to boundary conditions, get cross system delta_p, input flux
     # and length between boundaries
-    if PARAM['bound'][0] == 'Q':
-        q_in = PARAM['qin_']
+    if PARAM['bound'] == 'QP':
+        q0 = PARAM['qin_']
         delta_p = bounds_eff[0]
-    else:
-        q_in = bounds_eff[0]
+    elif PARAM['bound'] == 'PQ':
+        q0 = PARAM['qout_']
+        delta_p = - bounds_eff[1]
+    elif PARAM['bound'] == 'QQ':
+        q0 = PARAM['qin_']
+        delta_p = bounds_eff[0] - bounds_eff[1]
+    elif PARAM['bound'] == 'PP':
+        q0 = bounds_eff[0]
         delta_p = PARAM['p0_']
 
     # For now, length scale is going to be 1, no boundary depth taken into
@@ -539,7 +543,7 @@ def calc_k_eff(bounds_eff, PARAM):
     L = (1 + 2*PARAM['hb_'])
 
     # Compute effective permeability
-    k_eff = PARAM['mu'] / PARAM['rho'] * L / delta_p * q_in \
+    k_eff = PARAM['mu'] / PARAM['rho'] * L / delta_p * q0 \
            * PARAM['X_scale'] / PARAM['P_scale'] * PARAM['q_scale']
 
     return k_eff

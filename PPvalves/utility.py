@@ -33,10 +33,6 @@ def calc_k(VALVES, PARAM, states_override=None):
     Nx = PARAM['Nx']
     k_bg = PARAM['k_bg']
 
-    v_idx = VALVES['idx']
-    v_wid = VALVES['width']
-    v_k = VALVES['klo']
-
     if states_override is None:
         v_open = VALVES['open']
     else:
@@ -83,8 +79,7 @@ def calc_Q(P, k, PARAM):
     h = PARAM['h_']
     mu = PARAM['mu']
     rho = PARAM['rho']
-    g = PARAM['g']
-    alpha = PARAM['alpha']
+
     ## Scales
     q_scale = PARAM['q_scale']
     X_scale = PARAM['X_scale']
@@ -119,9 +114,6 @@ def calc_bound_0(P0, PARAM):
         flux) at the input fictive point. Depending on input, can be a value at
         a given time, or in time. Same shape as input P0.
 
-    Note:
-    -----
-    Only 'PP' and 'QP' boundary conditions are implemented.
 
     """
     # >> Dirichlet : pressure is fixed: bound_0 = qin
@@ -167,9 +159,6 @@ def calc_bound_L(PL, PARAM):
         flux) at the output fictive point. Depending on input, can be a value at
         a given time, or in time. Same shape as input PL.
 
-    Note:
-    -----
-    Only 'PP' and 'QP' boundary conditions are implemented.
 
     """
     # >> Dirichlet : pressure is fixed: bound_L = qout
