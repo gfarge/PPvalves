@@ -26,7 +26,7 @@ def calc_pp_inf(VALVES, PARAM, states_override=None):
         False (or 0) is closed, dimension of N_valves.
     Returns
     -------
-    P_eq : 1D array
+    P_eq : 1D array
     	Reduced pore pressure equilibrium profile, dimension=PARAM['Nx']+1
 
     Note
@@ -197,14 +197,14 @@ def calc_k_eq(VALVES, PARAM, states_override=None, L=None):
     k_bg = PARAM['k_bg']  # background channel permeability
     if L is None:
         L_ = 1. + 2*PARAM['hb_']  # valves widths and domain widths should have the
-                                  # same scale
+                                  # same scale
     else:
         L_ = L
 
     # Unpack valves parameters
     # ------------------------
     wid_v = VALVES['width']
-    R_v =  wid_v / VALVES['klo']  # hydraulic resistance of the valve
+    R_v =  wid_v / VALVES['klo']  # hydraulic resistance of the valve
 
     # Get states
     # ----------
@@ -256,7 +256,7 @@ def calc_dP_inf(VALVES, PARAM, states_override=None):
     Returns
     -------
     dP_inf : float
-        Value of the differential of pore pressure at equilibrium in the input
+        Value of the differential of pore pressure at equilibrium in the input
         system. Important to note that dP is measured at fictive points.
     """
     # Unpack physical parameters
@@ -291,7 +291,7 @@ def calc_dP_inf(VALVES, PARAM, states_override=None):
     L_ = 1 + 2*hb_
     # --> For 'QP' boundary
     if (p0_==-1) & (qout_==-1):
-        # -->> Equivalent hydraulic resistance of the system
+        # -->> Equivalent hydraulic resistance of the system
         R_eq = [L_ - np.sum(wid_v[closed_valves])/k_bg + np.sum(R_v[closed_valves])]
         dP_inf = mu / rho * qin_ * R_eq * q_scale*X_scale/P_scale
 
@@ -323,7 +323,7 @@ def calc_q_inf(VALVES, PARAM, states_override=None):
     Returns
     -------
     q_inf : float
-        Value of the flux at equilibrium in the input system.
+        Value of the flux at equilibrium in the input system.
     """
     # Unpack physical parameters
     # --------------------------
@@ -357,7 +357,7 @@ def calc_q_inf(VALVES, PARAM, states_override=None):
     L_ = 1 + 2*hb_
     # --> For 'QP' boundary
     if (p0_==-1) & (qout_==-1):
-        # -->> Equivalent hydraulic resistance of the system
+        # -->> Equivalent hydraulic resistance of the system
         q_inf = qin_
 
     # --> For 'PP' boundary
@@ -387,7 +387,7 @@ def calc_dP_crit(idx_v0, VALVES, PARAM, event='opening'):
         Valves dictionnary.
     PARAM: dictionnary
         Physical parameters dictionnary
-    event : str
+    event : str
         Type of event for which to compute the critical pressure differential.
         'opening' for opening event, 'closing' for closing event.
     Returns
@@ -416,7 +416,7 @@ def calc_dP_crit(idx_v0, VALVES, PARAM, event='opening'):
     # Actually compute it
     # -------------------
     R_bg = (L_ - np.sum(wid_v))/k_bg
-    R_eq = np.sum(R_v) + R_bg  # Equivalent hydraulic resistance
+    R_eq = np.sum(R_v) + R_bg  # Equivalent hydraulic resistance
     dP_crit = dP_thr_v0 * R_eq/R_v0
 
     return dP_crit
@@ -437,7 +437,7 @@ def calc_q_crit(idx_v0, VALVES, PARAM, event='opening'):
         Valves dictionnary.
     PARAM: dictionnary
         Physical parameters dictionnary
-    event : str (default='opening')
+    event : str (default='opening')
         Type of event for which to compute the critical flux. 'opening' for
         opening event, 'closing' for closing event.
 

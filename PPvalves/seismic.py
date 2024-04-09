@@ -142,12 +142,12 @@ def DC_rad_pat(xyz_station, xyz_source, strike, dip, rake, z_is_down=True):
     ----
         Normal motion : -180 < rake <= 0
         Reverse motion : 0 < rake <= 180
-        Strike-slip : dip = 90, rake = 0 or 180
+        Strike-slip : dip = 90, rake = 0 or 180
 
     All conventions are from Aki and Richards, 2002, Chapter 4.5.
 
     """
-    # >> Make coordinates as arrays
+    # >> Make coordinates as arrays
     if not isinstance(xyz_station, np.ndarray):
         xyz_station = np.array(xyz_station)
     if not isinstance(xyz_source, np.ndarray):
@@ -174,7 +174,7 @@ def DC_rad_pat(xyz_station, xyz_source, strike, dip, rake, z_is_down=True):
                        np.sin(dip)*np.cos(strike),
                        -np.cos(dip)])
 
-    # --> Slip vector
+    # --> Slip vector
     slip = np.array([
         np.cos(rake)*np.cos(strike) + np.cos(dip)*np.sin(rake)*np.sin(strike),
         np.cos(rake)*np.sin(strike) - np.cos(dip)*np.sin(rake)*np.cos(strike),
@@ -215,7 +215,7 @@ def DC_rad_pat_sph(xyz_source, r, phi, theta, strike, dip, rake):
         Spherical coordinates of the station, when xyz system is shifted to
         source depth (source shifted to 0, 0, 0). `r` is source station
         distance, `phi` is angle from down in degrees (0 is down, 180 is up),
-        `theta` is angle from North in degrees (0 is North (x), 90 is East
+        `theta` is angle from North in degrees (0 is North (x), 90 is East
         (y)).
     strike : float
         Angle in degrees that the fault makes clockwise with the north. From 0
@@ -238,12 +238,12 @@ def DC_rad_pat_sph(xyz_source, r, phi, theta, strike, dip, rake):
     ----
         Normal motion : -180 < rake <= 0
         Reverse motion : 0 < rake <= 180
-        Strike-slip : dip = 90, rake = 0 or 180
+        Strike-slip : dip = 90, rake = 0 or 180
 
     All conventions are from Aki and Richards, 2002, Chapter 4.5.
 
     """
-    # --> Convert spherical coordinates to cartesian coordinates
+    # --> Convert spherical coordinates to cartesian coordinates
     x_station = r * np.sin(np.deg2rad(phi)) * np.cos(np.deg2rad(theta)) + xyz_source[0]
     y_station = r * np.sin(np.deg2rad(phi)) * np.sin(np.deg2rad(theta)) + xyz_source[1]
     z_station = r * np.cos(np.deg2rad(phi)) + xyz_source[2]
@@ -284,7 +284,7 @@ def SF_rad_pat(xyz_station, xyz_source, azimuth, elevation, z_is_down=True):
     All conventions are from Aki and Richards, 2002, Chapter 4.2.
 
     """
-    # >> Make coordinates as arrays
+    # >> Make coordinates as arrays
     if not isinstance(xyz_station, np.ndarray):
         xyz_station = np.array(xyz_station)
     if not isinstance(xyz_source, np.ndarray):
@@ -355,7 +355,7 @@ def SF_rad_pat_sph(xyz_source, r, phi, theta, strike, dip, rake):
         Spherical coordinates of the station, when xyz system is shifted to
         source depth (source shifted to 0, 0, 0). `r` is source station
         distance, `phi` is angle from down in degrees (0 is down, 180 is up),
-        `theta` is angle from North in degrees (0 is North (x), 90 is East
+        `theta` is angle from North in degrees (0 is North (x), 90 is East
         (y)).
     azimuth : float
         Angle in degrees that the force makes clockwise (anti-trigonometric
@@ -375,12 +375,12 @@ def SF_rad_pat_sph(xyz_source, r, phi, theta, strike, dip, rake):
     ----
         Normal motion : -180 < rake <= 0
         Reverse motion : 0 < rake <= 180
-        Strike-slip : dip = 90, rake = 0 or 180
+        Strike-slip : dip = 90, rake = 0 or 180
 
     All conventions are from Aki and Richards, 2002, Chapter 4.5.
 
     """
-    # --> Convert spherical coordinates to cartesian coordinates
+    # --> Convert spherical coordinates to cartesian coordinates
     x_station = r * np.sin(np.deg2rad(phi)) * np.cos(np.deg2rad(theta)) + xyz_source[0]
     y_station = r * np.sin(np.deg2rad(phi)) * np.sin(np.deg2rad(theta)) + xyz_source[1]
     z_station = r * np.cos(np.deg2rad(phi)) + xyz_source[2]
@@ -512,7 +512,7 @@ def SF_rad_pat_sph(xyz_source, r, phi, theta, strike, dip, rake):
 #
 #    """
 #    # >> Initialize useful vectors
-#    u_F = np.array([[np.cos(alpha)],  # force direction vector
+#    u_F = np.array([[np.cos(alpha)],  # force direction vector
 #                    [0],
 #                    [np.sin(alpha)]])
 #    gamma_line = np.array([[np.cos(theta)*np.sin(phi),
@@ -555,7 +555,7 @@ def SF_rad_pat_sph(xyz_source, r, phi, theta, strike, dip, rake):
 #
 #    """
 #    # >> Initialize useful vectors
-#    u_F = np.array([[np.cos(alpha)],  # force direction vector
+#    u_F = np.array([[np.cos(alpha)],  # force direction vector
 #                    [0],
 #                    [np.sin(alpha)]])
 #    gamma_line = np.array([[np.cos(theta)*np.sin(phi),
