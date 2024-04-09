@@ -118,10 +118,10 @@ def calc_pp_inf(VALVES, PARAM, states_override=None):
               + np.sum(R_v)) * q_scale*X_scale/P_scale
         
         # set the input and output pressure
-        if (pL_ != -1):  # QP & QQ
+        if (pL_ != -1):  # QP & QQ, , by convention pL = 0 in QQ
             p0_ = pL_ + dP_  # pore pressure in 0
-        elif pL_ == -1:  # PQ and QQ, by convention pL = 0 in QQ
-            p0_ = dP_
+        elif pL_ == -1:  # PQ
+            p0_ = 0
 
         # define the background pressure gradient
         grad_bg = q0 * mu / rho / k_bg * q_scale*X_scale/P_scale
